@@ -21,4 +21,20 @@ function fail() {
 info Begining CocoPi installation.
 
 apt install npm -y
-npm install -D tailwindcss postcss autoprefixer
+npm install -D tailwindcss postcss autoprefixer prisma @prisma/client next next-auth bcrypt @types/bcrypt
+npm install -D react-icons @types/lodash
+npm install axios swr lodash zustand
+
+# DB : A essayer
+
+apt install mongodb
+systemctl start mongod.service
+systemctl enable mongod.service
+
+mongo
+use test
+db.createUser( { user: "cocopi", pwd: "cocopi", roles: ["readWrite"] })
+
+npx prisma db push #Pousse les models de schema.prisma vers la db dans .env
+
+docker build -t mongo Docker #Docker pour réplication de la db pour prisma
