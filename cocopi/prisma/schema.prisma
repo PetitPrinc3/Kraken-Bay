@@ -9,12 +9,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  id             Int       @id @default(autoincrement())
   name           String
   image          String?
   email          String?   @unique
@@ -22,23 +22,24 @@ model User {
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  favoriteIds    String[]  @db.ObjectId
+  favoriteIds    Media[]
   sessions       Session[]
   accounts       Account[]
+  roles          String    @default("user")
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  id                Int     @id @default(autoincrement())
+  userId            Int
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String? @db.Text
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -47,16 +48,16 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           Int      @id @default(autoincrement())
   sessionToken String   @unique
-  userId       String   @db.ObjectId
+  userId       Int
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         Int      @id @default(autoincrement())
   identifier String
   token      String   @unique
   expires    DateTime
@@ -64,12 +65,16 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Movie {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+model Media {
+  id          Int     @id @default(autoincrement())
   title       String
+  type        String
   description String?
   videoUrl    String
   thumbUrl    String
   genre       String
-  duration    String
+  duration    String?
+  seasonCount String?
+  User        User?   @relation(fields: [userId], references: [id])
+  userId      Int?
 }

@@ -1,9 +1,7 @@
 import axios from "axios";
-import Input from "@/components/input"
+import Input from "@/components/Input"
 import { useCallback, useState } from "react";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/dist/server/api-utils";
-import { callbackify } from "util";
 
 const Auth = () => {
     const [email, setEmail] = useState('');

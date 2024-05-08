@@ -1,19 +1,27 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import useBillboard from "@/hooks/useBillboard"
 import { AiOutlineInfoCircle } from 'react-icons/ai';
+import { GoMute, GoUnmute } from "react-icons/go";
 import PlayButton from "./PlayButton";
 import useInfoModal from "@/hooks/useInfoModal";
 
 const Billboard = () => {
     const { data } = useBillboard();
     const { openModal } = useInfoModal();
+    const [isMuted, setMute] = useState(false);
+
+    const muteVideo = () => {
+        setMute((isMuted) => !isMuted)
+    }
+
+    const Icon = isMuted ? GoMute : GoUnmute
 
     const handleOpenModal = useCallback(() => {
         openModal(data?.id);
     }, [openModal, data?.id])
 
     return (
-        <div className="relative h-[56.25vw] max-h-[100vh] overflow-hidden">
+        <div className="relative h-[56.25vw] max-h-[90vh] overflow-hidden">
             <video
                 className="
                     w-full
@@ -22,10 +30,11 @@ const Billboard = () => {
                     brightness-[60%]
                 "
                 autoPlay
-                muted
                 loop
                 poster={data?.thumbUrl}
-                src={data?.videoUrl}>
+                src={data?.videoUrl}
+                muted={isMuted ? true : false}
+            >
             </video>
             <div className="absolute top-[30%] md:top-[40%] ml-4 md:ml-16">
                 <p className="text-white text-1xl md:text-5xl h-full w-[50%] lg:text-6xl font-bold drop-shadow-xl">{data?.title}</p>
@@ -39,6 +48,9 @@ const Billboard = () => {
                         More Info
                     </button>
                 </div>
+            </div>
+            <div onClick={muteVideo} className={`absolute bottom-10 right-10 rounded-full p-2 border-2 border-white cursor-pointer ${isMuted ? "bg-white text-zinc-800" : "text-white"}`}>
+                <Icon size={25} />
             </div>
         </div>
     )

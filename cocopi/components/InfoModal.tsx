@@ -3,6 +3,7 @@ import { AiOutlineClose } from "react-icons/ai";
 
 import PlayButton from "./PlayButton";
 import FavoriteButton from "./FavoriteButton";
+import DownloadButton from "./DownloadButton";
 import useInfoModal from "@/hooks/useInfoModal";
 import useMovie from "@/hooks/useMovie";
 
@@ -48,6 +49,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                             <div className="flex flex-row gap-4 items-center">
                                 <PlayButton movieId={data.id} />
                                 <FavoriteButton movieId={data.id} />
+                                <DownloadButton movieId={data.id} />
                             </div>
                         </div>
                     </div>
@@ -55,15 +57,26 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                         <p className="text-green-400 font-semibold text-lg">
                             New
                         </p>
-                        <p className="text-white text-lg">
-                            {data?.duration}
+                        <p className="text-white text-s">
+                            {data?.duration ? data?.duration : data?.seasonCount}
                         </p>
-                        <p className="text-white text-lg">
-                            {data?.genre}
+                        <p className="text-white text-s">
+                            Genres : {data?.genre}
                         </p>
-                        <p className="text-white text-lg">
+                        <p className="text-white text-lg my-4">
                             {data?.description}
                         </p>
+                    </div>
+                    <div className={`${(data?.type == "Series") ? "visible" : "hidden"} relative px-12 py-8`}>
+                        <div className="flex flex-row w-full m-auto">
+                            <p className="text-white text-xl md:text-2xl h-full lg:text-3xl font-bold left-0 m-auto ml-0">
+                                Episodes
+                            </p>
+                            <select className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] m-auto mt-3 mr-0 focus:outline-none" name="SeasonSelect" id="SeasonSelect">
+
+                            </select>
+                        </div>
+
                     </div>
                 </div>
             </div>

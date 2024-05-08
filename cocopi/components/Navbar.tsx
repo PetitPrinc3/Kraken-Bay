@@ -1,8 +1,9 @@
 import NavbarItem from "./Navbaritem";
 import MobileMenu from "./MobileMenu";
 import AccountMenu from "./AccountMenu";
-import { BsChevronDown, BsSearch, BsBell } from 'react-icons/bs';
+import { BsChevronDown, BsBell } from 'react-icons/bs';
 import { useState, useCallback, useEffect } from "react";
+import SearchBar from "./SearchBar";
 
 const TOP_OFFSET = 66;
 
@@ -44,9 +45,8 @@ const Navbar = () => {
                     <NavbarItem label="Home" />
                     <NavbarItem label="Series" />
                     <NavbarItem label="Films" />
-                    <NavbarItem label="New & Popular" />
-                    <NavbarItem label="My List" />
-                    <NavbarItem label="Browse by languages" />
+                    <NavbarItem label="Latest Uploads" />
+                    <NavbarItem label="Browse by category" />
                 </div>
                 <div onClick={toggleMobileMenu} className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative">
                     <p className="text-white text-sm">Browse</p>
@@ -54,14 +54,12 @@ const Navbar = () => {
                     <MobileMenu visible={showMobileMenu} />
                 </div>
                 <div className="flex flex-row ml-auto gap-7 items-center">
-                    <div className="text-gray-200 hover:text-gray-300 cursor-pointer">
-                        <BsSearch />
-                    </div>
+                    <SearchBar />
                     <div className="text-gray-200 hover:text-gray-300 cursor-pointer">
                         <BsBell />
                     </div>
                     <div onClick={toggleAccountMenu} className="flex flex-row items-center gap-2 cursor-pointer relative">
-                        <div className="w-6 h-6 lg:h-10 rounded-md overflow-hidden">
+                        <div className="flex items-center w-6 h-6 lg:h-10 rounded-md overflow-hidden">
                             <img src="/images/default_profile.png" alt="" />
                         </div>
                         <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'}`} />

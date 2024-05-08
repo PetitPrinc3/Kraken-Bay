@@ -29,6 +29,8 @@ const Watch = () => {
                 src={data?.videoUrl}></video>
 
         </div>
+
+
     )
 }
 
