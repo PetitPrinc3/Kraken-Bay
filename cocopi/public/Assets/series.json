@@ -1,0 +1,24 @@
+{
+    "Titles": [
+        {
+            "title": "Peaky Blinders",
+            "type": "Series",
+            "description": "A gangster family epic set in 1919 Birmingham, England and centered on a gang who sew razor blades in the peaks of their caps, and their fierce boss Tommy Shelby, who means to move up in the world.",
+            "videoUrl": "http://127.0.0.1:3000/Assets/Series/Peaky Blinders",
+            "thumbUrl": "http://127.0.0.1:3000/Assets/Series/Peaky Blinders/thumb/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg",
+            "duration": "",
+            "seasonCount": "2",
+            "genre": "Drama, Crime"
+        },
+        {
+            "title": "The Last Ship",
+            "type": "Series",
+            "description": "Their mission is simple: Find a cure. Stop the virus. Save the world. When a global pandemic wipes out eighty percent of the planet's population, the crew of a lone naval destroyer must find a way to pull humanity from the brink of extinction.",
+            "videoUrl": "http://127.0.0.1:3000/Assets/Series/The Last Ship",
+            "thumbUrl": "http://127.0.0.1:3000/Assets/Series/The Last Ship/thumb/43pAddeD10rllMQMGN7ucuOi4NI.jpg",
+            "duration": "",
+            "seasonCount": "2",
+            "genre": "Action & Adventure, Drama, Sci-Fi & Fantasy"
+        }
+    ]
+}

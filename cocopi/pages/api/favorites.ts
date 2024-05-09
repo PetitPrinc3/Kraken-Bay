@@ -9,14 +9,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const { currentUser } = await serverAuth(req, res);
+        let favoriteIds = currentUser?.favoriteIds
+
+        if (favoriteIds.includes(",")) {
+            favoriteIds = favoriteIds.split(",")
+        } else {
+            favoriteIds = [favoriteIds]
+        }
+
         const favoriteMovies = await prismadb.media.findMany({
             where: {
                 id: {
-                    in: currentUser?.favoriteIds,
+                    in: favoriteIds,
                 }
             }
         });
-
 
         return res.status(200).json(favoriteMovies);
 

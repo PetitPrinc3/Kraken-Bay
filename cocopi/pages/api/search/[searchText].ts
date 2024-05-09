@@ -17,7 +17,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const movies = await prismadb.media.findMany({
             where: {
-                text: searchText
+                title: {
+                    search: searchText
+                },
+                description: {
+                    search: searchText
+                },
+                genre: {
+                    search: searchText
+                }
             }
         }
         );

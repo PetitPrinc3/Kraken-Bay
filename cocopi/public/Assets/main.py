@@ -1,13 +1,11 @@
 from prints import *
 import os
-import cv2
-import datetime 
 import imdb
 import requests
 from json import loads, dump
 import questionary
-from pymongo import MongoClient
 from urllib.request import urlretrieve
+import mysql.connector
 
 API_KEY = "9ecaae7c8902e24d2fdbe22076eeb79c"
 GENRES = loads("""{"genres":[{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":14,"name":"Fantasy"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":10402,"name":"Music"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science Fiction"},{"id":10770,"name":"TV Movie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"},{"id":10759,"name":"Action & Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":10762,"name":"Kids"},{"id":9648,"name":"Mystery"},{"id":10763,"name":"News"},{"id":10764,"name":"Reality"},{"id":10765,"name":"Sci-Fi & Fantasy"},{"id":10766,"name":"Soap"},{"id":10767,"name":"Talk"},{"id":10768,"name":"War & Politics"},{"id":37,"name":"Western"}]}""")
@@ -15,9 +13,11 @@ b_path = ""
 m_path = b_path + "Movies"
 s_path = b_path + "Series"
 b_url = "http://127.0.0.1:3000/Assets/"
-mongo_srv = "127.0.0.1"
-mongo_usr = "cocopi"
-mongo_pwd = "cocopi"
+mysql_srv = "127.0.0.1"
+mysql_usr = "cocopi"
+mysql_pwd = "cocopi"
+mysql_dbs = "cocopi"
+json_fold = "JSON_DMPS/"
 valid_extensions = ["mp4", "mkv", "avi"]
 
 print("""
@@ -48,6 +48,9 @@ def main():
           ╚═ ...
           """, 'discreet')
   
+    if (not os.path.exists(json_fold)):
+        os.mkdir(json_fold)
+
     # Movie time
     movies = []
     for _ in os.listdir(m_path) :
@@ -57,9 +60,6 @@ def main():
 
     getall_movies(movies)
     
-    data = build_data('movies.json')
-    push(data, mongo_srv, mongo_usr, mongo_pwd)
-
     success("Done for movies.")
 
     # Series time
@@ -70,9 +70,21 @@ def main():
     info(f'Found {len(series)} files in "{s_path}"', 'discreet')
 
     getall_series(series)
-    data = build_data('series.json')
-    push(data, mongo_srv, mongo_usr, mongo_pwd)
 
+    data = build_data(json_fold + "movies.json")
+    push(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+    data = build_data(json_fold + "series.json")
+    push(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+    
+    for dmp in os.listdir(json_fold):
+        if dmp != "movies.json" and dmp != "series.json":
+            if "SO0" in dmp:
+                data = build_data(json_fold + dmp)
+                push_so(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+            else:
+                data = build_data(json_fold + dmp)
+                push_ep(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+        
     success("Done for series.")
 
 def getall_movies(files):
@@ -155,12 +167,13 @@ def getall_movies(files):
                 "videoUrl": b_url + fold + file_nme,
                 "thumbUrl": b_url + fold + "thumb/" + os.path.basename(d_path),
                 "duration": "0 minutes",
+                "seasonCount": "",
                 "genre": genres
             }
 
             data["Titles"].append(json)
 
-    with open('movies.json', 'w', encoding='utf-8') as f:
+    with open(json_fold + 'movies.json', 'w', encoding='utf-8') as f:
         dump(data, f, ensure_ascii=False, indent=4)
 
 def build_data(file):
@@ -168,14 +181,54 @@ def build_data(file):
         data = loads(f.read())
     return data
 
-def push(data, m, u, p):
-    client = MongoClient(f'mongodb://{u}:{p}@{m}/admin')
-    db = client.test
-    collection = db.Media
+def push(data, m, u, p, d):
+    client = mysql.connector.connect(
+        host=m,
+        user=u,
+        password=p,
+        database=d,
+    )
+
+    cursor = client.cursor()
+
+    sql = f"INSERT INTO Media (id, title, type, description, videoUrl, thumbUrl, duration, seasonCount, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     for d in data["Titles"] :
-        collection.insert_one(d)
+        cursor.execute("SELECT UUID();")
+        uuid = cursor.fetchall()[0][0]
+        val = (uuid, d["title"], d["type"], d["description"], d["videoUrl"], d["thumbUrl"], d["duration"], d["seasonCount"], d["genre"])
+        cursor.execute(sql, val)
         info(f'Inserted {d["title"]}', 'discreet')
+    client.commit()
+
+    return
+
+def push_ep(data, m, u, p, d):
+    client = mysql.connector.connect(
+        host=m,
+        user=u,
+        password=p,
+        database=d,
+    )
+
+    if data["Titles"] == []:
+        return
+
+    cursor = client.cursor()
+
+    sql = cursor.execute(f"""SELECT id FROM Media WHERE videoUrl = "{data["serieUrl"][0]}";""")
+    cursor.execute(sql)
+    serieId = cursor.fetchall()[0][0]
+
+    sql = f"INSERT INTO Serie_EP (id, title, serieId, season, episode, videoUrl) VALUES (%s, %s, %s, %s, %s, %s);"
+
+    for d in data["Titles"] :
+        cursor.execute("SELECT UUID();")
+        uuid = cursor.fetchall()[0][0]
+        val = (uuid, d["title"], serieId, d["season"], d["episode"], d["videoUrl"])
+        cursor.execute(sql, val)
+        info(f'Inserted {d["title"]}', 'discreet')
+    client.commit()
 
     return
 
@@ -250,13 +303,36 @@ def getall_series(folders):
                 "description": ovw,
                 "videoUrl": b_url + fold,
                 "thumbUrl": b_url + fold + "/thumb/" + os.path.basename(d_path),
-                "seasonCount": str(len(os.listdir(fold))-1) + " Seasons",
+                "duration": "",
+                "seasonCount": str(len(os.listdir(fold))-1),
                 "genre": genres
             }
 
             data["Titles"].append(json)
 
-    with open('series.json', 'w', encoding='utf-8') as f:
+            seasons = [ _ for _ in os.listdir(fold) if _ != "thumb" ]
+
+            for season in seasons:
+                ep_data = loads('{"Titles" : [], "serieUrl": ""}')
+                ep_data["serieUrl"] = b_url + fold,
+                s_fold = fold + "/" + season
+                episodes = os.listdir(s_fold)
+                s_number = seasons.index(season)
+                info(f'Found {len(episodes)} for season {s_number}')
+                for episode in episodes:
+                    e_number = episodes.index(episode)
+                    e_json = {
+                        "title": f"{req['original_name']}: So {s_number+1}, Ep {e_number+1}",
+                        "season": str(s_number+1),
+                        "episode": str(e_number+1),
+                        "videoUrl": b_url + s_fold + "/" + episode,
+                    }
+
+                    ep_data["Titles"].append(e_json)
+                with open(json_fold + req['original_name'] + 'SO' + str(s_number+1) + '.json', 'w', encoding='utf-8') as f:
+                    dump(ep_data, f, ensure_ascii=False, indent=4)
+
+    with open(json_fold + 'series.json', 'w', encoding='utf-8') as f:
         dump(data, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":

@@ -75,12 +75,14 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 ">
                     <div className="flex flex-row items-center gap-3">
                         <div
-                            className="cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300"
-                            onClick={() => { (data?.type == "Movies") ? router.push(`/watch/${data?.id}`) : router.push("") }}>
+                            className={`${data?.type == "Movies" ? "visible" : "hidden"} cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300`}
+                            onClick={() => { router.push(`/watch/${data?.id}`) }}>
                             <BsFillPlayFill size={30} />
                         </div>
                         <FavoriteButton movieId={data?.id} />
-                        <DownloadButton movieId={data?.id} />
+                        <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
+                            <DownloadButton movieId={data?.id} />
+                        </div>
                         <div onClick={() => openModal(data?.id)} className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300">
                             <BsChevronDown size={20} className="text-white group-hover/item:text-neutral-300 w-4 font-bold" />
                         </div>
@@ -89,7 +91,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         {data?.title}
                     </p>
                     <div className="flex flex-row mt-4 gap-2 items-center">
-                        <p className="text-white text-[10px] lg:text-sm">{(data?.type == "Movies") ? data.duration : data.seasonCount}</p>
+                        <p className="text-white text-[10px] lg:text-sm">{(data?.type == "Movies") ? data.duration : data.seasonCount + " Seasons"}</p>
                     </div>
                     <div className="flex flex-row mt-4 gap-2 items-center">
                         <p className="text-white text-[10px] lg:text-sm">Genres : {data.genre}</p>

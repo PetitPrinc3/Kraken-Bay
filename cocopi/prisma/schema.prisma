@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -14,23 +15,25 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
+  id             String     @id @default(uuid())
   name           String
   image          String?
-  email          String?   @unique
+  email          String?    @unique
   emailVerified  DateTime?
-  hashedPassword String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  favoriteIds    Media[]
+  hashedPassword String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  favoriteIds    String?    @default("")
   sessions       Session[]
   accounts       Account[]
-  roles          String    @default("user")
+  roles          String     @default("user")
+  Media          Media[]
+  Serie_EP       Serie_EP[]
 }
 
 model Account {
-  id                Int     @id @default(autoincrement())
-  userId            Int
+  id                String  @id @default(uuid())
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -48,16 +51,16 @@ model Account {
 }
 
 model Session {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
-  userId       Int
+  userId       String
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   identifier String
   token      String   @unique
   expires    DateTime
@@ -66,15 +69,32 @@ model VerificationToken {
 }
 
 model Media {
-  id          Int     @id @default(autoincrement())
+  id          String     @id @default(uuid())
   title       String
   type        String
-  description String?
-  videoUrl    String
-  thumbUrl    String
+  description String?    @db.LongText
+  videoUrl    String     @db.LongText
+  thumbUrl    String     @db.LongText
   genre       String
   duration    String?
   seasonCount String?
-  User        User?   @relation(fields: [userId], references: [id])
-  userId      Int?
+  User        User?      @relation(fields: [userId], references: [id])
+  userId      String?
+  Serie_EP    Serie_EP[]
+
+  @@fulltext([title, description, genre])
+}
+
+model Serie_EP {
+  id       String  @id @default(uuid())
+  title    String
+  serieId  String
+  season   String
+  episode  String
+  videoUrl String  @db.LongText
+  User     User?   @relation(fields: [userId], references: [id])
+  userId   String?
+
+  Media   Media?  @relation(fields: [mediaId], references: [id])
+  mediaId String?
 }
