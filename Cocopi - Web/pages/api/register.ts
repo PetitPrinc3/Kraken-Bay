@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { NextApiRequest, NextApiResponse } from "next";
 import prismadb from "@/lib/prismadb";
+import { isUndefined } from "lodash";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method != 'POST') {
@@ -18,6 +19,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (existingUser) {
             return res.status(422).json({ error: 'Email taken' });
         }
+
+        if (isUndefined(password) || typeof password != "string" || password == "") {
+            return res.status(422).json({ error: 'Password required' })
+        }
+
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const user = await prismadb.User.create({
@@ -26,7 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 name,
                 hashedPassword,
                 image: '',
-                emailVerified: new Date(),
             }
         })
 

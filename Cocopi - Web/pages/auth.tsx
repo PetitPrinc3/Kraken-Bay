@@ -2,49 +2,87 @@ import axios from "axios";
 import Input from "@/components/Input"
 import { useCallback, useState } from "react";
 import { signIn } from "next-auth/react";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { isNull } from "lodash";
+import { useRouter } from "next/router";
 
 const Auth = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-
     const [variant, setVariant] = useState('login')
+    const router = useRouter();
 
     const toggleVariant = useCallback(() => {
         setVariant((currentVariant) => currentVariant == 'login' ? 'register' : 'login')
     }, []);
 
     const login = useCallback(async () => {
+
+        const loading = toast.loading("Loging...", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        })
         try {
-            await signIn('credentials', {
+            signIn('credentials', {
+                redirect: false,
                 email,
                 password,
-                callbackUrl: '/profiles',
-            });
+            }).then((res) => {
+                if (!isNull(res?.error)) {
+                    toast.update(loading, { render: res?.error ? res?.error : "Oops, something went terribly wrong...", type: "error", isLoading: false })
+                }
+                else {
+                    toast.update(loading, { render: "Login successfull !", type: "success", isLoading: false })
+                    router.push('/profiles')
+                }
+            })
         } catch (error) {
             console.log(error)
         }
-    }, [email, password])
+    }, [email, password, router])
 
     const register = useCallback(async () => {
         try {
-            await axios.post('/api/register', {
+            const loading = toast.loading("Creating your account...", {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
+            axios.post('/api/register', {
                 email,
                 name,
                 password
-            });
-            login();
+            }).then((res) => {
+                toast.update(loading, { render: "You successfully registered. Your account will be validated by the administrators once reviewed. Thank you !", type: "success", isLoading: false })
+                toggleVariant
+            }).catch((err) => {
+                toast.update(loading, { render: err?.response?.data?.error ? err?.response?.data?.error : "Oops, something went terribly wrong...", type: "error", isLoading: false })
+                console.log(err)
+            })
         } catch (error) {
             console.log(error);
         }
-    }, [email, name, password, login]);
+    }, [email, name, password, toggleVariant]);
 
 
     return (
-        <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-fixed bg-cover">
+        <div className="relative h-full w-full bg-[url('/Assets/Images/hero.jpg')] bg-no-repeat bg-center bg-fixed bg-cover">
             <div className="bg-black w-full h-full lg:bg-opacity-50">
                 <nav className="px-12 py-5">
-                    <img src="/images/logo.png" alt="Coco" className="h-12" />
+                    <img src="/Assets/Images/logo.png" alt="Coco" className="h-12" />
                 </nav>
                 <div className="flex justify-center">
                     <div className="bg-black bg-opacity-70 px-16 py-16 self-center mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full">
@@ -58,6 +96,7 @@ const Auth = () => {
                                     onChange={(ev: any) => setName(ev.target.value)}
                                     id="name"
                                     value={name}
+                                    type="username"
                                 />
                             )}
                             <Input
@@ -87,6 +126,17 @@ const Auth = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer position="bottom-center"
+                autoClose={2000}
+                hideProgressBar
+                newestOnTop
+                closeOnClick={true}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }

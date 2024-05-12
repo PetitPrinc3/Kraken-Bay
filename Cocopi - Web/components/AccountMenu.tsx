@@ -17,13 +17,21 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
         <div className="bg-black w-56 absolute top-14 right-0 py-5 flex-col border-2 border-gray-800 flex">
             <div className="flex flex-col gap-3">
                 <div className="px-3 group/item flex flex-row gap-3 items-center w-full">
-                    <img className="w-8 rounded-md" src="/images/default_profile.png" alt="" />
+                    <img className="w-8 rounded-md" src={`${!user?.image ? "/Assets/Images/default_profile.png" : user?.image}`} alt="" />
                     <p className="text-white text-sm group-hover/item:underline">
-                        {user?.name}
+                        {user?.name} ({user?.roles})
                     </p>
                 </div>
+                <hr className={`${user?.roles != "admin" ? "hidden" : ""} mx-4 bg-gray-600 border-0 h-px`} />
+                <div className={`${user?.roles != "admin" ? "hidden" : ""} flex flex-col items-center`}>
+                    <div className="px-3 group/item flex flex-row gap-3 items-center justify-center w-full">
+                        <a className="text-white text-sm group-hover/item:underline" href="/admin">
+                            Admin Pannel
+                        </a>
+                    </div>
 
-                <hr className="bg-gray-600 border-0 h-px my-4" />
+                </div>
+                <hr className={`${user?.roles == "admin" ? "mb-4" : "my-4"} bg-gray-600 border-0 h-px`} />
                 <div onClick={() => signOut()} className="px-3 text-center text-white text-sm hoverunderline">
                     Sign Out
                 </div>

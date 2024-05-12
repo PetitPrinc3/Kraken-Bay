@@ -23,7 +23,7 @@ export const authOptions: AuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Email and password required");
+                    throw new Error(JSON.stringify("Email and password required."));
                 }
 
                 const user = await prismadb.user.findUnique({
@@ -33,7 +33,7 @@ export const authOptions: AuthOptions = {
                 });
 
                 if (!user || !user.hashedPassword) {
-                    throw new Error("Email does not exist");
+                    throw new Error("Email does not exist.");
                 }
 
                 const isCorrectPassword = await compare(
@@ -42,7 +42,11 @@ export const authOptions: AuthOptions = {
                 );
 
                 if (!isCorrectPassword) {
-                    throw new Error("Incorrect password");
+                    throw new Error("Incorrect password.");
+                }
+
+                if (user.roles = "") {
+                    throw new Error("Account validation pending.")
                 }
 
                 return user;

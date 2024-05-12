@@ -1,24 +1,43 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useBillboard from "@/hooks/useBillboard"
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { GoMute, GoUnmute } from "react-icons/go";
 import PlayButton from "./PlayButton";
 import useInfoModal from "@/hooks/useInfoModal";
+import useCurrentUser from "@/hooks/useCurrentUser";
+import axios from "axios";
+import { isUndefined } from "lodash";
 
 const Billboard = () => {
     const { data } = useBillboard();
     const { openModal } = useInfoModal();
-    const [isMuted, setMute] = useState(false);
-
-    const muteVideo = () => {
-        setMute((isMuted) => !isMuted)
-    }
-
-    const Icon = isMuted ? GoMute : GoUnmute
+    const { data: user } = useCurrentUser();
+    const [isMuted, setMuted] = useState(false)
+    const [firstLoad, setFirstLoad] = useState(true)
 
     const handleOpenModal = useCallback(() => {
         openModal(data?.id);
     }, [openModal, data?.id])
+
+    useEffect(() => {
+        if (firstLoad && !isUndefined(user)) {
+            setMuted(isMuted => user?.isMuted)
+            setFirstLoad(firstLoad => false)
+            console.log('firs', isMuted)
+        }
+    }, [setMuted, isMuted, user, firstLoad, setFirstLoad])
+
+    if (isUndefined(user)) {
+        return null
+    }
+
+    const muteVideo = async () => {
+        await axios.get("/api/muteUser", { params: { userId: user.id, muteValue: !isMuted } })
+        setMuted(isMuted => !isMuted)
+        console.log(isMuted)
+    }
+
+    const Icon = isMuted ? GoMute : GoUnmute
 
     return (
         <div className="relative h-[56.25vw] max-h-[90vh] overflow-hidden">
@@ -40,7 +59,7 @@ const Billboard = () => {
                 <div className="flex flex-row items-center w-full">
                     <div className="flex flex-col ml-0 mr-auto w-[50%]">
                         <p className="text-white text-1xl md:text-5xl h-full w-full lg:text-6xl font-bold drop-shadow-xl">{data?.title}</p>
-                        <p className="text-white text-[8px] md:text-lg mt-3 md:mt-8 w-[90%] md:w-[80%] lg:w-[50%] drop-shadow-xl">
+                        <p className="text-white text-[8px] md:text-lg mt-3 md:mt-8 w-full md:w-full lg:w-full max-h-[30vh] drop-shadow-xl line-clamp-6 text-ellipsis">
                             {data?.description}
                         </p>
                         <div className="flex flex-row items-center mt-3 md:mt-4 gap-3">

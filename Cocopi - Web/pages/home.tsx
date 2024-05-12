@@ -33,7 +33,7 @@ export default function Home() {
   const { isOpen, closeModal } = useInfoModal();
   return (
     <>
-      <div className={`${isOpen ? "overflow-hidden" : ""}`}>
+      <div className={`${isOpen ? "scrollbar-hide" : "overflow-hidden"}`}>
         <InfoModal visible={isOpen} onClose={closeModal} />
         <Navbar />
         <Billboard />

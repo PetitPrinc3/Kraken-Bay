@@ -42,7 +42,7 @@ const Navbar = () => {
     return (
         <nav className="w-full fixed z-40">
             <div className={`px-4 md:px-16 py-6 flex flex-row items-center transition duration-500 ${showBackground ? 'bg-zinc-900 bg-opacity-90' : ''}`}>
-                <img className="h-4 lg:h-7" src="images/logo.png" alt="" />
+                <img className="h-4 lg:h-7" src="/Assets/Images/logo.png" alt="" />
                 <div className="flex-row ml-8 gap-7 hidden lg:flex">
                     <NavbarItem label="Home" url="/home" />
                     <NavbarItem label="TV Shows" url="/series" />
@@ -59,7 +59,7 @@ const Navbar = () => {
                     <SearchBar />
                     <div onClick={toggleAccountMenu} className="flex flex-row items-center gap-2 cursor-pointer relative">
                         <div className="flex items-center w-6 h-6 lg:h-10 rounded-md overflow-hidden">
-                            <img src="/images/default_profile.png" alt="" />
+                            <img src="/Assets/Images/default_profile.png" alt="" />
                         </div>
                         <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'}`} />
                         <AccountMenu visible={showAccountMenu} />

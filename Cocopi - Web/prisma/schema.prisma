@@ -15,20 +15,21 @@ datasource db {
 }
 
 model User {
-  id             String     @id @default(uuid())
+  id             String         @id @default(uuid())
   name           String
   image          String?
-  email          String?    @unique
-  emailVerified  DateTime?
+  email          String?        @unique
   hashedPassword String
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  favoriteIds    String?    @default("")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  favoriteIds    String?        @default("")
+  isMuted        Boolean        @default(false)
   sessions       Session[]
   accounts       Account[]
-  roles          String     @default("user")
+  roles          String         @default("")
   Media          Media[]
   Serie_EP       Serie_EP[]
+  PendingMedia   PendingMedia[]
 }
 
 model Account {
@@ -87,6 +88,22 @@ model Media {
   @@fulltext([genre])
 }
 
+model PendingMedia {
+  id          String     @id @default(uuid())
+  title       String
+  type        String
+  description String?    @db.LongText
+  videoUrl    String     @db.LongText
+  thumbUrl    String     @db.LongText
+  posterUrl   String?
+  genre       String
+  duration    String?
+  seasonCount String?
+  User        User?      @relation(fields: [userId], references: [id])
+  userId      String?
+  Serie_EP    Serie_EP[]
+}
+
 model Serie_EP {
   id       String  @id @default(uuid())
   title    String
@@ -97,8 +114,10 @@ model Serie_EP {
   User     User?   @relation(fields: [userId], references: [id])
   userId   String?
 
-  Media   Media?  @relation(fields: [mediaId], references: [id])
-  mediaId String?
+  Media          Media?        @relation(fields: [mediaId], references: [id])
+  mediaId        String?
+  PendingMedia   PendingMedia? @relation(fields: [pendingMediaId], references: [id])
+  pendingMediaId String?
 }
 
 model Genres {
