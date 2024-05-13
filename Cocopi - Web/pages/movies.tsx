@@ -112,7 +112,7 @@ const Movies = () => {
         let gArray: string[] = []
         for (let g of gDispList?.genreList) {
             if (g?.isClicked) {
-                gArray.push(g?.genre)
+                gArray.push("+" + g?.genre)
             }
         }
         const genres = gArray.join(" ")

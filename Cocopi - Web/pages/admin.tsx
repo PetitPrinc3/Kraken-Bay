@@ -76,7 +76,7 @@ export default function Admin() {
     return (
         <div>
             <Navbar />
-            <div className="relative w-full pt-[15vh]">
+            <div className="relative w-full pt-[8vh] md:pt-[15vh]">
                 <div className="my-5">
                     <p className="text-2xl text-white text-center font-semibold ml-10 cursor-default">Admin pannel</p>
                 </div>
@@ -91,7 +91,7 @@ export default function Admin() {
                     </div>
                     <div className="w-[30%] m-auto flex flex-row gap-4 items-center justify-center">
                         <OnlineStatus className="text-blue-500" size={20} />
-                        <p className="text-white font-semibold" >On/Offline status</p>
+                        <p className="text-white font-semibold" >On/Offline <span className="hidden md:inline-block text-white font-semibold">status</span></p>
                     </div>
 
                 </div>
