@@ -13,3 +13,17 @@ This is a temporary name, feel free to suggest one !
 | Web Player | :large_blue_circle: | ReactPlayer pending |
 | Uploader | :large_blue_circle: | UI: OK |
 | Account management | :green_circle: | UI: OK / DB: OK |
+
+## Collaborate
+
+Feel free to get in touch to share your ideas :
+- Discord : PetitPrince#1380
+
+## Support
+
+> 👋🏼 Hey everyone ! I provide free software, feel free to use it and edit it as you wish. I will also provide a bit of support should you need it when contacted through the contact channels specified below. Feel free to help me out as you can !
+
+- ⭐️ You can help by hitting Star on the repositories you like !
+- ☕️ You can buy me a [coffee](https://www.paypal.com/paypalme/AReppelin)
+- ✨ Contributions of any kind are welcome!
+
