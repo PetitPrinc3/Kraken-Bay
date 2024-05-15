@@ -48,10 +48,10 @@ const PendingUpload = (data: any) => {
                 <div className="w-[30%] flex flex-row items-center gap-2 text-ellipsis overflow-hidden">
                     <p className="text-white font-semibold text-ellipsis overflow-hidden">{upload?.title}</p>
                 </div>
-                <div className="w-[15%] flex flex-row items-center gap-2 overflow-hidden">
+                <div className="w-[15%] hidden md:flex flex-row items-center gap-2 overflow-hidden">
                     <p className="text-white font-semibold text-ellipsis overflow-hidden">{upload?.thumbUrl ? "Yes" : "No"}</p>
                 </div>
-                <div className="w-[15%] flex flex-row items-center gap-2 overflow-hidden">
+                <div className="w-[15%] hidden md:flex flex-row items-center gap-2 overflow-hidden">
                     <p className="text-white font-semibold text-ellipsis overflow-hidden">{upload?.posterUrl ? "Yes" : "No"}</p>
                 </div>
                 <div className="flex flex-row items-center gap-2 mr-10 ml-auto">

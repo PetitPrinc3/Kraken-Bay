@@ -40,7 +40,9 @@ const SearchBar = () => {
                     </div>
                 </div>
             </div>
-            <SearchResult data={searchResult?.data} />
+            <div className={`${searchVisible ? "" : "hidden"}`}>
+                <SearchResult data={searchResult?.data} />
+            </div>
         </div>
     )
 }

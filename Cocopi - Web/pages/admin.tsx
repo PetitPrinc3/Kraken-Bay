@@ -99,17 +99,17 @@ export default function Admin() {
                 <div className="w-full h-full flex flex-col items-center">
                     <div className="m-5 w-[80vw] h-[40vh] rounded-md overflow-hidden bg-zinc-600 border-2 border-black">
                         <div className="flex flex-row items-center px-5 w-full h-14 border-b-2 border-black">
-                            <div className="w-full h-full flex flex-row items-center gap-4 cursor-default mr-14">
-                                <div className="w-[30%] flex flex-row items-center gap-2 text-ellipsis overflow-hidden">
+                            <div className="w-full h-full flex flex-row items-center gap-4 cursor-default md:mr-14">
+                                <div className="w-[60%] md:w-[30%] flex flex-row items-center gap-2 text-ellipsis overflow-hidden">
                                     <p className="text-white font-semibold text-ellipsis overflow-hidden">Title</p>
                                 </div>
-                                <div className="w-[15%] flex flex-row items-center gap-2 overflow-hidden">
+                                <div className="w-[15%] hidden md:flex flex-row items-center gap-2 overflow-hidden">
                                     <p className="text-white font-semibold text-ellipsis overflow-hidden">Thumbnail</p>
                                 </div>
-                                <div className="w-[15%] flex flex-row items-center gap-2 overflow-hidden">
+                                <div className="w-[15%] hidden md:flex flex-row items-center gap-2 overflow-hidden">
                                     <p className="text-white font-semibold text-ellipsis overflow-hidden">Poster</p>
                                 </div>
-                                <div className="flex flex-row items-center gap-2 mr-10 ml-auto">
+                                <div className="w-[40%] md:w-auto flex flex-row items-center gap-2 md:mr-10 ml-auto">
                                     <p className="text-white font-semibold text-ellipsis overflow-hidden">Uploaded by</p>
                                 </div>
                             </div>
