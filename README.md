@@ -1,14 +1,29 @@
 # CocoPi
 
-Raspberry Pi Media Center and Netflix-like server.
+Raspberry Pi Media Center and Netflix-like server.  
+This is a temporary name, feel free to suggest one !
 
 ## Project
 
 | Feature | Status | Observation |
 | :-: | :-: |  :-: |
-| Installer | :blue_circle: | |
-| Hotspot mode | :green_circle: | Add options for name/pass |
+| Installer | :large_blue_circle: | NOK: Ongoing |
+| Hotspot mode | :green_circle: | Create util to toggle ON/OFF |
 | Media Server | :black_circle: | |
-| Web Player | :blue_circle: | |
-| Uploader | :black_circle: | |
-| Account management | :black_circle: | |
+| Web Player | :large_blue_circle: | ReactPlayer pending |
+| Uploader | :large_blue_circle: | UI: OK |
+| Account management | :green_circle: | UI: OK / DB: OK |
+
+## Collaborate
+
+Feel free to get in touch to share your ideas :
+- Discord : PetitPrince#1380
+
+## Support
+
+> 👋🏼 Hey everyone ! I provide free software, feel free to use it and edit it as you wish. I will also provide a bit of support should you need it when contacted through the contact channels specified below. Feel free to help me out as you can !
+
+- ⭐️ You can help by hitting Star on the repositories you like !
+- ☕️ You can buy me a [coffee](https://www.paypal.com/paypalme/AReppelin)
+- ✨ Contributions of any kind are welcome!
+
