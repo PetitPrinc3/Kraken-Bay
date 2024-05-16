@@ -12,6 +12,7 @@ import PendingUser from "@/components/PendingUser";
 import PendingUpload from "@/components/PendingUpload";
 import { getSession } from "next-auth/react";
 import { NextPageContext } from "next";
+import { ToastContainer } from "react-toastify";
 
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
@@ -99,19 +100,22 @@ export default function Admin() {
                 <div className="w-full h-full flex flex-col items-center">
                     <div className="m-5 w-[80vw] h-[40vh] rounded-md overflow-hidden bg-zinc-600 border-2 border-black">
                         <div className="flex flex-row items-center px-5 w-full h-14 border-b-2 border-black">
-                            <div className="w-full h-full flex flex-row items-center gap-4 cursor-default md:mr-14">
-                                <div className="w-[60%] md:w-[30%] flex flex-row items-center gap-2 text-ellipsis overflow-hidden">
-                                    <p className="text-white font-semibold text-ellipsis overflow-hidden">Title</p>
+                            <div className="w-full h-full flex flex-row items-center cursor-default">
+                                <div onClick={() => { }} className="w-full h-full flex flex-row items-center gap-4 cursor-pointer">
+                                    <div className="w-[50%] flex flex-row items-center gap-2 truncate text-ellipsis overflow-hidden">
+                                        <p className="text-white font-semibold text-ellipsis overflow-hidden">Title</p>
+                                    </div>
+                                    <div className="w-[15%] hidden lg:flex flex-row items-center gap-2 overflow-hidden">
+                                        <p className="text-white w-full font-semibold text-center text-ellipsis overflow-hidden">Thumbnail</p>
+                                    </div>
+                                    <div className="w-[15%] hidden lg:flex flex-row items-center gap-2 overflow-hidden">
+                                        <p className="text-white w-full font-semibold text-center text-ellipsis overflow-hidden">Poster</p>
+                                    </div>
+                                    <div className="w-[20%] flex flex-row items-center gap-2 mr-10 ml-auto">
+                                        <p className="text-white w-full font-semibold text-center text-ellipsis overflow-hidden">Uploaded by</p>
+                                    </div>
                                 </div>
-                                <div className="w-[15%] hidden md:flex flex-row items-center gap-2 overflow-hidden">
-                                    <p className="text-white font-semibold text-ellipsis overflow-hidden">Thumbnail</p>
-                                </div>
-                                <div className="w-[15%] hidden md:flex flex-row items-center gap-2 overflow-hidden">
-                                    <p className="text-white font-semibold text-ellipsis overflow-hidden">Poster</p>
-                                </div>
-                                <div className="w-[40%] md:w-auto flex flex-row items-center gap-2 md:mr-10 ml-auto">
-                                    <p className="text-white font-semibold text-ellipsis overflow-hidden">Uploaded by</p>
-                                </div>
+                                <div className="w-[15%] lg:w-[5%]"></div>
                             </div>
                         </div>
                         <div className="w-full h-full flex flex-col items-center overflow-y-scroll scrollbar-hide">
@@ -136,6 +140,17 @@ export default function Admin() {
                     </div>
                 </div>
             </div>
+            <ToastContainer position="bottom-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable
+                pauseOnHover
+                theme="colored"
+                containerId={"AdminContainer"}
+            />
         </div>
     )
 }

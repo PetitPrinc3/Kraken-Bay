@@ -6,6 +6,7 @@ interface InputProps {
     value: string;
     label: string;
     type: string;
+    isMandatory?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -13,7 +14,8 @@ const Input: React.FC<InputProps> = ({
     onChange,
     value,
     label,
-    type
+    type,
+    isMandatory
 }) => {
     return (
         <div className="relative">
@@ -59,6 +61,9 @@ const Input: React.FC<InputProps> = ({
             "
                 htmlFor={id}>
                 {label}
+                {isMandatory && (
+                    <span className='inline-bloc text-red-600 font-light'>*</span>
+                )}
             </label>
         </div>
     )

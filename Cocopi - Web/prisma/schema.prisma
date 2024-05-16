@@ -80,6 +80,7 @@ model Media {
   genre       String
   duration    String?
   seasonCount String?
+  createdAt   DateTime   @default(now())
   User        User?      @relation(fields: [userId], references: [id])
   userId      String?
   Serie_EP    Serie_EP[]
@@ -101,19 +102,19 @@ model PendingMedia {
   seasonCount String?
   User        User?      @relation(fields: [userId], references: [id])
   userId      String?
+  userName    String?
   Serie_EP    Serie_EP[]
 }
 
 model Serie_EP {
-  id       String  @id @default(uuid())
-  title    String
-  serieId  String
-  season   String
-  episode  String
-  videoUrl String  @db.LongText
-  User     User?   @relation(fields: [userId], references: [id])
-  userId   String?
-
+  id             String        @id @default(uuid())
+  title          String
+  serieId        String
+  season         String
+  episode        String
+  videoUrl       String        @db.LongText
+  User           User?         @relation(fields: [userId], references: [id])
+  userId         String?
   Media          Media?        @relation(fields: [mediaId], references: [id])
   mediaId        String?
   PendingMedia   PendingMedia? @relation(fields: [pendingMediaId], references: [id])

@@ -18,8 +18,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
     const { openModal } = useInfoModal();
 
     return (
-        <div className="group bg-zinc-900 col-span relative h-[12vw]">
-            <div className="w-full h-[12vw] p-0 m-0 cursor-pointer object-cover transition duration delay-300 shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0">
+        <div className="group bg-zinc-900 col-span relative md:h-[12vw]">
+            <div onClick={() => openModal(data?.id)}
+                className="w-full h-auto md:h-[12vw] p-0 m-0 cursor-pointer object-cover transition duration delay-300 shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0"
+            >
                 <img
                     className="rounded-md w-full h-full"
                     src={data.posterUrl} alt="Thumbnail" />
@@ -66,7 +68,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 shadow-md
                 rounded-b-md
                 ">
-                    <div className="flex flex-row items-center gap-3">
+                    <div className="flex-row items-center gap-3 hidden sm:flex">
                         <div
                             className={`${data?.type == "Movies" ? "visible" : "hidden"} cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300`}
                             onClick={() => { router.push(`/watch/${data?.id}`) }}>

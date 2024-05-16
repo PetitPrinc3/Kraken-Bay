@@ -23,7 +23,6 @@ const Billboard = () => {
         if (firstLoad && !isUndefined(user)) {
             setMuted(isMuted => user?.isMuted)
             setFirstLoad(firstLoad => false)
-            console.log('firs', isMuted)
         }
     }, [setMuted, isMuted, user, firstLoad, setFirstLoad])
 
@@ -34,7 +33,6 @@ const Billboard = () => {
     const muteVideo = async () => {
         await axios.get("/api/muteUser", { params: { userId: user.id, muteValue: !isMuted } })
         setMuted(isMuted => !isMuted)
-        console.log(isMuted)
     }
 
     const Icon = isMuted ? GoMute : GoUnmute

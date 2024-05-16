@@ -12,6 +12,7 @@ import { GoPlus } from "react-icons/go";
 import { isUndefined } from "lodash";
 import Footer from "@/components/Footer";
 
+
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
 
@@ -124,7 +125,6 @@ const Movies = () => {
         })
 
         setSearchResult((searchResult) => movies)
-        console.log(movies)
     }
 
     useEffect(() => {
