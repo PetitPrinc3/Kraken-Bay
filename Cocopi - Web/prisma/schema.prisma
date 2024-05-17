@@ -95,8 +95,8 @@ model PendingMedia {
   type        String
   description String?    @db.LongText
   videoUrl    String     @db.LongText
-  thumbUrl    String     @db.LongText
-  posterUrl   String?
+  thumbUrl    String?    @db.LongText
+  posterUrl   String?    @db.LongText
   genre       String
   duration    String?
   seasonCount String?

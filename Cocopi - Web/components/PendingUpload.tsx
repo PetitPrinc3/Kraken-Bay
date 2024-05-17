@@ -37,7 +37,7 @@ const PendingUpload = (data: any) => {
     return (
         <>
             <div className={`${hidden ? "hidden" : "flex"} flex-row items-center px-5 w-full h-14 border-b-2 border-white transition duration-100`}>
-                <div onClick={() => { router.push(upload?.videoUrl) }} className="w-full h-full flex flex-row items-center gap-4 cursor-pointer">
+                <div onClick={() => { router.push(`/watch/pendingUpload/${upload?.id}`) }} className="w-full h-full flex flex-row items-center gap-4 cursor-pointer">
                     <div className="w-[50%] flex flex-row items-center gap-2 truncate text-ellipsis overflow-hidden">
                         <p className="text-white font-semibold text-ellipsis overflow-hidden">{upload?.title}</p>
                     </div>

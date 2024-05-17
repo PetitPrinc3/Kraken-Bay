@@ -1,18 +1,19 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { RxCross2 } from "react-icons/rx";
 import { CiImageOn } from "react-icons/ci";
-import { uploadData } from "@/lib/uploadData"
-
+import { UploadPropsInterface } from "@/hooks/useUploadProps";
+import axios from "axios";
 interface ImageInputProps {
     name: string
+    uploadProps: UploadPropsInterface
 }
 
 const ImageUploadInput: React.FC<ImageInputProps> = ({
-    name
+    name,
+    uploadProps,
 }) => {
     const thumbRef = useRef<HTMLInputElement>(null);
-    const [image, setImage] = useState(null)
-
+    const [image, setImage] = useState(undefined)
 
     const imageClick = () => {
         if (thumbRef.current) thumbRef.current.click();
@@ -20,15 +21,22 @@ const ImageUploadInput: React.FC<ImageInputProps> = ({
 
     const imageChange = async (event: any) => {
         if (event.target.files && event.target.files.length > 0) {
-            setImage((image) => event.target.files[0])
-            uploadData.setImage(name, event.target.files[0])
+            const imageFile = event.target.files[0]
+            if (name == "Thumbnail") uploadProps.setThumb(imageFile.name)
+            if (name == "Poster") uploadProps.setPoster(imageFile.name)
+            setImage(imageFile)
+            const formData = new FormData();
+            formData.append(name, imageFile);
+            const uploadRequest = axios.post(`/api/uploader/image/${uploadProps.id}`, formData).catch((err) => console.log(err))
         }
     }
 
+
     const removeImage = () => {
-        setImage(image => null)
         if (thumbRef.current) thumbRef.current.value = ""
-        uploadData.setImage(name)
+        if (name == "Thumbnail") uploadProps.setThumb()
+        if (name == "Poster") uploadProps.setPoster()
+        setImage(undefined)
     }
 
     return (
