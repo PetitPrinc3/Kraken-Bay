@@ -167,12 +167,12 @@ const Movies = () => {
                     </div>
                 </div>
                 <div>
-                    <div className="flex flex-wrap items-center justify-center w-full gap-2 px-[20%] my-10">
+                    <div className="flex flex-wrap items-center justify-center w-full gap-2 md:px-[20%] my-10">
                         {gDispList?.genreList.map((e) => (
                             <div key={e?.id}>
                                 <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
                                 <label htmlFor={e?.id} className={`${getList()[gDispList.index(e)].isClicked ? "bg-white border-white" : "bordrer-zing-400"} flex flex-row items-center gap-2 cursor-pointer text-zinc-400 py-1 px-2 rounded-full border-2 transition duration-300`}>
-                                    <p>
+                                    <p className="text-xs sm:text-base">
                                         {e?.genre}
                                     </p>
                                     <GoPlus className={`font-extrabold transition duration-300 ${e?.isClicked ? "transform rotate-[135deg]" : ""}`} size={15} />

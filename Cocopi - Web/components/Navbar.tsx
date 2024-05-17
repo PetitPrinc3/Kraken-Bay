@@ -1,19 +1,15 @@
-import React from "react";
 import NavbarItem from "./Navbaritem";
 import MobileMenu from "./MobileMenu";
 import AccountMenu from "./AccountMenu";
 import { BsChevronDown, BsBell } from 'react-icons/bs';
+import { GoPlusCircle } from "react-icons/go";
 import { useState, useCallback, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import UploadItem from "./UploadItem";
 
 const TOP_OFFSET = 66;
 
-interface NavBarProps {
-    isFixed?: boolean
-}
-
-const Navbar: React.FC<NavBarProps> = ({ isFixed = true }) => {
+const Navbar = () => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showAccountMenu, setShowAccountMenu] = useState(false);
     const [showBackground, setShowBackground] = useState(false);
@@ -44,14 +40,14 @@ const Navbar: React.FC<NavBarProps> = ({ isFixed = true }) => {
     }, [])
 
     return (
-        <nav className="fixed w-full h-10 z-40">
+        <nav className="w-full fixed z-40">
             <div className={`px-4 md:px-16 py-6 flex flex-row items-center transition duration-500 ${showBackground ? 'bg-zinc-900 bg-opacity-90' : ''}`}>
                 <img className="h-4 lg:h-7" src="/Assets/Images/logo.png" alt="" />
                 <div className="flex-row ml-8 gap-7 hidden lg:flex">
                     <NavbarItem label="Home" url="/home" />
                     <NavbarItem label="TV Shows" url="/series" />
                     <NavbarItem label="Movies" url="/movies" />
-                    <NavbarItem label="Latest Uploads" url="/latest" />
+                    <NavbarItem label="Latest Uploads" url="" />
                 </div>
                 <div onClick={toggleMobileMenu} className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative">
                     <p className="text-white text-sm">Browse</p>

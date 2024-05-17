@@ -34,12 +34,16 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
         return null;
     }
 
+    const uploadDate = new Date(data?.createdAt)
+    const todayDate = new Date()
+    const isNew: boolean = (todayDate.getFullYear() - uploadDate.getFullYear()) * 12 + (todayDate.getMonth() - uploadDate.getMonth()) < 2
+
     return (
         <div className="z-50 transition duration-300 bg-black bg-opacity-80 flex justify-center items-center overflow-x-hidden overflow-y-scroll fixed inset-0 py-5">
-            <div className="relative w-auto max-w-[90vw] rounded-md overflow-hidden mt-auto">
-                <div className={`${isVisible ? 'scale-100' : 'scale-0'} transform duration-300 relative flex-auto bg-zinc-900 drop-shadow-md`}>
+            <div className="relative w-auto max-w-[90vw] md:max-w-3xl rounded-md overflow-hidden mt-auto">
+                <div className={`${isVisible ? 'scale-100' : 'scale-0'} transform duration-300 relative flex-auto rounded-t-md bg-zinc-900 drop-shadow-md`}>
                     <div className="relative h-96 mt-10">
-                        <video className="w-full brightness-[60%] object-cover h-full" autoPlay muted loop src={data?.videoUrl} poster={data?.posterUrl}></video>
+                        <video className="w-full brightness-[60%] rounded-t-md object-cover h-full" autoPlay muted loop src={data?.videoUrl} poster={data?.posterUrl}></video>
                         <div className="cursor-pointer absolute top-3 right-3 h-10 w-10 rounded-full bg-black bg-opacity-70 flex items-center justify-center" onClick={() => { handleClose() }}>
                             <AiOutlineClose className="text-white" size={20} />
                         </div>
@@ -62,7 +66,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                     </div>
                     <div className="px-12 py-8">
                         <p className="text-green-400 font-semibold text-lg">
-                            New
+                            {isNew ? "New" : ""}
                         </p>
                         <p className="text-white text-s">
                             {data?.duration ? data?.duration : data?.seasonCount + " Seasons"}

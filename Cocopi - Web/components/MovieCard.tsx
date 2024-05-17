@@ -17,6 +17,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
     const router = useRouter();
     const { openModal } = useInfoModal();
 
+    const uploadDate = new Date(data?.createdAt)
+    const todayDate = new Date()
+    const isNew: boolean = (todayDate.getFullYear() - uploadDate.getFullYear()) * 12 + (todayDate.getMonth() - uploadDate.getMonth()) < 2
+
     return (
         <div className="group bg-zinc-900 col-span relative md:h-[12vw]">
             <div onClick={() => openModal(data?.id)}
@@ -83,7 +87,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         </div>
                     </div>
                     <p className="text-white font-semibold mt-4">
-                        {data?.title}
+                        <span className="inline-block text-green-400 font-semibold text-lg">{isNew ? "New" : ""}</span> {isNew ? "-" : ""} {data?.title}
                     </p>
                     <div className="flex flex-row mt-4 gap-2 items-center">
                         <p className="text-white text-[10px] lg:text-sm">{(data?.type == "Movies") ? data.duration : data.seasonCount + " Seasons"}</p>

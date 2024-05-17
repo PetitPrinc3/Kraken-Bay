@@ -7,6 +7,7 @@ import useInfoModal from "@/hooks/useInfoModal";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import axios from "axios";
 import { isUndefined } from "lodash";
+import { useRouter } from "next/router";
 
 const Billboard = () => {
     const { data } = useBillboard();
@@ -14,6 +15,7 @@ const Billboard = () => {
     const { data: user } = useCurrentUser();
     const [isMuted, setMuted] = useState(false)
     const [firstLoad, setFirstLoad] = useState(true)
+    const router = useRouter()
 
     const handleOpenModal = useCallback(() => {
         openModal(data?.id);
@@ -69,7 +71,7 @@ const Billboard = () => {
                         </div>
                     </div>
                     <div className="hidden md:block m-auto w-[50%]">
-                        <a className="flex flex-col items-center " href={`/watch/${data?.id}`}>
+                        <a className="flex flex-col items-center " onClick={() => router.push(`/watch/${data?.id}`)}>
                             <img className="h-[55vh] rounded-xl transition duration-300 brightness-110 cursor-pointer hover:brightness-[115%]" src={data?.thumbUrl} alt="" />
                         </a>
                     </div>

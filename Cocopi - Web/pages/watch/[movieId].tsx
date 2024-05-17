@@ -24,7 +24,7 @@ const Watch = () => {
                 <ReactPlayer
                     width={"100vw"}
                     height={"100vh"}
-                    autoPlay
+                    autoPlay={true}
                     controls
                     url={data?.videoUrl} />
             </div>
