@@ -9,6 +9,7 @@ from moviepy.editor import VideoFileClip
 import mysql.connector
 import uuid
 import argparse
+from random import randint
 
 API_KEY = "9ecaae7c8902e24d2fdbe22076eeb79c"
 GENRES = loads("""{"genres":[{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":14,"name":"Fantasy"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":10402,"name":"Music"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science Fiction"},{"id":10770,"name":"TV Movie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"},{"id":10759,"name":"Action & Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":10762,"name":"Kids"},{"id":9648,"name":"Mystery"},{"id":10763,"name":"News"},{"id":10764,"name":"Reality"},{"id":10765,"name":"Sci-Fi & Fantasy"},{"id":10766,"name":"Soap"},{"id":10767,"name":"Talk"},{"id":10768,"name":"War & Politics"},{"id":37,"name":"Western"}]}""")
@@ -124,6 +125,92 @@ def upload():
             push_genre(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
         elif json_file not in ["movies.json", "series.json"] :
             push_ep(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+
+
+def dummy() :
+    client = mysql.connector.connect(
+        host=mysql_srv,
+        user=mysql_usr,
+        password=mysql_pwd,
+        database=mysql_dbs,
+    )
+
+    cursor = client.cursor()
+
+    for _ in GENRES["genres"]:
+        g_list["genres"].append(_["name"])
+    data = loads('{"Titles" : []}')
+
+    for j in range (randint(10,40)):
+        type = ["Movies", "Series"][randint(0,1)]
+        season_count = randint(1,5)
+        json = {
+            "title": "Big Buck Dummy",
+            "altTitle": "",
+            "type": type,
+            "description": "Something dummy !",
+            "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
+            "thumbUrl": "/Assets/Images/Dummy/Big Buck Dummy.jpg",
+            "posterUrl": "/Assets/Images/Dummy/Big Buck Poster.png",
+            "duration": "1 h 10 min",
+            "seasonCount": str(season_count),
+            "genre": ", ".join([g_list["genres"][_] for _ in [randint(0, len(g_list["genres"]) - 1) for i in range(randint(0, 5))]])
+        }
+
+        sql = f"INSERT INTO Media (id, title, altTitle, type, description, videoUrl, thumbUrl, posterUrl, duration, seasonCount, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+        cursor.execute("SELECT UUID();")
+        uuid = cursor.fetchall()[0][0]
+        val = (uuid, json["title"], json["altTitle"], json["type"], json["description"], json["videoUrl"], json["thumbUrl"], json["posterUrl"], json["duration"], json["seasonCount"], json["genre"])
+        cursor.execute(sql, val)
+        info(f'Inserted {json["title"]}', 'discreet')
+        client.commit()
+
+        if type == "Series":
+
+            
+
+            for season in range(season_count):
+                ep_data = loads('{"Titles" : [], "serieUrl": ""}')
+                ep_data["serieId"] = uuid,
+                episode_count = randint(2,10)
+                for episode in range(episode_count):
+                    e_json = {
+                        "title": f"Dummy Serie : So {season +1}, Ep {episode +1}",
+                        "season": str(season +1 ),
+                        "episode": str(episode + 1),
+                        "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
+                    }
+
+                    ep_data["Titles"].append(e_json)
+
+                sql = f"INSERT INTO Serie_EP (id, title, serieId, season, episode, videoUrl) VALUES (%s, %s, %s, %s, %s, %s);"
+
+                for d in ep_data["Titles"] :
+                    cursor.execute("SELECT UUID();")
+                    c_uuid = cursor.fetchall()[0][0]
+                    val = (c_uuid, d["title"], uuid, d["season"], d["episode"], d["videoUrl"])
+                    cursor.execute(sql, val)
+                    info(f'Inserted {d["title"]}', 'discreet')
+                client.commit()
+                
+
+
+
+    for genre in g_list["genres"]:
+        sql = cursor.execute(f"""SELECT genre FROM Genres WHERE genre = "{genre}";""")
+        cursor.execute(sql)
+
+        if len(cursor.fetchall()) == 0:
+            cursor.execute("SELECT UUID();")
+            uuid = cursor.fetchall()[0][0]
+            sql = f"""INSERT INTO Genres (id, genre) VALUES ("{uuid}", "{genre}");"""
+            cursor.execute(sql)
+        client.commit()
+
+
+    return
+    
 
 
 def build_data(file):
@@ -245,12 +332,12 @@ def push(data, m, u, p, d):
 
     cursor = client.cursor()
 
-    sql = f"INSERT INTO Media (id, title, type, description, videoUrl, thumbUrl, posterUrl, duration, seasonCount, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = f"INSERT INTO Media (id, title, altTitle, type, description, videoUrl, thumbUrl, posterUrl, duration, seasonCount, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     for d in data["Titles"] :
         cursor.execute("SELECT UUID();")
         uuid = cursor.fetchall()[0][0]
-        val = (uuid, d["title"], d["type"], d["description"], d["videoUrl"], d["thumbUrl"], d["posterUrl"], d["duration"], d["seasonCount"], d["genre"])
+        val = (uuid, d["title"], d["altTitle"], d["type"], d["description"], d["videoUrl"], d["thumbUrl"], d["posterUrl"], d["duration"], d["seasonCount"], d["genre"])
         cursor.execute(sql, val)
         info(f'Inserted {d["title"]}', 'discreet')
     client.commit()
@@ -429,12 +516,15 @@ if __name__ == "__main__":
                     prog='Media SETUP',
                     description='prepares your files and what not for cocopi and uploads to your mysql db',
                     epilog='')
+    parser.add_argument('-d', '--dummy',action='store_true')      # option that takes a value
     parser.add_argument('-p', '--prepare',action='store_true')      # option that takes a value
     parser.add_argument('-u', '--upload',action='store_true')
     parser.add_argument('-a', '--all',action='store_true')
 
     args = parser.parse_args()
 
+    if args.dummy:
+        dummy()
     if args.prepare :
         prepare()
     if args.upload :
