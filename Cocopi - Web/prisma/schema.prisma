@@ -64,6 +64,7 @@ model Media {
   duration    String?
   seasonCount String?
   createdAt   DateTime   @default(now())
+  uploadedBy  String?
   User        User?      @relation(fields: [userId], references: [id])
   userId      String?
   Serie_EP    Serie_EP[]
@@ -83,6 +84,7 @@ model PendingMedia {
   genre       String
   duration    String?
   seasonCount String?
+  createdAt   DateTime   @default(now())
   User        User?      @relation(fields: [userId], references: [id])
   userId      String?
   userName    String?
@@ -110,9 +112,10 @@ model Genres {
 }
 
 model Notification {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   recipient String
-  content   String  @db.LongText
+  content   String   @db.LongText
   type      String?
   status    String
+  date      DateTime @default(now())
 }

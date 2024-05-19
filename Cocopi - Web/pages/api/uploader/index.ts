@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prismadb from '@/lib/prismadb'
+import serverAuth from "@/lib/serverAuth";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method != 'POST') return res.status(400)
 
+    const { currentUser } = await serverAuth(req, res);
     const { uploadProps } = req.body
-    console.log(uploadProps)
+
 
     const upload = await prismadb.PendingMedia.create({
         data: {
@@ -17,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             thumbUrl: uploadProps.thumbnail,
             posterUrl: uploadProps.poster,
             genre: uploadProps.genres,
-            userId: uploadProps.userId,
-            userName: uploadProps.userName,
+            userId: currentUser.id,
+            userName: currentUser.email,
         }
     })
 

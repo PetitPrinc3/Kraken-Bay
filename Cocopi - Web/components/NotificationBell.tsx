@@ -1,4 +1,4 @@
-import useNotifications from "@/hooks/useNotifications";
+import useNewNotifications from "@/hooks/useNewNotifications";
 import axios from "axios";
 import { isUndefined } from "lodash";
 import { useState } from "react";
@@ -9,13 +9,22 @@ import { RiIndeterminateCircleFill } from "react-icons/ri";
 const NotificationBell = () => {
     const [visible, setVisible] = useState(false)
     const [hasNew, setHasNew] = useState(true)
-    const { data: notifications } = useNotifications();
-    if (isUndefined(notifications)) return null
+    const { data: notifications } = useNewNotifications();
 
     const viewNotifications = () => {
         setVisible(!visible)
         setHasNew(false)
         axios.delete("/api/newNotifications")
+    }
+
+    if (isUndefined(notifications)) {
+        return (
+            <>
+                <div className="hidden md:block relative text-white cursor-pointer" onClick={() => viewNotifications()}>
+                    <BsBell />
+                </div>
+            </>
+        )
     }
 
     return (

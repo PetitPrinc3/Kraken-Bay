@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const destination = path.join(process.cwd(), "/public/Assets/", upload.type, upload.id)
             fs.mkdir(path.join(destination, "thumb"), { recursive: true }, (error) => { if (error && error.code != 'EEXIST') { console.log(error) } })
             MoveFile(origin, destination)
-            fs.rmdir(origin, (err) => console.log(err))
+            fs.rmdir(origin, { recursive: true }, (err) => { if (err?.code !== 'ENOENT') console.log(err) })
 
 
             const media = await prismadb.Media.create({
@@ -61,7 +61,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     videoUrl: "/Assets/" + upload?.type + "/" + upload?.id + "/" + upload?.videoUrl,
                     thumbUrl: "/Assets/" + upload?.type + "/" + upload?.id + "/thumb/" + upload?.thumbUrl,
                     posterUrl: upload.posterUrl ? "/Assets/" + "/" + upload?.id + upload?.type + "/thumb/" + upload?.posterUrl : "/Assets/" + upload?.type + "/" + upload?.id + "/thumb/" + upload?.thumbUrl,
-                    genre: upload?.genre
+                    genre: upload?.genre,
+                    uploadedBy: upload?.userName
                 }
             })
 
@@ -90,6 +91,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     id: uploadId,
                 }
             })
+
+            const origin = path.join(process.cwd(), "/public/Assets/PendingUploads/", uploadId)
+            fs.rmdir(origin, { recursive: true }, (err) => { if (err?.code !== 'ENOENT') console.log(err) })
 
             return res.status(200).json(upload)
 

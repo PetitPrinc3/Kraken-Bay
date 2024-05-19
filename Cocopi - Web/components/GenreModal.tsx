@@ -48,7 +48,8 @@ const GenreModal: React.FC<GenreModalProps> = ({ uploadProps }) => {
             </div>
             <div className={`${viewGenres ? "absolute" : "hidden"} top-0 left-0 w-[100vw] h-[100vh] bg-black bg-opacity-50 z-30`}>
                 <div className="w-full h-full flex flex-row items-center justify-center">
-                    <div className="w-[90%] md:w-[40%]  flex-col items-center bg-neutral-700 rounded-md border-2 border-neutral-800 px-4 pb-2 pt-4">
+                    <div className="fixed w-full h-full z-20" onClick={() => { toggleViewGenres((viewGenres) => false) }} />
+                    <div className="w-[90%] md:w-[40%] z-40 flex-col items-center bg-neutral-700 rounded-md border-2 border-neutral-800 px-4 pb-2 pt-4">
                         <div className="w-full flex flex-row items-center">
                             <p className="text-white text-left font-semibold text-2xl ml-0 mr-auto">Choose :</p>
                             <RxCross2 className="cursor-pointer" onClick={() => { toggleViewGenres((viewGenres) => false) }} />

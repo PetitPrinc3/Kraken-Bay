@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const uploadId = req.query.uploadId
     if (typeof uploadId != 'string') return res.status(400).json("Invalid ID")
     const uploadDir = path.join(process.cwd(), "public/Assets/PendingUploads", uploadId)
-    fs.mkdir(uploadDir, { recursive: false }, (error) => { if (error && error.code != 'EEXIST') { console.log(error) } })
+    fs.mkdir(uploadDir, { recursive: true }, (error) => { if (error && error.code != 'EEXIST') { console.log(error) } })
     options.uploadDir = uploadDir;
     options.filename = (name, ext, path, form) => {
         return path.originalFilename || "";

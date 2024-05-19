@@ -11,8 +11,6 @@ export interface UploadPropsInterface {
     poster?: string;
     video?: string;
     videoRequest?: Promise<any | AxiosResponse<any, any>>;
-    userId?: string;
-    userName?: string;
 
     newUpload: () => void
     setTitle: (title?: string) => void
@@ -21,8 +19,6 @@ export interface UploadPropsInterface {
     setThumb: (thumb?: string) => void
     setPoster: (poster?: string) => void
     setVideo: (video?: string) => void
-    setUserId: (id?: string) => void
-    setUserName: (name?: string) => void
     setRequest: (request?: Promise<any | AxiosResponse<any, any>>) => void
 }
 
@@ -34,8 +30,6 @@ const useUploadModal = create<UploadPropsInterface>((set, get) => ({
     thumbnail: undefined,
     poster: undefined,
     video: undefined,
-    userId: undefined,
-    userName: undefined,
     videoRequest: undefined,
 
     newUpload: () => set({
@@ -65,12 +59,6 @@ const useUploadModal = create<UploadPropsInterface>((set, get) => ({
     }),
     setVideo: (video?: string) => set({
         video: video
-    }),
-    setUserId: (id?: string) => set({
-        userId: id
-    }),
-    setUserName: (name?: string) => set({
-        userName: name
     }),
     setRequest: (request?: Promise<any | AxiosResponse<any, any>>) => set({
         videoRequest: request

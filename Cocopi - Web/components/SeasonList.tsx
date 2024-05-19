@@ -54,9 +54,8 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                     onChange={(e) => {
                         getEpList(e.target.value);
                     }} className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] m-auto mt-3 mr-0 focus:outline-none">
-                    op
                     {season_data.map((season) => (
-                        <option key={season} value={season}>Season {season}</option>
+                        <option key={serieId + season} value={season}>Season {season}</option>
                     ))}
                 </select>
             </div>

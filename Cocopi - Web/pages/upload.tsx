@@ -50,12 +50,8 @@ const ToastProps: ToastOptions = {
 const Uploader = () => {
     const uploadProps = useUploadModal()
     const { data: user } = useCurrentUser();
-    const [reset, setReset] = useState(false)
 
     const handleUpload = async () => {
-
-        uploadProps.setUserId(user.id)
-        uploadProps.setUserName(user.email)
 
         const loading = toast.loading("Uploading your file...", ToastProps)
         if (isUndefined(uploadProps.video)) {
@@ -90,7 +86,6 @@ const Uploader = () => {
             data
         })
 
-        console.log(uploadProps)
         toast.update(loading, { render: "Thank you for your contribution !", type: "success", isLoading: false, autoClose: 2000 })
         uploadProps.newUpload()
 
@@ -131,11 +126,7 @@ const Uploader = () => {
                             <ImageUploadInput key={uploadProps?.id + "Poster"} name="Poster" uploadProps={uploadProps} />
                         </div>
                         <GenreModal key={uploadProps?.id + "Genres"} uploadProps={uploadProps} />
-                        <div onClick={() => {
-                            uploadProps.setUserId(user.id)
-                            uploadProps.setUserName(user.email)
-                            handleUpload()
-                        }}
+                        <div onClick={handleUpload}
                             className="flex flex-col items-center gap-4 cursor-pointer rounded-md pt-4 pb-4 md:px-4 md:pt-3 md:pb-4 w-[20%] md:w-[15%] text-md text-white bg-blue-500 border-2 border-blue-600 hover:bg-blue-400 hover:border-blue-500 transition duration-300 mx-0 md:ml-auto my-auto">
                             <div className="flex flex-row items-center gap-2">
                                 <div className="m-auto">
