@@ -34,7 +34,7 @@ const SearchBar = () => {
                             value={SearchText}
                             onChange={e => { Search(e.currentTarget.value) }}
                             ref={SearchInput}
-                            className={`rounded-md transition duration-1000 focus:outline-none ${searchVisible ? "w-[15vw] px-2 bg-zinc-900 border-2 border-zinc-400" : "w-0 px-0 border-none"}`}
+                            className={`rounded-md transition duration-1000 focus:outline-none ${searchVisible ? "w-[30vw] md:w-[15vw] px-2 bg-zinc-900 border-2 border-zinc-400" : "w-0 px-0 border-none"}`}
                             placeholder="Search for content"
                             type="text" />
                     </div>

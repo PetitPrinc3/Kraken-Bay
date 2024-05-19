@@ -8,8 +8,8 @@ const UploadItem = () => {
 
     return (
         <div onClick={() => { router.push("/upload") }} className="flex flex-row gap-1 items-center text-white cursor-pointer hover:text-gray-300 transition">
-            <GoPlusCircle size={15} />
-            Upload
+            <GoPlusCircle className="text-xl md:text-lg" />
+            <p className="hidden md:block">Upload</p>
         </div>
     )
 }

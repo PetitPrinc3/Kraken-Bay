@@ -18,6 +18,7 @@ const GenreModal: React.FC<GenreModalProps> = ({ uploadProps }) => {
     const { data: dbGenres } = useGenresList()
 
     if (isUndefined(dbGenres)) return null
+
     if (isEmpty(genreList.list)) {
         const tmpList = new GenreList
         dbGenres.map((g: any) => {
@@ -39,8 +40,9 @@ const GenreModal: React.FC<GenreModalProps> = ({ uploadProps }) => {
                 className={`flex flex-col h-14 w-full gap-4 cursor-pointer ${uploadProps.genres ? "justify-left border-r-2 border-r-green-600" : "items-center border-2 border-dashed"} rounded-md pt-4 pb-4 md:px-4 md:pt-3 md:pb-4 text-md text-gray-400 bg-neutral-700 border-zinc-600 hover:bg-neutral-600 hover:border-zinc-500 transition duration-300 mx-0 my-auto`}
                 onClick={() => { toggleViewGenres((viewGenres) => true) }}>
                 <p className="hidden md:block truncate text-ellipsis">{uploadProps.genres || "Select Genres"}<span className={`${uploadProps.genres ? "hidden" : "inline-block"} text-sm text-red-500`}>*</span></p>
-                <div className="flex flex-col items-center p-auto m-auto md:hidden">
-                    <GoPlus />
+                <div className={`flex flex-col ${!uploadProps.genres && "items-center"} w-full overflow-hidden p-auto m-auto md:hidden`}>
+                    <GoPlus className={`${uploadProps.genres ? "hidden" : "block"}`} />
+                    <p className={`${uploadProps.genres ? "flex" : "hidden"} ml-2`}>{uploadProps.genres}</p>
                 </div>
 
             </div>

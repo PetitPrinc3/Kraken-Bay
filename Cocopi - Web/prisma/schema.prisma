@@ -30,6 +30,7 @@ model User {
   Media          Media[]
   Serie_EP       Serie_EP[]
   PendingMedia   PendingMedia[]
+  ServerProps    ServerProps[]
 }
 
 model Account {
@@ -72,6 +73,7 @@ model VerificationToken {
 model Media {
   id          String     @id @default(uuid())
   title       String
+  altTitle    String?
   type        String
   description String?    @db.LongText
   videoUrl    String     @db.LongText
@@ -85,7 +87,7 @@ model Media {
   userId      String?
   Serie_EP    Serie_EP[]
 
-  @@fulltext([title, description, genre])
+  @@fulltext([title, altTitle, description, genre])
   @@fulltext([genre])
 }
 
@@ -124,4 +126,20 @@ model Serie_EP {
 model Genres {
   id    String @id @default(uuid())
   genre String
+}
+
+model Notification {
+  id        String  @id @default(uuid())
+  recipient String
+  content   String  @db.LongText
+  type      String?
+  status    String
+}
+
+model ServerProps {
+  id     String  @id @default(uuid())
+  name   String
+  status Boolean
+
+  user User @relation(fields: [name], references: [email])
 }

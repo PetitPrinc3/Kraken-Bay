@@ -3,28 +3,21 @@ import prismadb from '@/lib/prismadb';
 import serverAuth from "@/lib/serverAuth";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method != 'GET') {
+    if (req.method != 'POST') {
         return res.status(405).end();
     }
 
     try {
         await serverAuth(req, res)
-        const { userId, muteValue } = req.query
+        const { recipient, content, type } = req.body
 
-        if (typeof muteValue != "string" || typeof userId != "string") {
-            throw new Error("Invalid value.")
-        }
-
-        const user = await prismadb.User.update({
-            where: {
-                id: userId,
-            },
+        const user = await prismadb.Notification.create({
             data: {
-                isMuted: {
-                    set: muteValue == "true" ? true : false
-                }
+                content: content,
+                type: type || "info",
+                status: "unread",
+                recipient: recipient,
             }
-
         });
 
         return res.status(200).json(user)

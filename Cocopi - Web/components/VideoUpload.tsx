@@ -60,7 +60,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ uploadProps }) => {
 
     return (
         <div className="px-4 mb-4">
-            <div className={`w-full flex flex-row items-center transition-all duration-300 ${selectedVideo ? "h-12" : "h-60 border-dashed hover:border-zinc-500 hover:bg-neutral-600"} ${uploadStatus === "done" ? "border-r-2 border-r-green-600" : "border-2"} rounded-md bg-neutral-700 border-zinc-600`}>
+            <div className={`w-full flex flex-row items-center transition-all duration-300 ${selectedVideo ? "h-12" : "h-40 md:h-60 border-dashed hover:border-zinc-500 hover:bg-neutral-600"} ${uploadStatus === "done" ? "border-r-2 border-r-green-600" : "border-2"} rounded-md bg-neutral-700 border-zinc-600`}>
                 <input
                     ref={videoRef}
                     type="file"
@@ -83,7 +83,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ uploadProps }) => {
                     <div className="relative w-full h-full">
                         <div className={`${uploadStatus !== "select" ? "absolute" : "hidden"} top-0 left-0 h-full ease-in-out bg-neutral-900 rounded-md opacity-15 z-0`} style={{ width: progress.toFixed(0) + "%" }}></div>
                         <div className="absolute top-0 left-0 w-full h-full flex flex-row items-center gap-4 z-10">
-                            <p className="w-[80%] ml-4 text-neutral-400 flex flex-row gap-1 items-center mr-0"> Selected file :
+                            <p className="w-[80%] ml-4 text-neutral-400 flex flex-row gap-1 items-center mr-0">
+                                <span className="hidden md:inline-block">Selected file :</span>
                                 <span className="font-semibold max-w-[60%] truncate overflow-hidden text-ellipsis mr-0">{selectedVideo?.name}</span>
                                 <span className={`${uploadStatus !== "select" ? "font-light text-sm mb-0 mt-auto ml-0 mr-0 max-w-[15%]" : "hidden"} `}>{uploadStatus === "uploading" ? progress + "%" : ""}</span>
                                 <span className={`${uploadStatus === "done" ? "flex flex-row items-center gap-2 font-light text-sm mb-0 mt-auto ml-0 mr-0 max-w-[15%]" : "hidden"} `}>Uploaded<span className="text-green-500"><FaCheck size={10} /></span></span>

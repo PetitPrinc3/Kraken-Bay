@@ -6,8 +6,9 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-const ValidateUpload = (uploadId: string, uploadTitle: string) => {
+const ValidateUpload = (uploadId: string, uploadTitle: string, uploadUser: string) => {
     axios.get("/api/pendingUploads", { params: { uploadId: uploadId } })
+    axios.post("/api/notify", { recipient: uploadUser, content: `Your upload for ${uploadTitle} was accepted. Thanks !`, type: "success" })
     toast.success("Upload accepted : " + uploadTitle,
         {
             position: "bottom-right",
@@ -17,8 +18,10 @@ const ValidateUpload = (uploadId: string, uploadTitle: string) => {
         })
 };
 
-const RejectUpload = (uploadId: string, uploadTitle?: string) => {
+const RejectUpload = (uploadId: string, uploadTitle: string, uploadUser: string) => {
     axios.delete("/api/pendingUploads", { data: { uploadId } })
+    console.log(uploadUser)
+    axios.post("/api/notify", { recipient: uploadUser, content: `Your upload for ${uploadTitle} was rejected.`, type: "error" })
     toast.error("Rejected upload : " + uploadTitle,
         {
             position: "bottom-right",
@@ -53,10 +56,10 @@ const PendingUpload = (data: any) => {
                 </div>
                 <div className="flex flex-row items-center gap-5 w-[15%] lg:w-[5%]">
                     <button>
-                        <FaCheck onClick={() => { ValidateUpload(upload?.id, upload?.title); setHidden(true) }} className="text-green-500" size={20} />
+                        <FaCheck onClick={() => { ValidateUpload(upload?.id, upload?.title, upload.userName); setHidden(true) }} className="text-green-500" size={20} />
                     </button>
                     <button>
-                        <ImCross onClick={() => { RejectUpload(upload?.id, upload?.title); setHidden(true) }} className="text-red-600" size={15} />
+                        <ImCross onClick={() => { console.log(upload); RejectUpload(upload?.id, upload?.title, upload.userName); setHidden(true) }} className="text-red-600" size={15} />
                     </button>
                 </div>
             </div >

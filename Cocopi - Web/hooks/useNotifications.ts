@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const useSerie = (id?: string) => {
-    const { data, error, isLoading } = useSWR(id ? `/api/seriesList/${id}` : null, fetcher, {
+const useNotifications = () => {
+    const { data, error, isLoading } = useSWR("/api/newNotifications", fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -15,4 +15,4 @@ const useSerie = (id?: string) => {
     }
 }
 
-export default useSerie;
+export default useNotifications;

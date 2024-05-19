@@ -46,8 +46,6 @@ const useUploadModal = create<UploadPropsInterface>((set, get) => ({
         thumbnail: undefined,
         poster: undefined,
         video: undefined,
-        userId: undefined,
-        userName: undefined,
         videoRequest: undefined,
     }),
     setTitle: (title?: string) => set({

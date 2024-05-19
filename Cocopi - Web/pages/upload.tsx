@@ -53,11 +53,11 @@ const Uploader = () => {
     const [reset, setReset] = useState(false)
 
     const handleUpload = async () => {
-        console.log(uploadProps)
+
+        uploadProps.setUserId(user.id)
+        uploadProps.setUserName(user.email)
+
         const loading = toast.loading("Uploading your file...", ToastProps)
-        uploadProps.setUserId(user?.id)
-        uploadProps.setUserName(user?.email)
-        console.log(uploadProps)
         if (isUndefined(uploadProps.video)) {
             toast.update(loading, { render: "Please choose a video file before uploading.", type: "error", isLoading: false, autoClose: 2000 })
             return null
@@ -81,6 +81,7 @@ const Uploader = () => {
             data
         })
 
+
         await axios.post("/api/uploader", { uploadProps }).catch((err) => {
             console.log(err)
             toast.update(loading, { render: "Oops, something went terribly wrong...", type: "error", isLoading: false, autoClose: 2000 })
@@ -89,6 +90,7 @@ const Uploader = () => {
             data
         })
 
+        console.log(uploadProps)
         toast.update(loading, { render: "Thank you for your contribution !", type: "success", isLoading: false, autoClose: 2000 })
         uploadProps.newUpload()
 
@@ -122,10 +124,19 @@ const Uploader = () => {
                                 isMandatory={true}
                             />
                         </div>
-                        <ImageUploadInput key={uploadProps?.id + "Thumb"} name="Thumbnail" uploadProps={uploadProps} />
-                        <ImageUploadInput key={uploadProps?.id + "Poster"} name="Poster" uploadProps={uploadProps} />
+                        <div className="hidden md:flex mx-auto  w-[10%]">
+                            <ImageUploadInput key={uploadProps?.id + "Thumb"} name="Thumbnail" uploadProps={uploadProps} />
+                        </div>
+                        <div className="hidden md:flex mx-auto w-[10%]">
+                            <ImageUploadInput key={uploadProps?.id + "Poster"} name="Poster" uploadProps={uploadProps} />
+                        </div>
                         <GenreModal key={uploadProps?.id + "Genres"} uploadProps={uploadProps} />
-                        <div onClick={handleUpload} className="flex flex-col items-center gap-4 cursor-pointer rounded-md pt-4 pb-4 md:px-4 md:pt-3 md:pb-4 w-[20%] md:w-[15%] text-md text-white bg-blue-500 border-2 border-blue-600 hover:bg-blue-400 hover:border-blue-500 transition duration-300 mx-0 md:ml-auto my-auto">
+                        <div onClick={() => {
+                            uploadProps.setUserId(user.id)
+                            uploadProps.setUserName(user.email)
+                            handleUpload()
+                        }}
+                            className="flex flex-col items-center gap-4 cursor-pointer rounded-md pt-4 pb-4 md:px-4 md:pt-3 md:pb-4 w-[20%] md:w-[15%] text-md text-white bg-blue-500 border-2 border-blue-600 hover:bg-blue-400 hover:border-blue-500 transition duration-300 mx-0 md:ml-auto my-auto">
                             <div className="flex flex-row items-center gap-2">
                                 <div className="m-auto">
                                     <IoSend size={20} />
@@ -149,6 +160,14 @@ const Uploader = () => {
                                 Description
                                 <span className='inline-bloc text-red-600 font-light'>*</span>
                             </label>
+                        </div>
+                    </div>
+                    <div className="flex flex-row items-center gap-4 w-full my-4 px-4">
+                        <div className="flex md:hidden w-[50%]">
+                            <ImageUploadInput key={uploadProps?.id + "MobileThumb"} name="Thumbnail" uploadProps={uploadProps} />
+                        </div>
+                        <div className="flex md:hidden ml-6 w-[50%]">
+                            <ImageUploadInput key={uploadProps?.id + "MobilePoster"} name="Poster" uploadProps={uploadProps} />
                         </div>
                     </div>
                     <VideoUpload key={uploadProps?.id + "Video"} uploadProps={uploadProps} />
