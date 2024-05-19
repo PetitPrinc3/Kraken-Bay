@@ -33,7 +33,7 @@ const Billboard = () => {
     }
 
     const muteVideo = async () => {
-        await axios.get("/api/muteUser", { params: { userId: user.id, muteValue: !isMuted } })
+        await axios.post('/api/muteUser', { data: (!isMuted).toString() });
         setMuted(isMuted => !isMuted)
     }
 

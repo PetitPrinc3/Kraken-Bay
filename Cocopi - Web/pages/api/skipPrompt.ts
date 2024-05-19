@@ -9,27 +9,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const { currentUser } = await serverAuth(req, res)
-        const { data: muteValue } = req.body
-
-        if (typeof muteValue != "string") {
-            throw new Error("Invalid value.")
-        }
-
-        console.log(muteValue)
-
-        const user = await prismadb.User.update({
+        const { skipPrompt } = req.body
+        await prismadb.User.update({
             where: {
-                id: currentUser.id,
+                id: currentUser.id
             },
             data: {
-                isMuted: {
-                    set: muteValue == "true" ? true : false
-                }
+                skipPrompt: (skipPrompt as unknown as boolean)
             }
-
         });
 
-        return res.status(200).json(user)
+        return res.status(200).json(currentUser)
     } catch (error) {
         console.log(error);
         return res.status(400).end();

@@ -6,6 +6,26 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { isNull } from "lodash";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import { NextPageContext } from "next";
+
+export async function getServerSideProps(context: NextPageContext) {
+    const session = await getSession(context);
+
+    if (session) {
+        return {
+            redirect: {
+                destination: '/home',
+                permanent: false,
+
+            }
+        }
+    }
+
+    return {
+        props: {}
+    }
+}
 
 const Auth = () => {
     const [email, setEmail] = useState('');
@@ -41,7 +61,7 @@ const Auth = () => {
                 }
                 else {
                     toast.update(loading, { render: "Login successfull !", type: "success", isLoading: false })
-                    router.push('/profiles')
+                    router.push('/welcome')
                 }
             })
         } catch (error) {
@@ -86,34 +106,36 @@ const Auth = () => {
                 </nav>
                 <div className="flex justify-center">
                     <div className="bg-black bg-opacity-70 px-16 py-16 self-center mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full">
-                        <h2 className="text-white text-4xl mb-8 font-semibold">
-                            {variant == 'login' ? 'Sign in' : 'Register'}
-                        </h2>
-                        <div className="flex flex-col gap-4">
-                            {variant == 'register' && (
+                        <form action="">
+                            <h2 className="text-white text-4xl mb-8 font-semibold">
+                                {variant == 'login' ? 'Sign in' : 'Register'}
+                            </h2>
+                            <div className="flex flex-col gap-4">
+                                {variant == 'register' && (
+                                    <Input
+                                        label="Username"
+                                        onChange={(ev: any) => setName(ev.target.value)}
+                                        id="name"
+                                        value={name}
+                                        type="username"
+                                    />
+                                )}
                                 <Input
-                                    label="Username"
-                                    onChange={(ev: any) => setName(ev.target.value)}
-                                    id="name"
-                                    value={name}
-                                    type="username"
+                                    label="Email"
+                                    onChange={(ev: any) => setEmail(ev.target.value)}
+                                    id="email"
+                                    type="email"
+                                    value={email}
                                 />
-                            )}
-                            <Input
-                                label="Email"
-                                onChange={(ev: any) => setEmail(ev.target.value)}
-                                id="email"
-                                type="email"
-                                value={email}
-                            />
-                            <Input
-                                label="Password"
-                                onChange={(ev: any) => setPassword(ev.target.value)}
-                                id="password"
-                                type="password"
-                                value={password}
-                            />
-                        </div>
+                                <Input
+                                    label="Password"
+                                    onChange={(ev: any) => setPassword(ev.target.value)}
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                />
+                            </div>
+                        </form>
                         <button onClick={variant == "login" ? login : register} className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
                             {variant == 'login' ? 'Log in' : 'Sign up'}
                         </button>

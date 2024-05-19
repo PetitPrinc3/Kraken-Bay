@@ -22,6 +22,7 @@ const Input: React.FC<InputProps> = ({
             <input
                 onChange={onChange}
                 type={type}
+                autoComplete={type}
                 value={value}
                 id={id}
                 className="
