@@ -62,7 +62,7 @@ model Media {
   posterUrl   String?
   genre       String
   duration    String?
-  seasonCount String?
+  seasons     String?
   createdAt   DateTime   @default(now())
   uploadedBy  String?
   User        User?      @relation(fields: [userId], references: [id])

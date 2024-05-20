@@ -20,6 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 title: {
                     search: searchText
                 },
+                altTitle: {
+                    search: searchText
+                },
                 description: {
                     search: searchText
                 },

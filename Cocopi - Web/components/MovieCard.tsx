@@ -90,7 +90,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         <span className="inline-block text-green-400 font-semibold text-lg">{isNew ? "New" : ""}</span> {isNew ? "-" : ""} {data?.title}
                     </p>
                     <div className="flex flex-row mt-4 gap-2 items-center">
-                        <p className="text-white text-[10px] lg:text-sm">{(data?.type == "Movies") ? data.duration : data.seasonCount + " Seasons"}</p>
+                        <p className="text-white text-[10px] lg:text-sm">{(data?.type == "Movies") ? data.duration : (data.seasons.split(",")).length + " Seasons"}</p>
                     </div>
                     <div className="flex flex-row mt-4 gap-2 items-center">
                         <p className="text-white text-[10px] lg:text-sm">Genres : {data.genre}</p>

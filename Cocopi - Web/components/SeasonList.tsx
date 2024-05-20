@@ -4,16 +4,14 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { BsFillPlayFill } from "react-icons/bs";
 import { MdFileDownload } from "react-icons/md";
+import { isUndefined } from "lodash";
 
 interface SeasonListProps {
     serieId: string;
 }
 
-const dropOptions = (seasonCount: number) => {
-    let options: string[] = []
-    for (let i = 0; i < +seasonCount; i++) {
-        options.push(String(i + 1))
-    }
+const dropOptions = (seasons: string) => {
+    let options: string[] = seasons.split(",")
     return options;
 }
 
@@ -21,20 +19,20 @@ const dropOptions = (seasonCount: number) => {
 const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
 
     const { data: currentMovie } = useMovie(serieId)
-    const season_data = dropOptions(+currentMovie?.seasonCount);
+    const season_data = dropOptions(currentMovie?.seasons);
     const [epDispList, setEpDispList] = useState([""]);
     const [firstLoad, setFirstLoad] = useState(true)
     const router = useRouter();
 
-    const getEpList = async (so: string = "1") => {
-        const { data: episodes } = await axios.get('/api/episodeList', {
+    if (isUndefined(epDispList)) return null
+
+    const getEpList = async (so: string = season_data[0]) => {
+        await axios.get('/api/episodeList', {
             params: {
                 serieId: serieId,
                 season: so,
             }
-        })
-
-        setEpDispList((epDispList) => episodes)
+        }).then((data) => setEpDispList((epDispList) => data?.data))
     }
 
     return (
@@ -55,7 +53,7 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                         getEpList(e.target.value);
                     }} className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] m-auto mt-3 mr-0 focus:outline-none">
                     {season_data.map((season) => (
-                        <option key={serieId + season} value={season}>Season {season}</option>
+                        <option key={serieId + "SO" + season} value={season}>Season {season}</option>
                     ))}
                 </select>
             </div>
@@ -63,7 +61,7 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                 {
                     epDispList.map((ep: any) => (
                         <div
-                            key={ep?.id}
+                            key={ep.id}
                             className="w-full flex flex-row items-center my-2 border-2 border-white cursor-pointer rounded-md">
                             <div
                                 onClick={() => router.push(`/watch/show/${ep?.id}`)}

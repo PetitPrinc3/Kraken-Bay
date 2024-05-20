@@ -8,6 +8,7 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import axios from "axios";
 import { isUndefined } from "lodash";
 import { useRouter } from "next/router";
+import useEpisodeList from "@/hooks/useEpisodeList";
 
 const Billboard = () => {
     const { data } = useBillboard();
@@ -71,7 +72,7 @@ const Billboard = () => {
                         </div>
                     </div>
                     <div className="hidden md:block m-auto w-[50%]">
-                        <a className="flex flex-col items-center " onClick={() => router.push(`/watch/${data?.id}`)}>
+                        <a className="flex flex-col items-center " onClick={() => { router.push(`/watch/${data?.id}`) }}>
                             <img className="h-[55vh] rounded-xl transition duration-300 brightness-110 cursor-pointer hover:brightness-[115%]" src={data?.thumbUrl} alt="" />
                         </a>
                     </div>

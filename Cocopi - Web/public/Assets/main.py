@@ -143,7 +143,7 @@ def dummy() :
 
     for j in range (randint(10,40)):
         type = ["Movies", "Series"][randint(0,1)]
-        season_count = randint(1,5)
+        seasons = list(set([str(randint(1,5)) for i in range(randint(1,5))]))
         json = {
             "title": "Big Buck Dummy",
             "altTitle": "",
@@ -153,31 +153,29 @@ def dummy() :
             "thumbUrl": "/Assets/Images/Dummy/Big Buck Dummy.jpg",
             "posterUrl": "/Assets/Images/Dummy/Big Buck Poster.png",
             "duration": "1 h 10 min",
-            "seasonCount": str(season_count),
+            "seasons": ",".join(seasons),
             "genre": ", ".join([g_list["genres"][_] for _ in [randint(0, len(g_list["genres"]) - 1) for i in range(randint(0, 5))]])
         }
 
-        sql = f"INSERT INTO Media (id, title, altTitle, type, description, videoUrl, thumbUrl, posterUrl, duration, seasonCount, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = f"INSERT INTO Media (id, title, altTitle, type, description, videoUrl, thumbUrl, posterUrl, duration, seasons, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         cursor.execute("SELECT UUID();")
         uuid = cursor.fetchall()[0][0]
-        val = (uuid, json["title"], json["altTitle"], json["type"], json["description"], json["videoUrl"], json["thumbUrl"], json["posterUrl"], json["duration"], json["seasonCount"], json["genre"])
+        val = (uuid, json["title"], json["altTitle"], json["type"], json["description"], json["videoUrl"], json["thumbUrl"], json["posterUrl"], json["duration"], json["seasons"], json["genre"])
         cursor.execute(sql, val)
         info(f'Inserted {json["title"]}', 'discreet')
         client.commit()
 
         if type == "Series":
 
-            
-
-            for season in range(season_count):
+            for season in seasons:
                 ep_data = loads('{"Titles" : [], "serieUrl": ""}')
                 ep_data["serieId"] = uuid,
                 episode_count = randint(2,10)
                 for episode in range(episode_count):
                     e_json = {
-                        "title": f"Dummy Serie : So {season +1}, Ep {episode +1}",
-                        "season": str(season +1 ),
+                        "title": f"Dummy Serie : So {season}, Ep {episode +1}",
+                        "season": str(season),
                         "episode": str(episode + 1),
                         "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
                     }
@@ -310,7 +308,7 @@ def getall_movies(files):
                     "thumbUrl": t_url,
                     "posterUrl": p_url,
                     "duration": duration,
-                    "seasonCount": "",
+                    "seasons": "",
                     "genre": genres
                 }
 
@@ -332,12 +330,12 @@ def push(data, m, u, p, d):
 
     cursor = client.cursor()
 
-    sql = f"INSERT INTO Media (id, title, altTitle, type, description, videoUrl, thumbUrl, posterUrl, duration, seasonCount, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = f"INSERT INTO Media (id, title, altTitle, type, description, videoUrl, thumbUrl, posterUrl, duration, seasons, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     for d in data["Titles"] :
         cursor.execute("SELECT UUID();")
         uuid = cursor.fetchall()[0][0]
-        val = (uuid, d["title"], d["altTitle"], d["type"], d["description"], d["videoUrl"], d["thumbUrl"], d["posterUrl"], d["duration"], d["seasonCount"], d["genre"])
+        val = (uuid, d["title"], d["altTitle"], d["type"], d["description"], d["videoUrl"], d["thumbUrl"], d["posterUrl"], d["duration"], d["seasons"], d["genre"])
         cursor.execute(sql, val)
         info(f'Inserted {d["title"]}', 'discreet')
     client.commit()
@@ -466,24 +464,11 @@ def getall_series(folders):
                 genres = ", ".join(list)
 
                 ovw = req['overview']
-                seasons = [ _ for _ in os.listdir(fold) if "SO" in _ ]
-
-                json = {
-                    "title": req['original_name'],
-                    "altTitle": t,
-                    "type": "Series",
-                    "description": ovw,
-                    "videoUrl": b_url+fold,
-                    "thumbUrl": t_url,
-                    "posterUrl": p_url,
-                    "duration": "",
-                    "seasonCount": str(len(seasons)),
-                    "genre": genres
-                }
-
-                data["Titles"].append(json)
+                seasons = [ _[2:] for _ in os.listdir(fold) if "SO" in _ ]
 
 
+
+                first_ep_url = ""
                 for season in seasons:
                     ep_data = loads('{"Titles" : [], "serieUrl": ""}')
                     ep_data["serieUrl"] = b_url + fold,
@@ -492,20 +477,37 @@ def getall_series(folders):
                     if len(season.split(" "))>1:
                         s_number = int(season.split(" ")[-1])
                     else:
-                        s_number = int(season[2:])
+                        s_number = int(season)
                     info(f'Found {len(episodes)} for season {s_number}')
                     for episode in episodes:
+                        if first_ep_url == "" : first_ep_url = b_url + s_fold + "/" + episode
                         e_number = episodes.index(episode)
                         e_json = {
-                            "title": f"{req['original_name']}: So {s_number}, Ep {e_number}",
+                            "title": f"{req['original_name']}: So {s_number}, Ep {e_number + 1}",
                             "season": str(s_number),
-                            "episode": str(e_number),
+                            "episode": str(e_number + 1),
                             "videoUrl": b_url + s_fold + "/" + episode,
                         }
 
                         ep_data["Titles"].append(e_json)
                     with open(json_fold + req['original_name'] + 'SO' + str(s_number) + '.json', 'w', encoding='utf-8') as f:
                         dump(ep_data, f, ensure_ascii=False, indent=4)
+                
+                json = {
+                    "title": req['original_name'],
+                    "altTitle": t,
+                    "type": "Series",
+                    "description": ovw,
+                    "videoUrl": first_ep_url,
+                    "thumbUrl": t_url,
+                    "posterUrl": p_url,
+                    "duration": "",
+                    "seasons": ",".join(seasons),
+                    "genre": genres
+                }
+
+                data["Titles"].append(json)
+        
         except: 
             warning(f"Something wrong happend for {fold}")
 

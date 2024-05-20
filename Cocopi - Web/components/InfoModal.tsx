@@ -23,6 +23,16 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
         setIsVisible(!!visible);
     }, [visible])
 
+    useEffect(() => {
+        if (visible) {
+            document.body.style.overflow = 'hidden'
+            document.body.style.paddingRight = '1%'
+        } else {
+            document.body.style.overflow = 'unset'
+            document.body.style.paddingRight = '0'
+        }
+    }, [visible])
+
     const handleClose = useCallback(() => {
         setIsVisible(false);
         setTimeout(() => {
@@ -70,7 +80,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                             {isNew ? "New" : ""}
                         </p>
                         <p className="text-white text-s">
-                            {data?.duration ? data?.duration : data?.seasonCount + " Seasons"}
+                            {data?.type == "Movies" ? data?.duration : (data?.seasons.split(",")).length + " Seasons"}
                         </p>
                         <p className="text-white text-s">
                             Genres : {data?.genre}
