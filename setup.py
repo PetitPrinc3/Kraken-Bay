@@ -68,7 +68,7 @@ password = question("Choose your admin password for DB and Web management.")
 database = question("Choose the name of the database.")
 
 with spinner("Installing npm, mysql-shell and docker..."):
-    cmd_run("apt install npm mysql-shell docker -y")
+    cmd_run("apt install npm mysql-shell docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y")
 
 replace_field("Docker/docker-compose.yml", ["$ROOT", "$DATABASE", "$USERNAME", "$PASSWORD"], [str(uuid.uuid4()), database, username, password])
 replace_line("Cocopi - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
