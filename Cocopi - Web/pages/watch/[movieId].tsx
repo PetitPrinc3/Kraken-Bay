@@ -1,15 +1,11 @@
 import React from "react";
-import ReactPlayer from "react-player";
 import useMovie from "@/hooks/useMovie";
 import { useRouter } from "next/router";
 import { AiOutlineArrowLeft } from "react-icons/ai";
-
 const Watch = () => {
     const router = useRouter();
     const { movieId } = router.query;
-
     const { data } = useMovie(movieId as string);
-
     return (
         <div className="h-screen w-screen bg-black">
             <nav className="fixed w-full p-4 z-10 flex flex-row items-center gap-8 bg-black bg-opacity-70">
@@ -20,19 +16,12 @@ const Watch = () => {
                     {data?.title}
                 </p>
             </nav>
-            <div className="h-full w-full">
-                <ReactPlayer
-                    width={"100vw"}
-                    height={"100vh"}
-                    autoPlay={true}
-                    controls
-                    url={data?.videoUrl} />
-            </div>
-
+            <video
+                className="h-full w-full"
+                autoPlay
+                controls
+                src={data?.videoUrl}></video>
         </div>
-
-
     )
 }
-
 export default Watch;

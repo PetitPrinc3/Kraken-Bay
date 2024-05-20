@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useMovie from "@/hooks/useMovie";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { BsFillPlayFill } from "react-icons/bs";
 import { MdFileDownload } from "react-icons/md";
-import { isUndefined } from "lodash";
+import { isEmpty, isUndefined } from "lodash";
 
 interface SeasonListProps {
     serieId: string;
@@ -12,7 +12,7 @@ interface SeasonListProps {
 
 const dropOptions = (seasons: string) => {
     let options: string[] = seasons.split(",")
-    return options;
+    return options.sort();
 }
 
 
@@ -20,9 +20,21 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
 
     const { data: currentMovie } = useMovie(serieId)
     const season_data = dropOptions(currentMovie?.seasons);
-    const [epDispList, setEpDispList] = useState([""]);
+    const [epDispList, setEpDispList] = useState<String[]>([]);
     const [firstLoad, setFirstLoad] = useState(true)
     const router = useRouter();
+
+    useEffect(() => {
+        if (isEmpty(season_data)) return
+        if (!firstLoad) return
+        axios.get('/api/episodeList', {
+            params: {
+                serieId: serieId,
+                season: season_data[0],
+            }
+        }).then((data) => setEpDispList((epDispList) => data?.data))
+        setFirstLoad(false)
+    }, [firstLoad, setFirstLoad, season_data, serieId])
 
     if (isUndefined(epDispList)) return null
 
@@ -37,12 +49,6 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
 
     return (
         <div
-            onLoad={() => {
-                if (firstLoad) {
-                    getEpList();
-                }
-                setFirstLoad((firstLoad) => false)
-            }}
             className="relative flex flex-col w-full">
             <div className="flex flex-row w-full m-auto">
                 <p className="text-white text-xl md:text-2xl h-full lg:text-3xl font-bold left-0 m-auto ml-0">
@@ -58,22 +64,20 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                 </select>
             </div>
             <div className="mt-4 w-full text-white">
-                {
-                    epDispList.map((ep: any) => (
+                {epDispList.map((ep: any) => (
+                    <div
+                        key={ep.id}
+                        className="w-full flex flex-row items-center my-2 border-2 border-white cursor-pointer rounded-md">
                         <div
-                            key={ep.id}
-                            className="w-full flex flex-row items-center my-2 border-2 border-white cursor-pointer rounded-md">
-                            <div
-                                onClick={() => router.push(`/watch/show/${ep?.id}`)}
-                                className="flex flex-row items-center gap-4 w-[90%] max-w-[90%]">
-                                <img src={currentMovie?.thumbUrl} alt="Poster" className="h-[10vh] w-auto rounded-md" />
-                                <div>{ep?.title}</div>
-                                <BsFillPlayFill className="ml-auto text-zinc-900 border-2 border-white rounded-full bg-white" size={30} />
-                            </div>
-                            <MdFileDownload onClick={() => router.push(ep?.videoUrl)} className="mr-5 ml-5 text-zinc-900 border-2 border-white rounded-full bg-white" size={30} />
+                            onClick={() => router.push(`/watch/show/${ep?.id}`)}
+                            className="flex flex-row items-center gap-4 w-[90%] max-w-[90%]">
+                            <img src={currentMovie?.thumbUrl} alt="Poster" className="h-[10vh] w-auto rounded-md" />
+                            <div>{ep?.title}</div>
+                            <BsFillPlayFill className="ml-auto text-zinc-900 border-2 border-white rounded-full bg-white" size={30} />
                         </div>
-                    ))
-                }
+                        <MdFileDownload onClick={() => router.push(ep?.videoUrl)} className="mr-5 ml-5 text-zinc-900 border-2 border-white rounded-full bg-white" size={30} />
+                    </div>
+                ))}
             </div>
         </div>
 

@@ -14,7 +14,7 @@ from random import randint
 API_KEY = "9ecaae7c8902e24d2fdbe22076eeb79c"
 GENRES = loads("""{"genres":[{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":14,"name":"Fantasy"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":10402,"name":"Music"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science Fiction"},{"id":10770,"name":"TV Movie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"},{"id":10759,"name":"Action & Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":10762,"name":"Kids"},{"id":9648,"name":"Mystery"},{"id":10763,"name":"News"},{"id":10764,"name":"Reality"},{"id":10765,"name":"Sci-Fi & Fantasy"},{"id":10766,"name":"Soap"},{"id":10767,"name":"Talk"},{"id":10768,"name":"War & Politics"},{"id":37,"name":"Western"}]}""")
 g_list = loads("""{"genres": []}""")
-b_path = ""
+b_path = "public/Assets/"
 m_path = b_path + "Movies"
 s_path = b_path + "Series"
 i_path = b_path + "Images"
@@ -23,7 +23,7 @@ mysql_srv = "127.0.0.1"
 mysql_usr = "cocopi"
 mysql_pwd = "cocopi"
 mysql_dbs = "cocopi"
-json_fold = "JSON_DMPS/"
+json_fold = b_path + "JSON_DMPS/"
 valid_extensions = ["mp4", "mkv", "avi", "MKV"]
 
 print("""
@@ -148,7 +148,7 @@ def dummy() :
             "title": "Big Buck Dummy",
             "altTitle": "",
             "type": type,
-            "description": "Something dummy !",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi auctor volutpat ipsum, at ultrices magna. Aliquam sed sem tempus, ullamcorper urna quis, hendrerit elit. Aliquam vestibulum ipsum accumsan, tempor magna faucibus, dignissim est. Morbi pharetra sodales consequat. Etiam lobortis elit sem, nec varius sapien fermentum nec. Duis maximus elit ut lorem porttitor aliquam. Nulla sed lectus ante. Maecenas ullamcorper, orci vitae convallis malesuada, nisl neque venenatis urna, et suscipit nunc leo non lorem. Aliquam erat volutpat. Aliquam feugiat bibendum gravida. Aliquam erat volutpat. Maecenas eu consectetur enim, non vestibulum enim. Etiam in mi vitae lacus maximus blandit eget ut ante. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam luctus volutpat urna at tempor. Suspendisse vehicula, odio a scelerisque porttitor, urna dolor condimentum lectus, aliquet porttitor ex neque volutpat justo.",
             "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
             "thumbUrl": "/Assets/Images/Dummy/Big Buck Dummy.jpg",
             "posterUrl": "/Assets/Images/Dummy/Big Buck Poster.png",
