@@ -1,17 +1,16 @@
-# CocoPi
+# Kraken Bay
 
-Raspberry Pi Media Center and Netflix-like server.  
-This is a temporary name, feel free to suggest one !
+Open source Media Center and Netflix-like server.  
 
 ## Project
 
 | Feature | Status | Observation |
 | :-: | :-: |  :-: |
-| Installer | :large_blue_circle: | NOK: Ongoing |
+| Installer | :large_blue_circle: | OK: Ongoing |
 | Hotspot mode | :green_circle: | Create util to toggle ON/OFF |
 | Media Server | :black_circle: | |
-| Web Player | :large_blue_circle: | ReactPlayer pending |
-| Uploader | :large_blue_circle: | UI: OK |
+| Web Player | :green_circle: | Basic functionalities OK |
+| Uploader | :green_circle: | UI/DB: OK, enhance security on file types. |
 | Account management | :green_circle: | UI: OK / DB: OK |
 
 ## Collaborate
