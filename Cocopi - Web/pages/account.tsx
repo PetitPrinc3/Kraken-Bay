@@ -19,27 +19,27 @@ const Account = () => {
         <div className="">
             <Navbar />
             <div className="pt-[10vh] flex flex-col items-center">
-                <div className="md:h-[85vh] w-[85vw] md:w-[95vw] flex flex-col p-4 gap-4 rounded-md bg-neutral-700 overflow-auto">
-                    <div className="flex flex-col h-[25%] md:flex-row md:items-center gap-8 p-2 border-zinc-800 border-2 rounded-md">
+                <div className="md:h-[85vh] w-[85vw] md:w-[95vw] flex flex-col p-4 gap-4 rounded-md bg-neutral-700 overflow-auto z-0">
+                    <div className="flex flex-col h-[25%] md:flex-row md:items-center gap-8 p-2 border-zinc-800 border-2 rounded-md z-30">
                         <div className="w-full h-full md:w-auto flex flex-col items-center">
                             <img className="h-40 md:h-full rounded-md transition duration-200 cursor-pointer hover:brightness-150" src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
                         </div>
                         <div className="grid grid-cols-[auto_auto] md:w-auto w-full items-center justify-center gap-x-8 md:gap-x-4 text-white text-lg font-light">
-                            <p className="text-zinc-900 font-semibold">Name : </p>
+                            <p className="text-zinc-400 font-semibold">Name : </p>
                             <p className="font-semibold">{user?.name}</p>
-                            <p className="text-zinc-900 font-semibold">Email : </p>
+                            <p className="text-zinc-400 font-semibold">Email : </p>
                             <p className="">{user?.email}</p>
-                            <p className="text-zinc-900 font-semibold">Role : </p>
+                            <p className="text-zinc-400 font-semibold">Role : </p>
                             <div className="flex flex-row items-center gap-2">
                                 <Icon />
                                 <p className={`${user?.roles == "admin" ? "text-red-500" : "text-green-500"}`}>{user?.roles}</p>
                             </div>
                         </div>
                     </div>
-                    <div className="w-full h-full overflow-hidden">
+                    <div className="w-full h-full overflow-hidden z-30">
                         <div className="w-full h-full flex flex-col md:flex-row gap-4">
                             <div className="md:w-[50%] w-full h-full border-2 border-zinc-800 rounded-md flex flex-col items-start overflow-auto">
-                                <p className="mx-4 my-2 text-zinc-900 font-semibold">Your notifications :</p>
+                                <p className="mx-4 my-2 text-zinc-400 font-semibold">Your notifications :</p>
                                 {notifications && notifications.map((notification: any) => (
                                     <div key={notification.id} className="flex flex-row items-center justify-start w-full">
                                         <div className="w-[20%]">
@@ -57,7 +57,7 @@ const Account = () => {
                                 ))}
                             </div>
                             <div className="md:w-[50%] w-full h-full border-2 border-zinc-800 rounded-md flex flex-col items-start">
-                                <p className="mx-4 my-2 text-zinc-900 font-semibold">Your uploads :</p>
+                                <p className="mx-4 my-2 text-zinc-400 font-semibold">Your uploads :</p>
                                 {uploads && uploads.map((upload: any) => (
                                     <div key={upload.id} className="flex flex-row items-center justify-start w-full">
                                         <div className="w-[20%]">
@@ -73,6 +73,7 @@ const Account = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="absolute md:h-[80vh] w-[80vw] md:w-[90vw] bg-[url('/Assets/Images/kraken.png')] bg-contain bg-no-repeat bg-center opacity-60 z-10"></div>
                 </div>
             </div>
         </div>

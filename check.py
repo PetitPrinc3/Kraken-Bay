@@ -1,8 +1,8 @@
 import os 
 from json import loads, dump
-import shutil
 from urllib.request import urlretrieve
 
+JSON_PATH = "public/Assets/JSON_DMPS/"
 
 existing_file = []
 existing_path = []
@@ -16,27 +16,27 @@ genres = []
 toremove = []
 
 
-with open("JSON_DMPS/movies.json", 'r', encoding='utf-8') as f:
+with open(f"{JSON_PATH}movies.json", 'r', encoding='utf-8') as f:
     d = loads(f.read())["Titles"]
     for _ in d:
         for g in _["genre"].split(", "):
             if g not in genres:
                 genres.append(g)
 
-with open("JSON_DMPS/series.json", 'r', encoding='utf-8') as f:
+with open(f"{JSON_PATH}series.json", 'r', encoding='utf-8') as f:
     d = loads(f.read())["Titles"]
     for _ in d:
         for g in _["genre"].split(", "):
             if g not in genres:
                 genres.append(g)
 
-with open("JSON_DMPS/genres.json", "w", encoding='UTF-8') as f:
+with open(f"{JSON_PATH}genres.json", "w", encoding='UTF-8') as f:
     d = loads('{"genres": []}')
     d["genres"] = genres
     dump(d, f, ensure_ascii=False, indent=4)
 
 
-with open("JSON_DMPS/movies.json", 'r', encoding='utf-8') as f:
+with open(f"{JSON_PATH}movies.json", 'r', encoding='utf-8') as f:
     d = loads(f.read())["Titles"]
     for _ in d:
         used.append(_['thumbUrl'].split("/")[3])
@@ -44,7 +44,7 @@ with open("JSON_DMPS/movies.json", 'r', encoding='utf-8') as f:
         images.append(_['thumbUrl'])
         images.append(_["posterUrl"])
 
-with open("JSON_DMPS/series.json", 'r', encoding='utf-8') as f:
+with open(f"{JSON_PATH}series.json", 'r', encoding='utf-8') as f:
     d = loads(f.read())["Titles"]
     for _ in d:
         used.append(_['thumbUrl'].split("/")[3])

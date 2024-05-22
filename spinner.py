@@ -34,7 +34,7 @@ class spinner:
         for _ in cycle(self.steps):
             if self.done:
                 break
-            print(f"\r{_}  {self.desc}", flush=True, end="\r")
+            print(f"\r{_} {self.desc}", flush=True, end="\r")
             sleep(self.timeout)
 
     def __enter__(self):

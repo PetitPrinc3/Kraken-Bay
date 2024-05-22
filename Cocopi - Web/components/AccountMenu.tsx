@@ -18,9 +18,9 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
             <div className="flex flex-col gap-3">
                 <div className="px-3 group/item flex flex-row gap-3 items-center w-full">
                     <img className="w-8 rounded-md" src={`${!user?.image ? "/Assets/Images/default_profile.png" : user?.image}`} alt="" />
-                    <p className="text-white text-sm group-hover/item:underline">
+                    <a href="/account" className="text-white text-sm group-hover/item:underline">
                         {user?.name} ({user?.roles})
-                    </p>
+                    </a>
                 </div>
                 <hr className={`${user?.roles != "admin" ? "hidden" : ""} mx-4 bg-gray-600 border-0 h-px`} />
                 <div className={`${user?.roles != "admin" ? "hidden" : ""} flex flex-col items-center`}>

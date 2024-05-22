@@ -43,7 +43,7 @@ const Navbar = () => {
         <nav className="w-full fixed z-40">
             <div className={`px-4 md:px-16 py-4 flex flex-row items-center transition duration-500 ${showBackground ? 'bg-zinc-900 bg-opacity-90' : ''}`}>
                 <a href="/home">
-                    <img className="h-4 lg:h-7 cursor-pointer" src="/Assets/Images/logo.png" alt="" />
+                    <img className="h-4 lg:h-8 cursor-pointer" src="/Assets/Images/logo.png" alt="" />
                 </a>
                 <div className="flex-row ml-8 gap-7 hidden lg:flex">
                     <NavbarItem label="Home" url="/home" />

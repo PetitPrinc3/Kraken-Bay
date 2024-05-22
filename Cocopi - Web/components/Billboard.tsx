@@ -60,7 +60,7 @@ const Billboard = () => {
                 <div className="flex flex-row items-center w-full">
                     <div className="flex flex-col ml-0 mr-auto w-full">
                         <p className="text-white text-1xl md:text-5xl h-full w-full lg:text-6xl font-bold drop-shadow-xl">{data?.title}</p>
-                        <p className="text-white text-[8px] md:text-lg mt-3 md:mt-8 w-full max-h-[30vh] drop-shadow-xl line-clamp-6 text-ellipsis">
+                        <p className="text-white text-[8px] md:text-lg mt-3 md:mt-8 max-w-full lg:max-w-[50vw] lg:max-h-[10vw] drop-shadow-xl line-clamp-4 overflow-ellipsis">
                             {data?.description}
                         </p>
                         <div className="flex flex-row items-center mt-3 md:mt-4 gap-3">

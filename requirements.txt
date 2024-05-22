@@ -1,0 +1,6 @@
+IMDbPY==2022.7.9
+moviepy==1.0.3
+mysql-connector-python==8.4.0
+netifaces==0.11.0
+questionary==2.0.1
+Requests==2.32.1
