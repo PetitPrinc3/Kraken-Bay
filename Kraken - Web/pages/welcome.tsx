@@ -48,7 +48,7 @@ const Welcome = () => {
                 <div className="flex items-center w-[90vw] md:w-[60vw] md:max-h-[50vh] bg-neutral-700 rounded-md border-2 border-zinc-500 text-white test-sm px-4 py-6 overflow-scroll scrollbar-hide">
                     <div className="flex flex-col list-disc">
                         <p>
-                            This is a short introduction with valuable informations on how to properly use Cocopi. <br />
+                            This is a short introduction with valuable informations on how to properly use Kraken Bay. <br />
                             You will find here a certain amount of Movies and TV Shows that are hosted locally. <br />
                             Here are a few identified issues you may encouter : <br />
                             <br />

@@ -162,7 +162,7 @@ const Movies = () => {
                             ref={searchInput}
                             className="w-full bg-zinc-600 focus:outline-none"
                             type="text"
-                            placeholder="Search Cocopi !" />
+                            placeholder="Search Kraken Bay !" />
                     </div>
                 </div>
                 <div>

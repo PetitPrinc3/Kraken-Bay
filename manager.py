@@ -20,21 +20,22 @@ s_path = b_path + "Series"
 i_path = b_path + "Images"
 b_url = "/Assets/"
 mysql_srv = "127.0.0.1"
-mysql_usr = "cocopi"
-mysql_pwd = "cocopi"
-mysql_dbs = "cocopi"
+mysql_usr = "kraken"
+mysql_pwd = "kraken"
+mysql_dbs = "kraken"
 json_fold = b_path + "JSON_DMPS/"
 valid_extensions = ["mp4", "mkv", "avi", "MKV"]
 
-print("""
- ██████╗ ██████╗  ██████╗ ██████╗ ██████╗ ██╗
-██╔════╝██╔═══██╗██╔════╝██╔═══██╗██╔══██╗██║
-██║     ██║   ██║██║     ██║   ██║██████╔╝██║
-██║     ██║   ██║██║     ██║   ██║██╔═══╝ ██║
-╚██████╗╚██████╔╝╚██████╗╚██████╔╝██║     ██║
- ╚═════╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝
-                                @PetitPrince
-                                """)
+def banner():
+    print("""
+    ██╗  ██╗██████╗  █████╗ ██╗  ██╗███████╗███╗   ██╗
+    ██║ ██╔╝██╔══██╗██╔══██╗██║ ██╔╝██╔════╝████╗  ██║
+    █████╔╝ ██████╔╝███████║█████╔╝ █████╗  ██╔██╗ ██║
+    ██╔═██╗ ██╔══██╗██╔══██║██╔═██╗ ██╔══╝  ██║╚██╗██║
+    ██║  ██╗██║  ██║██║  ██║██║  ██╗███████╗██║ ╚████║
+    ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝
+                                        @PetitPrince
+                                    """)
 
 def prepare():
     info("""Files should be organized as follows :
@@ -127,12 +128,12 @@ def upload():
             push_ep(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
 
 
-def dummy() :
+def dummy(usr, pwd, dbs) :
     client = mysql.connector.connect(
         host=mysql_srv,
-        user=mysql_usr,
-        password=mysql_pwd,
-        database=mysql_dbs,
+        user=usr,
+        password=pwd,
+        database=dbs,
     )
 
     cursor = client.cursor()
@@ -514,6 +515,8 @@ def getall_series(folders):
     return data
 
 if __name__ == "__main__":
+    banner()
+
     parser = argparse.ArgumentParser(
                     prog='Media SETUP',
                     description='prepares your files and what not for cocopi and uploads to your mysql db',
@@ -526,7 +529,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.dummy:
-        dummy()
+        dummy(mysql_usr, mysql_pwd, mysql_dbs)
     if args.prepare :
         prepare()
     if args.upload :

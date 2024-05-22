@@ -1,13 +1,15 @@
-from prints import *
-import subprocess
-import os
-import sys
 try:
-    import bcrypt
-    import uuid
-    import mysql.connector
     from spinner import *
-    from manager import *
+    with spinner("Importing python libraries..."):
+        from prints import *
+        import subprocess
+        import os
+        import sys
+        import bcrypt
+        import uuid
+        import mysql.connector
+        from manager import *
+    banner()
 except:
     fail("Library import failed.")
     warning("Please install required libraries running 'pip install -r requirements.txt'.")
@@ -109,9 +111,9 @@ password = question("Choose your admin password for DB and Web management.")
 database = question("Choose the name of the database.")
 
 replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
-replace_line("Cocopi - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
-replace_line("Cocopi - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
-replace_line("Cocopi - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
+replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
+replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
+replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 
 with spinner("Installing npm, mysql-shell and docker..."):
     if ptfrm == "linux" : cmd_run("apt install npm mysql-client openssh-server -y")
@@ -122,9 +124,9 @@ cryptsalt = bcrypt.gensalt()
 with spinner("Creating mysql db container..."):
     cmd_run("cd Docker && docker-compose up -d", "Crated mysql server container.", "Did you install docker ?", critical=True)
 with spinner("Installing node packages."):
-    cmd_run('cd "Cocopi - Web" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "Cocopi - Web" and run > npm i', critical=True)
+    cmd_run('cd "Kraken - Web" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "Kraken - Web" and run > npm i', critical=True)
 with spinner("Pushing prisma db schema."):
-    cmd_run('cd "Cocopi - Web" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
+    cmd_run('cd "Kraken - Web" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
 
 info("Adding selected user to database...")
 
@@ -139,13 +141,14 @@ cursor.execute(f'SELECT id FROM User WHERE email="{username.lower()}@local";')
 if len(cursor.fetchall()) > 0:
     warning(f"Another user with email {username}@local was found. No new user will be created.")
 else:
-    cursor.execute(f"INSERT INTO User (id, name, email, hashedPassword, roles, updatedAt) VALUES (UUID(), '{username}', '{username.lower()}@local', '{bcrypt.hashpw(password.encode("utf-8"), cryptsalt).decode("utf-8")}', 'admin', NOW());")
-    cursor.commit()
+    dbpass = bcrypt.hashpw(password.encode("utf-8"), cryptsalt).decode("utf-8")
+    cursor.execute(f"INSERT INTO User (id, name, email, hashedPassword, roles, updatedAt) VALUES (UUID(), '{username}', '{username.lower()}@local', '{dbpass}', 'admin', NOW());")
+    client.commit()
     success("Admin user added to web DB.")
 
 dum = question("Do you wish to setup the demo with dummy data ? [Y/n]")
 if dum.lower() == "y" or dum.strip() == "":
-    dummy()
+    dummy(username, password, database)
 
 if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
@@ -212,13 +215,13 @@ if ptfrm == "linux":
     Description=Web Service
 
     [Service]
-    ExecStart="npm --prefix {os.path.join(os.getcwd(), "Cocopi - Web")} run dev"
+    ExecStart="npm --prefix {os.path.join(os.getcwd(), "Kraken - Web")} run dev"
     Restart=always
     User=nobody
     Group=nogroup
     Environment=PATH=/usr/bin:/usr/local/bin
     Environment=NODE_ENV=production
-    WorkingDirectory={os.path.join(os.getcwd(), "Cocopi - Web")}
+    WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
 
     [Install]
     WantedBy=multi-user.target

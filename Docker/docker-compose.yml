@@ -5,9 +5,9 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: b4afa1a2-9e6b-41d8-ac81-43a86a49bb07
-      MYSQL_DATABASE: cocopi
-      MYSQL_USER: cocopi
-      MYSQL_PASSWORD: cocopi
+      MYSQL_ROOT_PASSWORD: 1cc2c364-fd64-42ef-8178-1b2c94410fc8
+      MYSQL_DATABASE: kraken
+      MYSQL_USER: kraken
+      MYSQL_PASSWORD: kraken
     ports:
       - '3306:3306'
