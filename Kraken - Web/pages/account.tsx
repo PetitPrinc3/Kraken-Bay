@@ -9,6 +9,9 @@ import { RiIndeterminateCircleFill } from "react-icons/ri";
 import { MdPending } from "react-icons/md";
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { isUndefined } from "lodash";
 
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
@@ -31,6 +34,30 @@ const Account = () => {
     const { data: user } = useCurrentUser()
     const { data: notifications } = useNotifications()
     const { data: uploads } = useUserUploads();
+    const profilePic = useRef(null)
+    const [image, setImage] = useState<string>()
+    const [firstLoad, setFirstLoad] = useState(true)
+
+    useEffect(() => {
+        if (firstLoad && !isUndefined(user)) {
+            setImage(user.image)
+            setFirstLoad(false)
+        }
+    }, [firstLoad, user])
+
+    const imageClick = () => {
+        if (profilePic.current) profilePic.current.click();
+    }
+
+    const imageUpdate = async (event: any) => {
+        if (event.target.files && event.target.files.length > 0) {
+            const imageFile = event.target.files[0]
+            setImage(URL.createObjectURL(imageFile))
+            const formData = new FormData();
+            formData.append("pic", imageFile);
+            const uploadRequest = axios.post(`/api/profileUpdate`, formData).catch((err) => console.log(err))
+        }
+    }
 
     const Icon = user?.roles == "admin" ? FaCrown : FaUser
 
@@ -41,7 +68,10 @@ const Account = () => {
                 <div className="md:h-[85vh] w-[85vw] md:w-[95vw] flex flex-col p-4 gap-4 rounded-md bg-neutral-700 overflow-auto z-0">
                     <div className="flex flex-col h-[25%] md:flex-row md:items-center gap-8 p-2 border-zinc-800 border-2 rounded-md z-30">
                         <div className="w-full h-full md:w-auto flex flex-col items-center">
-                            <img className="h-40 md:h-full rounded-md transition duration-200 cursor-pointer hover:brightness-150" src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
+                            <input id="poster-file" type="file" onChange={(e: any) => { imageUpdate(e) }} className="hidden" />
+                            <label onClick={() => { imageClick }} htmlFor="poster-file" className="h-40 md:h-full rounded-md transition duration-200 cursor-pointer" >
+                                <img className="h-40 md:h-full rounded-md transition duration-200 cursor-pointer hover:brightness-150" src={image || "/Assets/Images/default_profile.png"} alt="" />
+                            </label>
                         </div>
                         <div className="grid grid-cols-[auto_auto] md:w-auto w-full items-center justify-center gap-x-8 md:gap-x-4 text-white text-lg font-light">
                             <p className="text-zinc-400 font-semibold">Name : </p>
@@ -96,7 +126,7 @@ const Account = () => {
                 </div>
             </div>
             <Footer />
-        </div>
+        </div >
     )
 }
 

@@ -7,6 +7,7 @@ import SearchBar from "./SearchBar";
 import UploadItem from "./UploadItem";
 import NotificationBell from "./NotificationBell";
 import { useRef } from "react";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 const TOP_OFFSET = 66;
 
@@ -16,6 +17,7 @@ const Navbar = () => {
     const [showBackground, setShowBackground] = useState(false);
     const accountMenu = useRef(null)
     const mobileMenu = useRef(null)
+    const { data: user } = useCurrentUser()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -87,7 +89,7 @@ const Navbar = () => {
                     <SearchBar />
                     <div onBlur={handleAccountBlur} ref={accountMenu} tabIndex={0} onClick={toggleAccountMenu} className="flex flex-row items-center gap-2 cursor-pointer relative">
                         <div className="flex items-center w-6 h-6 lg:h-10 rounded-md overflow-hidden">
-                            <img src="/Assets/Images/default_profile.png" alt="" />
+                            <img src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
                         </div>
                         <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'}`} />
                         <div>

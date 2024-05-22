@@ -106,7 +106,7 @@ const Auth = () => {
                 </nav>
                 <div className="flex justify-center">
                     <div className="bg-black bg-opacity-70 px-16 py-16 self-center mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full">
-                        <form action="">
+                        <form onKeyDown={(e) => { if (e.key === "Enter") { variant == "login" ? login() : register() } }} action="">
                             <h2 className="text-white text-4xl mb-8 font-semibold">
                                 {variant == 'login' ? 'Sign in' : 'Register'}
                             </h2>
