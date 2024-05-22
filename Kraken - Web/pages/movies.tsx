@@ -148,42 +148,40 @@ const Movies = () => {
     }
 
     return (
-        <div className="relative flex flex-col w-full h-full" >
+        <div>
+            <Navbar />
+            <InfoModal visible={isOpen} onClose={closeModal} />
+            <div className="text-white w-full flex flex-col items-center pt-[10vh] md:pt-[15vh]">
+                <div className="flex flex-row items-center gap-4 w-[90%] md:w-[50%] bg-zinc-600 border-2 border-zinc-900 rounded-full m-2 p-2">
+                    <BsSearch className="m-1" size={20} />
+                    <input
+                        value={searchText}
+                        onChange={e => {
+                            searchMovies(e.currentTarget.value)
+                        }}
+                        ref={searchInput}
+                        className="w-full bg-zinc-600 focus:outline-none"
+                        type="text"
+                        placeholder="Search Kraken Bay !" />
+                </div>
+            </div>
             <div>
-                <Navbar />
-                <InfoModal visible={isOpen} onClose={closeModal} />
-                <div className="text-white w-full flex flex-col items-center pt-[10vh] md:pt-[15vh]">
-                    <div className="flex flex-row items-center gap-4 w-[90%] md:w-[50%] bg-zinc-600 border-2 border-zinc-900 rounded-full m-2 p-2">
-                        <BsSearch className="m-1" size={20} />
-                        <input
-                            value={searchText}
-                            onChange={e => {
-                                searchMovies(e.currentTarget.value)
-                            }}
-                            ref={searchInput}
-                            className="w-full bg-zinc-600 focus:outline-none"
-                            type="text"
-                            placeholder="Search Kraken Bay !" />
-                    </div>
+                <div className="flex flex-wrap items-center justify-center w-full gap-2 px-[20%] my-10">
+                    {gDispList?.genreList.map((e) => (
+                        <div key={e?.id}>
+                            <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
+                            <label htmlFor={e?.id} className={`${getList()[gDispList.index(e)].isClicked ? "bg-white border-white" : "bordrer-zing-400"} flex flex-row items-center gap-2 cursor-pointer text-zinc-400 py-1 px-2 rounded-full border-2 transition duration-300`}>
+                                <p>
+                                    {e?.genre}
+                                </p>
+                                <GoPlus className={`font-extrabold transition duration-300 ${e?.isClicked ? "transform rotate-[135deg]" : ""}`} size={15} />
+                            </label>
+                        </div>
+                    ))}
                 </div>
-                <div>
-                    <div className="flex flex-wrap items-center justify-center w-full gap-2 px-[20%] my-10">
-                        {gDispList?.genreList.map((e) => (
-                            <div key={e?.id}>
-                                <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
-                                <label htmlFor={e?.id} className={`${getList()[gDispList.index(e)].isClicked ? "bg-white border-white" : "bordrer-zing-400"} flex flex-row items-center gap-2 cursor-pointer text-zinc-400 py-1 px-2 rounded-full border-2 transition duration-300`}>
-                                    <p>
-                                        {e?.genre}
-                                    </p>
-                                    <GoPlus className={`font-extrabold transition duration-300 ${e?.isClicked ? "transform rotate-[135deg]" : ""}`} size={15} />
-                                </label>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="mb-10">
-                    <MovieList data={searchResult} title="" />
-                </div>
+            </div>
+            <div className="mb-10">
+                <MovieList data={searchResult} title="" />
             </div>
             <Footer />
         </div >

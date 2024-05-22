@@ -57,35 +57,47 @@ const Uploader = () => {
         const loading = toast.loading("Uploading your file...", ToastProps)
         if (isUndefined(uploadProps.video)) {
             toast.update(loading, { render: "Please choose a video file before uploading.", type: "error", isLoading: false, autoClose: 2000 })
-            return null
+            return
         }
         if (isUndefined(uploadProps.title)) {
             toast.update(loading, { render: "Please choose a title for your file.", type: "error", isLoading: false, autoClose: 2000 })
-            return null
+            return
         }
         if (isUndefined(uploadProps.description)) {
             toast.update(loading, { render: "Please write a small descritpion for your file.", type: "error", isLoading: false, autoClose: 2000 })
-            return null
+            return
         }
         if (isUndefined(uploadProps.genres)) {
             toast.update(loading, { render: "Select at least one genre for your file.", type: "error", isLoading: false, autoClose: 2000 })
+            return
         }
         await uploadProps.videoRequest?.catch((err) => {
-            console.log(err);
             toast.update(loading, { render: "Oops, something went terribly wrong...", type: "error", isLoading: false, autoClose: 2000 })
-            return null
+            return
         }).then((data) => {
             data
         })
 
+        try {
+            const formData = new FormData();
+            formData.append("Thumbnail", uploadProps.thumbnail);
+            formData.append("Poster", uploadProps.poster);
+            await axios.post(`/api/uploader/image/${uploadProps.id}`, formData).catch((err) => {
+                toast.update(loading, { render: "Oops, something went wrong uploading your images...", type: "error", isLoading: false, autoClose: 2000 })
+                throw new Error("Image upload fail.")
+            })
 
-        await axios.post("/api/uploader", { uploadProps }).catch((err) => {
-            console.log(err)
-            toast.update(loading, { render: "Oops, something went terribly wrong...", type: "error", isLoading: false, autoClose: 2000 })
-            return null
-        }).then((data) => {
-            data
-        })
+
+            await axios.post("/api/uploader", { uploadProps: uploadProps, thumbName: uploadProps.thumbnail.name, postName: uploadProps.poster.name }).catch((err) => {
+                console.log(err)
+                toast.update(loading, { render: "Oops, something went terribly wrong...", type: "error", isLoading: false, autoClose: 2000 })
+                throw new Error("Video upload fail.")
+            }).then((data) => {
+                data
+            })
+        } catch (err) {
+            return
+        }
 
         toast.update(loading, { render: "Thank you for your contribution !", type: "success", isLoading: false, autoClose: 2000 })
         uploadProps.newUpload()

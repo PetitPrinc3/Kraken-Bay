@@ -91,7 +91,7 @@ const Account = () => {
                                 <p className="mx-4 my-2 text-zinc-400 font-semibold">Your notifications :</p>
                                 {notifications && notifications.map((notification: any) => (
                                     <div key={notification.id} className="flex flex-row items-center justify-start w-full">
-                                        <div className="w-[20%]">
+                                        <div className="w-auto">
                                             <IoIosCheckmarkCircle className={`${notification.type === "success" ? "inline-block" : "hidden"} m-2 text-green-500`} size={30} />
                                             <IoIosInformationCircle className={`${notification.type === "info" ? "inline-block" : "hidden"} m-2 text-blue-500`} size={30} />
                                             <IoIosWarning className={`${notification.type === "warning" ? "inline-block" : "hidden"} m-2 text-orange-500`} size={30} />
@@ -109,7 +109,7 @@ const Account = () => {
                                 <p className="mx-4 my-2 text-zinc-400 font-semibold">Your uploads :</p>
                                 {uploads && uploads.map((upload: any) => (
                                     <div key={upload.id} className="flex flex-row items-center justify-start w-full">
-                                        <div className="w-[20%]">
+                                        <div className="w-auto">
                                             <IoIosCheckmarkCircle className={`${upload?.uploadedBy ? "inline-block" : "hidden"} m-2 text-green-500`} size={30} />
                                             <MdPending className={`${upload?.userName ? "inline-block" : "hidden"} m-2 text-blue-500`} size={30} />
                                         </div>

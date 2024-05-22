@@ -7,8 +7,8 @@ export interface UploadPropsInterface {
     title?: string;
     genres?: string;
     description?: string;
-    thumbnail?: string;
-    poster?: string;
+    thumbnail?: any;
+    poster?: any;
     video?: string;
     videoRequest?: Promise<any | AxiosResponse<any, any>>;
 
@@ -16,8 +16,8 @@ export interface UploadPropsInterface {
     setTitle: (title?: string) => void
     setGenre: (genre?: string) => void
     setDesc: (description?: string) => void
-    setThumb: (thumb?: string) => void
-    setPoster: (poster?: string) => void
+    setThumb: (thumb?: any) => void
+    setPoster: (poster?: any) => void
     setVideo: (video?: string) => void
     setRequest: (request?: Promise<any | AxiosResponse<any, any>>) => void
 }
@@ -51,10 +51,10 @@ const useUploadModal = create<UploadPropsInterface>((set, get) => ({
     setDesc: (description?: string) => set({
         description: description
     }),
-    setThumb: (thumb?: string) => set({
+    setThumb: (thumb?: any) => set({
         thumbnail: thumb
     }),
-    setPoster: (poster?: string) => set({
+    setPoster: (poster?: any) => set({
         poster: poster
     }),
     setVideo: (video?: string) => set({

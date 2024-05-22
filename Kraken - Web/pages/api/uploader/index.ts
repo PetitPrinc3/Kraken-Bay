@@ -6,8 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method != 'POST') return res.status(400)
 
     const { currentUser } = await serverAuth(req, res);
-    const { uploadProps } = req.body
-
+    const { uploadProps, thumbName, postName } = req.body
 
     const upload = await prismadb.PendingMedia.create({
         data: {
@@ -16,8 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             type: "Movies",
             description: uploadProps.description,
             videoUrl: uploadProps.video,
-            thumbUrl: uploadProps.thumbnail,
-            posterUrl: uploadProps.poster,
+            thumbUrl: thumbName,
+            posterUrl: postName,
             genre: uploadProps.genres,
             userId: currentUser.id,
             userName: currentUser.email,

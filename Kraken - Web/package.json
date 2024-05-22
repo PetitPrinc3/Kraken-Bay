@@ -13,6 +13,7 @@
     "@prisma/client": "^5.12.1",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "file-type": "^19.0.0",
     "formidable": "^3.5.1",
     "lodash": "^4.17.21",
     "mime": "^4.0.3",

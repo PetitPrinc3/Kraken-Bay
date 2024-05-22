@@ -8,6 +8,7 @@ import UploadItem from "./UploadItem";
 import NotificationBell from "./NotificationBell";
 import { useRef } from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { isUndefined } from "lodash";
 
 const TOP_OFFSET = 66;
 
@@ -44,7 +45,6 @@ const Navbar = () => {
         setShowAccountMenu((current) => !current)
         if (!showAccountMenu) {
             accountMenu.current.focus()
-            console.log("focus")
         }
     }, [showAccountMenu, accountMenu])
 
@@ -65,6 +65,8 @@ const Navbar = () => {
             }
         });
     }, [setShowMobileMenu]);
+
+    if (isUndefined(user)) return null
 
     return (
         <nav className="w-full fixed z-40">

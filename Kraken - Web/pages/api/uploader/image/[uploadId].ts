@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import formidable from 'formidable';
 import path from 'path';
 import fs from 'fs'
+import { fileTypeFromFile } from 'file-type'
+import { isUndefined } from 'lodash';
 
 export const config = {
     api: {
@@ -31,7 +33,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             resolve({ fields, file })
         })
     }).catch((err) => { res.status(400).json(err) })
-    return res.status(200).json("Image file uploaded")
+
+    if (uploadFile?.file?.Thumbnail) {
+        var fileType = await fileTypeFromFile(uploadFile.file.Thumbnail[0].filepath)
+        if (isUndefined(fileType?.mime) || !fileType.mime.startsWith("image/")) {
+            fs.rm(uploadFile.file.Thumbnail[0].filepath, (err) => console.log(err))
+            return res.status(400).json("Invalid file type.")
+        }
+    }
+
+    if (uploadFile?.file?.Poster) {
+        var fileType = await fileTypeFromFile(uploadFile.file.Poster[0].filepath)
+        if (isUndefined(fileType?.mime) || !fileType.mime.startsWith("image/")) {
+            fs.rm(uploadFile.file.Poster[0].filepath, (err) => console.log(err))
+            return res.status(400).json("Invalid file type.")
+        }
+    }
+
+    return res.status(200).json(uploadFile)
 }
 
 export default handler;

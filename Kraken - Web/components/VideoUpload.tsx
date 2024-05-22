@@ -43,6 +43,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ uploadProps }) => {
             })
             uploadProps.setRequest(uploadRequest)
             uploadProps.setVideo(videoFile?.name)
+            setProgress(100)
         }
     }
 
@@ -64,7 +65,7 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ uploadProps }) => {
                 <input
                     ref={videoRef}
                     type="file"
-                    accept="video/*"
+                    accept="video/*,.mkv"
                     onChange={handleUpload}
                     style={{ display: "none" }}
                 />

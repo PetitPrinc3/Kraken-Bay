@@ -53,44 +53,48 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
             <div className="fixed h-full w-full" onClick={() => handleClose()} />
             <div className="relative w-auto max-w-[90vw] md:max-w-3xl rounded-md overflow-hidden mt-auto">
                 <div className={`${isVisible ? 'scale-100' : 'scale-0'} transform duration-300 relative flex-auto rounded-t-md bg-zinc-900 drop-shadow-md`}>
-                    <div className="relative h-96 mt-10">
-                        <video className="w-full brightness-[60%] rounded-t-md object-cover h-full" autoPlay muted loop src={data?.videoUrl} poster={data?.posterUrl}></video>
-                        <div className="cursor-pointer absolute top-3 right-3 h-10 w-10 rounded-full bg-black bg-opacity-70 flex items-center justify-center" onClick={() => { handleClose() }}>
-                            <AiOutlineClose className="text-white" size={20} />
-                        </div>
-                        <div className="absolute bottom-[10%] left-10">
-                            <p className="text-white text-3xl md:text-4xl h-full lg:text-5xl font-bold mb-8">
-                                {data?.title}
-                            </p>
-                            <div className="flex flex-row gap-4 items-center">
-                                <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
-                                    <PlayButton movieId={data.id} />
-                                </div>
-                                <div>
-                                    <FavoriteButton movieId={data.id} />
-                                </div>
-                                <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
-                                    <DownloadButton movieId={data.id} />
+                    <div className="my-10">
+                        <div className="relative h-96 mt-10">
+                            <video className="w-full brightness-[60%] rounded-t-md object-cover h-full" autoPlay muted loop src={data?.videoUrl} poster={data?.posterUrl}></video>
+                            <div className="cursor-pointer absolute top-3 right-3 h-10 w-10 rounded-full bg-black bg-opacity-70 flex items-center justify-center" onClick={() => { handleClose() }}>
+                                <AiOutlineClose className="text-white" size={20} />
+                            </div>
+                            <div className="absolute bottom-[10%] left-10">
+                                <p className="text-white text-3xl md:text-4xl h-full lg:text-5xl font-bold mb-8">
+                                    {data?.title}
+                                </p>
+                                <div className="flex flex-row gap-4 items-center">
+                                    <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
+                                        <PlayButton movieId={data.id} />
+                                    </div>
+                                    <div>
+                                        <FavoriteButton movieId={data.id} />
+                                    </div>
+                                    <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
+                                        <DownloadButton movieId={data.id} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="px-12 py-8">
-                        <p className="text-green-400 font-semibold text-lg">
-                            {isNew ? "New" : ""}
-                        </p>
-                        <p className="text-white text-s">
-                            {data?.type == "Movies" ? data?.duration : (data?.seasons.split(",")).length + " Seasons"}
-                        </p>
-                        <p className="text-white text-s">
-                            Genres : {data?.genre}
-                        </p>
-                        <p className="text-white text-lg my-4">
-                            {data?.description}
-                        </p>
-                    </div>
-                    <div className={`${(data?.type == "Series") ? "visible" : "hidden"} relative px-12 py-8 mb-10 rounded-md`}>
-                        <SeasonList serieId={data?.id} />
+                        <div className="px-12 py-8">
+                            <p className="text-green-400 font-semibold text-lg">
+                                {isNew ? "New" : ""}
+                            </p>
+                            <p className="text-white text-s">
+                                {data?.type == "Movies" ? data?.duration : (data?.seasons.split(",")).length + " Seasons"}
+                            </p>
+                            <p className="text-white text-s">
+                                Genres : {data?.genre}
+                            </p>
+                            <p className="text-white text-lg my-4">
+                                {data?.description}
+                            </p>
+                        </div>
+                        {data?.type == "Series" && (
+                            <div className="relative px-12 py-8 rounded-md">
+                                <SeasonList serieId={data?.id} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

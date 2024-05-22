@@ -17,7 +17,7 @@ const Latest = () => {
             <div className="pt-[10vh]">
                 <MovieList data={latest} title="Latest Uploads" />
             </div>
-            <Footer/>
+            <Footer />
         </div>
     )
 }

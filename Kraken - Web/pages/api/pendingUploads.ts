@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     description: upload?.description,
                     videoUrl: "/Assets/" + upload?.type + "/" + upload?.id + "/" + upload?.videoUrl,
                     thumbUrl: "/Assets/" + upload?.type + "/" + upload?.id + "/thumb/" + upload?.thumbUrl,
-                    posterUrl: upload.posterUrl ? "/Assets/" + "/" + upload?.id + upload?.type + "/thumb/" + upload?.posterUrl : "/Assets/" + upload?.type + "/" + upload?.id + "/thumb/" + upload?.thumbUrl,
+                    posterUrl: upload.posterUrl ? "/Assets/" + upload?.type + "/" + upload?.id + "/thumb/" + upload?.posterUrl : "/Assets/" + upload?.type + "/" + upload?.id + "/thumb/" + upload?.thumbUrl,
                     genre: upload?.genre,
                     uploadedBy: upload?.userName
                 }
