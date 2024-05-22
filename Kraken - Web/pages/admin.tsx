@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import useCurrentUser from "@/hooks/useCurrentUser"
 import { isEmpty, isUndefined } from "lodash";
 import { PiWarningCircleFill } from "react-icons/pi";
@@ -151,6 +152,7 @@ export default function Admin() {
                 theme="colored"
                 containerId={"AdminContainer"}
             />
+            <Footer />
         </div>
     )
 }

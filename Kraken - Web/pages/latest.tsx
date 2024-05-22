@@ -1,6 +1,7 @@
 import useLatest from "@/hooks/useLatest"
 import MovieList from "@/components/MovieList";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import useInfoModal from "@/hooks/useInfoModal";
 import InfoModal from "@/components/InfoModal";
 
@@ -16,6 +17,7 @@ const Latest = () => {
             <div className="pt-[10vh]">
                 <MovieList data={latest} title="Latest Uploads" />
             </div>
+            <Footer/>
         </div>
     )
 }

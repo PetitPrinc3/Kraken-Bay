@@ -1,12 +1,31 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useNotifications from "@/hooks/useNotifications";
 import useUserUploads from "@/hooks/useUserUploads";
-
 import { FaCrown, FaUser } from "react-icons/fa6";
 import { IoIosInformationCircle, IoIosWarning, IoIosCheckmarkCircle } from "react-icons/io";
 import { RiIndeterminateCircleFill } from "react-icons/ri";
 import { MdPending } from "react-icons/md";
+import { NextPageContext } from "next";
+import { getSession } from "next-auth/react";
+
+export async function getServerSideProps(context: NextPageContext) {
+    const session = await getSession(context);
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/auth",
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+}
 
 const Account = () => {
     const { data: user } = useCurrentUser()
@@ -18,7 +37,7 @@ const Account = () => {
     return (
         <div className="">
             <Navbar />
-            <div className="pt-[10vh] flex flex-col items-center">
+            <div className="py-[10vh] flex flex-col items-center">
                 <div className="md:h-[85vh] w-[85vw] md:w-[95vw] flex flex-col p-4 gap-4 rounded-md bg-neutral-700 overflow-auto z-0">
                     <div className="flex flex-col h-[25%] md:flex-row md:items-center gap-8 p-2 border-zinc-800 border-2 rounded-md z-30">
                         <div className="w-full h-full md:w-auto flex flex-col items-center">
@@ -76,6 +95,7 @@ const Account = () => {
                     <div className="absolute md:h-[80vh] w-[80vw] md:w-[90vw] bg-[url('/Assets/Images/kraken.png')] bg-contain bg-no-repeat bg-center opacity-60 z-10"></div>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

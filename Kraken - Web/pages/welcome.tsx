@@ -67,8 +67,8 @@ const Welcome = () => {
                 </div>
                 <div className="w-[90vw] md:w-[60vw]  flex flex-row items-center">
                     <div className="flex flex-row gap-2 item-center text-sm text-zinc-400 font-semibold">
-                        <input onChange={() => setNeverShow(!neverShow)} id="NeverShowAgain" type="checkbox" className="appearance-none w-3 h-3 mt-auto mb-1 rounded-sm bg-neutral-700 border-1 border-zinc-500 checked:bg-zinc-500 peer" />
-                        <FaCheck className="absolute l-0 mr-auto w-3 h-3 mt-1 hidden peer-checked:block pointer-events-none" size={5} />
+                        <input onChange={() => setNeverShow(!neverShow)} id="NeverShowAgain" type="checkbox" className="appearance-none w-3 h-3 mt-auto mb-1 rounded-sm bg-neutral-700 border-1 border-zinc-500 checked:bg-red-600 peer" />
+                        <FaCheck className="absolute l-0 mr-auto w-3 h-3 mt-1 hidden peer-checked:block pointer-events-none text-white" size={5} />
                         <label className="cursor-pointer" htmlFor="NeverShowAgain">Never show this again</label>
                     </div>
                     <button onClick={async () => {
@@ -77,7 +77,7 @@ const Welcome = () => {
                         }
                         router.push('/home')
                     }}
-                        className="ml-auto justify-end font-semibold text-white transition-all duration-500 py-2 px-4 rounded-md hover:bg-right-bottom bg-gradient-to-l from-white from-50% to-transparent to-50% bg-[length:200%_100%] hover:text-neutral-700">
+                        className="ml-auto justify-end font-semibold text-white transition-all duration-500 py-2 px-4 rounded-md hover:bg-right-bottom bg-gradient-to-l from-red-600 from-50% to-transparent to-50% bg-[length:200%_100%]">
                         Enter
                     </button>
                 </div>

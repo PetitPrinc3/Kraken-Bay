@@ -6,6 +6,7 @@ import { useState, useCallback, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import UploadItem from "./UploadItem";
 import NotificationBell from "./NotificationBell";
+import { useRef } from "react";
 
 const TOP_OFFSET = 66;
 
@@ -13,6 +14,8 @@ const Navbar = () => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showAccountMenu, setShowAccountMenu] = useState(false);
     const [showBackground, setShowBackground] = useState(false);
+    const accountMenu = useRef(null)
+    const mobileMenu = useRef(null)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -37,7 +40,29 @@ const Navbar = () => {
 
     const toggleAccountMenu = useCallback(() => {
         setShowAccountMenu((current) => !current)
-    }, [])
+        if (!showAccountMenu) {
+            accountMenu.current.focus()
+            console.log("focus")
+        }
+    }, [showAccountMenu, accountMenu])
+
+    const handleAccountBlur = useCallback((e: any) => {
+        const currentTarget = e.currentTarget;
+        requestAnimationFrame(() => {
+            if (!currentTarget.contains(document.activeElement)) {
+                setShowAccountMenu(false);
+            }
+        });
+    }, [setShowAccountMenu]);
+
+    const handleMobileBlur = useCallback((e: any) => {
+        const currentTarget = e.currentTarget;
+        requestAnimationFrame(() => {
+            if (!currentTarget.contains(document.activeElement)) {
+                setShowMobileMenu(false);
+            }
+        });
+    }, [setShowMobileMenu]);
 
     return (
         <nav className="w-full fixed z-40">
@@ -51,7 +76,7 @@ const Navbar = () => {
                     <NavbarItem label="Movies" url="/movies" />
                     <NavbarItem label="Latest Uploads" url="/latest" />
                 </div>
-                <div onClick={toggleMobileMenu} className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative">
+                <div onBlur={handleMobileBlur} ref={mobileMenu} tabIndex={0} onClick={toggleMobileMenu} className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative">
                     <p className="text-white text-sm">Browse</p>
                     <BsChevronDown className={`text-white transition ${showMobileMenu ? 'rotate-180' : 'rotate-0'}`} />
                     <MobileMenu visible={showMobileMenu} />
@@ -60,12 +85,14 @@ const Navbar = () => {
                     <UploadItem />
                     <NotificationBell />
                     <SearchBar />
-                    <div onClick={toggleAccountMenu} className="flex flex-row items-center gap-2 cursor-pointer relative">
+                    <div onBlur={handleAccountBlur} ref={accountMenu} tabIndex={0} onClick={toggleAccountMenu} className="flex flex-row items-center gap-2 cursor-pointer relative">
                         <div className="flex items-center w-6 h-6 lg:h-10 rounded-md overflow-hidden">
                             <img src="/Assets/Images/default_profile.png" alt="" />
                         </div>
                         <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'}`} />
-                        <AccountMenu visible={showAccountMenu} />
+                        <div>
+                            <AccountMenu visible={showAccountMenu} />
+                        </div>
                     </div>
                 </div>
             </div>

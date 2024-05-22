@@ -17,8 +17,9 @@ import { toast, ToastContainer, ToastOptions } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
 
 import { IoSend } from "react-icons/io5";
+import Footer from "@/components/Footer";
 
-async function getServerSideProps(context: NextPageContext) {
+export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
 
     if (!session) {
@@ -106,8 +107,8 @@ const Uploader = () => {
                     pauseOnHover
                     theme="colored" />
             </div>
-            <div className="pt-[15vh] flex flex-col items-center">
-                <div className="w-[90%] bg-zinc-600 rounded-md">
+            <div className="py-[10vh] flex flex-col items-center">
+                <div className="w-[90%] mt-4 bg-zinc-600 rounded-md">
                     <div className="w-full flex flex-row px-4 h-20 ">
                         <div className="w-[50%] md:w-[40%] mr-4 m-auto ml-0">
                             <Input
@@ -164,6 +165,7 @@ const Uploader = () => {
                     <VideoUpload key={uploadProps?.id + "Video"} uploadProps={uploadProps} />
                 </div>
             </div>
+            <Footer />
         </div >
     )
 }
