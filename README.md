@@ -1,5 +1,6 @@
 # Kraken Bay
 
+<img src="Kraken - Web/public/Assets/Images/kraken.png" align="right" style="float: right;" width="400rem">
 Open source Media Center and Netflix-like server.  
 
 ## Project
