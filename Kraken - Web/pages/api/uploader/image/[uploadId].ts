@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import formidable from 'formidable';
 import path from 'path';
 import fs from 'fs'
-import { fileTypeFromFile } from 'file-type'
+import { fileTypeFromBlob } from 'file-type/core'
 import { isUndefined } from 'lodash';
 
 export const config = {
@@ -27,23 +27,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const form = formidable(options)
 
-    const uploadFile = await new Promise((resolve: (value?: {} | PromiseLike<{}>) => void, reject) => {
+    const uploadFile: any = await new Promise((resolve: (value?: {} | PromiseLike<{}>) => void, reject) => {
         form.parse(req, (err, fields, file) => {
             if (err) reject(err)
             resolve({ fields, file })
         })
     }).catch((err) => { res.status(400).json(err) })
 
-    if (uploadFile?.file?.Thumbnail) {
-        var fileType = await fileTypeFromFile(uploadFile.file.Thumbnail[0].filepath)
+    if (uploadFile.file?.Thumbnail) {
+        var fileType = await fileTypeFromBlob(uploadFile.file.Thumbnail[0].filepath)
         if (isUndefined(fileType?.mime) || !fileType.mime.startsWith("image/")) {
             fs.rm(uploadFile.file.Thumbnail[0].filepath, (err) => console.log(err))
             return res.status(400).json("Invalid file type.")
         }
     }
 
-    if (uploadFile?.file?.Poster) {
-        var fileType = await fileTypeFromFile(uploadFile.file.Poster[0].filepath)
+    if (uploadFile.file?.Poster) {
+        var fileType = await fileTypeFromBlob(uploadFile.file.Poster[0].filepath)
         if (isUndefined(fileType?.mime) || !fileType.mime.startsWith("image/")) {
             fs.rm(uploadFile.file.Poster[0].filepath, (err) => console.log(err))
             return res.status(400).json("Invalid file type.")

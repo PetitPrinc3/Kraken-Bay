@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error('Invalid ID');
         }
 
-        const movie = await prismadb.PendingMedia.findUnique({
+        const movie = await prismadb.pendingMedia.findUnique({
             where: {
                 id: uploadId,
             }

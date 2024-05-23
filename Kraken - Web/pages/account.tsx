@@ -34,7 +34,7 @@ const Account = () => {
     const { data: user } = useCurrentUser()
     const { data: notifications } = useNotifications()
     const { data: uploads } = useUserUploads();
-    const profilePic = useRef(null)
+    const profilePic = useRef<HTMLInputElement>()
     const [image, setImage] = useState<string>()
     const [firstLoad, setFirstLoad] = useState(true)
 

@@ -9,9 +9,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const { serieId, season } = req.query;
-        const existingSerie = await prismadb.Media.findUnique({
+        const existingSerie = await prismadb.media.findUnique({
             where: {
-                id: serieId,
+                id: serieId as string,
             }
         })
 
@@ -19,14 +19,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json({ error: 'Invalid serie.' });
         }
 
-        const existingEps = await prismadb.Serie_EP.findMany({
+        const existingEps = await prismadb.serie_EP.findMany({
             where: {
                 AND: [
                     {
-                        serieId: serieId,
+                        serieId: serieId as string,
                     },
                     {
-                        season: season,
+                        season: season as string,
                     }
                 ]
             }

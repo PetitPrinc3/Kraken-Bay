@@ -6,11 +6,11 @@ import { isUndefined } from "lodash";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method == "GET") {
         try {
-            const { currentUser } = await serverAuth(req, res);
+            await serverAuth(req, res);
             const { userId, userRole } = req.query;
 
             if (isUndefined(userId)) {
-                const pendigAccounts = await prismadb.User.findMany({
+                const pendigAccounts = await prismadb.user.findMany({
                     where: {
                         roles: ""
                     }
@@ -24,13 +24,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             if (!isUndefined(userRole)) {
-                const validateAccount = await prismadb.User.update({
+                const validateAccount = await prismadb.user.update({
                     where: {
                         id: userId
                     },
                     data: {
                         roles: {
-                            set: userRole
+                            set: userRole as string
                         }
                     }
                 })
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == 'DELETE') {
         try {
-            const { currentUser } = await serverAuth(req, res);
+            await serverAuth(req, res);
             const { userId } = req.body;
 
             const user = await prismadb.user.delete({

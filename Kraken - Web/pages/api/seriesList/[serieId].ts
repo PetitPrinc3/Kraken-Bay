@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error('Invalid ID');
         }
 
-        const serie = await prismadb.Serie_EP.findUnique({
+        const serie = await prismadb.serie_EP.findUnique({
             where: {
                 id: serieId,
             }

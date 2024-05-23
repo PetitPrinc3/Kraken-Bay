@@ -16,13 +16,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         })
         const randomIndex = Math.floor(Math.random() * movieCount)
-        const randomMovies = await prismadb.media.findMany({
+        const randomMovies: any = await prismadb.media.findMany({
             take: 1,
             skip: randomIndex
         });
 
         if (randomMovies.type == "Series") {
-            const existingEps = await prismadb.Serie_EP.findMany({
+            const existingEps = await prismadb.serie_EP.findMany({
                 where: {
                     serieId: randomMovies.id,
                 },

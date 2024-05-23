@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const genres = await prismadb.Genres.findMany()
+        const genres = await prismadb.genres.findMany()
         return res.status(200).json(genres)
     } catch (error) {
         console.log(error);

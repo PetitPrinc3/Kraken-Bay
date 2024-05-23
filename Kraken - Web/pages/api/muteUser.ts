@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const { currentUser } = await serverAuth(req, res)
+        const { currentUser }: any = await serverAuth(req, res)
         const { data: muteValue } = req.body
 
         if (typeof muteValue != "string") {
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         console.log(muteValue)
 
-        const user = await prismadb.User.update({
+        const user = await prismadb.user.update({
             where: {
                 id: currentUser.id,
             },

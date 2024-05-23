@@ -12,7 +12,7 @@ interface VideoUploadProps {
 
 const VideoUpload: React.FC<VideoUploadProps> = ({ uploadProps }) => {
 
-    const [selectedVideo, setSelectedVideo] = useState(uploadProps.videoUrl);
+    const [selectedVideo, setSelectedVideo] = useState<any>(undefined);
     const [progress, setProgress] = useState(0);
     const [uploadStatus, setUploadStatus] = useState("select");
 

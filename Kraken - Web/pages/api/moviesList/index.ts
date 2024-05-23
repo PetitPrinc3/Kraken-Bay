@@ -17,11 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 where: {
                     AND: [
                         {
-                            type: mediaType
+                            type: mediaType as string
                         },
                         {
                             genre: {
-                                search: genre
+                                search: genre as string
                             }
                         }
                     ]
@@ -33,14 +33,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (isEmpty(searchText)) {
             const movies = await prismadb.media.findMany({
                 where: {
-                    type: mediaType
+                    type: mediaType as string
                 }
             })
             return res.status(200).json(movies)
         }
 
-        if (isEmpty(searchText)) {
-
+        if (typeof searchText != "string") {
+            return res.status(400).json("Invalid search type.")
         }
 
         const movies = await prismadb.media.findMany({
@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             search: searchText
                         }
                     }, {
-                        type: mediaType
+                        type: mediaType as string
                     }
                 ]
             }

@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         await serverAuth(req, res)
 
-        const movies = await prismadb.Media.findMany({
+        const movies = await prismadb.media.findMany({
             orderBy: {
                 createdAt: 'desc'
             },

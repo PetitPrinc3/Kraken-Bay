@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json("Invalid recipient.")
         }
 
-        const user = await prismadb.Notification.create({
+        const user = await prismadb.notification.create({
             data: {
                 content: content,
                 type: type || "info",

@@ -5,10 +5,10 @@ import serverAuth from "@/lib/serverAuth";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method != 'POST') return res.status(400)
 
-    const { currentUser } = await serverAuth(req, res);
+    const { currentUser }: any = await serverAuth(req, res);
     const { uploadProps, thumbName, postName } = req.body
 
-    const upload = await prismadb.PendingMedia.create({
+    const upload = await prismadb.pendingMedia.create({
         data: {
             id: uploadProps.id,
             title: uploadProps.title,

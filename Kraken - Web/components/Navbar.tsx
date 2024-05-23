@@ -17,7 +17,7 @@ const Navbar = () => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showAccountMenu, setShowAccountMenu] = useState(false);
     const [showBackground, setShowBackground] = useState(false);
-    const accountMenu = useRef(null)
+    const accountMenu = useRef<HTMLDivElement>(null)
     const mobileMenu = useRef(null)
     const router = useRouter();
     const { data: user } = useCurrentUser()
@@ -46,7 +46,7 @@ const Navbar = () => {
     const toggleAccountMenu = useCallback(() => {
         setShowAccountMenu((current) => !current)
         if (!showAccountMenu) {
-            accountMenu.current.focus()
+            accountMenu.current?.focus()
         }
     }, [showAccountMenu, accountMenu])
 

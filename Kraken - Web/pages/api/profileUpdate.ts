@@ -13,7 +13,7 @@ export const config = {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { currentUser } = await serverAuth(req, res)
+    const { currentUser }: any = await serverAuth(req, res)
     const options: formidable.Options = {}
     let uploadDir = "public/Assets/Images/UserProfiles"
     options.uploadDir = uploadDir;
@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const form = formidable(options)
 
-    const uploadFile = await new Promise((resolve: (value?: {} | PromiseLike<{}>) => void, reject) => {
+    const uploadFile: any = await new Promise((resolve: (value?: {} | PromiseLike<{}>) => void, reject) => {
         form.parse(req, (err, fields, file) => {
             if (err) reject(err)
             resolve({ fields, file })
@@ -41,7 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     console.log(newFile)
 
-    const user = await prismadb.User.update({
+    const user = await prismadb.user.update({
         where: {
             email: currentUser.email
         },

@@ -12,7 +12,7 @@ const NotificationBell = () => {
     const [hasNew, setHasNew] = useState<boolean>()
     const [firstLoad, setFirstLoad] = useState(true)
     let { data: notifications } = useNewNotifications();
-    const notificatioPanel = useRef(null)
+    const notificatioPanel = useRef<HTMLDivElement>(null)
     const router = useRouter();
 
     useEffect(() => {

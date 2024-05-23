@@ -63,7 +63,7 @@ export const authOptions: AuthOptions = {
     callbacks: {
         jwt({ token, user }) {
             if (user) {
-                token.skipPrompt = user.skipPrompt
+                token.skipPrompt = (user as User).skipPrompt
             }
             return token
         },

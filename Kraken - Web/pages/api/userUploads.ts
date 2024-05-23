@@ -5,8 +5,8 @@ import serverAuth from '@/lib/serverAuth';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method == "GET") {
         try {
-            const { currentUser } = await serverAuth(req, res);
-            const pendingUploads = await prismadb.PendingMedia.findMany({
+            const { currentUser }: any = await serverAuth(req, res);
+            const pendingUploads = await prismadb.pendingMedia.findMany({
                 where: {
                     userName: currentUser.email
                 },
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     createdAt: 'desc'
                 }
             });
-            const existingUploads = await prismadb.Media.findMany({
+            const existingUploads = await prismadb.media.findMany({
                 where: {
                     uploadedBy: currentUser.email
                 },
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             })
 
             for (let upload of existingUploads) {
-                pendingUploads.push(upload)
+                pendingUploads.push(upload as any)
             }
 
             return res.status(200).json(pendingUploads);

@@ -10,12 +10,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         await serverAuth(req, res);
-        const movieCount = await prismadb.Media.count({
+        const movieCount = await prismadb.media.count({
             where: {
                 type: "Movies"
             }
         })
-        const epCount = await prismadb.Serie_EP.count()
+        const epCount = await prismadb.serie_EP.count()
 
         const mediaCount = +movieCount + +epCount
 

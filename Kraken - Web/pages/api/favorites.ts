@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const { currentUser } = await serverAuth(req, res);
+        const { currentUser }: any = await serverAuth(req, res);
         let favoriteIds = currentUser?.favoriteIds
 
         if (favoriteIds.includes(",")) {

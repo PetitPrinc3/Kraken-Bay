@@ -5,9 +5,9 @@ import serverAuth from '@/lib/serverAuth';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method == "GET") {
         try {
-            const { currentUser } = await serverAuth(req, res);
+            const { currentUser }: any = await serverAuth(req, res);
 
-            const notifications = await prismadb.Notification.findMany({
+            const notifications = await prismadb.notification.findMany({
                 where: {
                     recipient: currentUser?.email,
                     status: "unread"
@@ -19,16 +19,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             return res.status(200).json(notifications);
 
-        } catch (error) {
+        } catch (error: any) {
             throw new Error(error)
             return res.status(400).end()
         }
     }
 
     if (req.method == 'DELETE') {
-        const { currentUser } = await serverAuth(req, res);
+        const { currentUser }: any = await serverAuth(req, res);
 
-        const update = await prismadb.Notification.updateMany({
+        const update = await prismadb.notification.updateMany({
             where: {
                 recipient: currentUser?.email,
                 status: "unread"

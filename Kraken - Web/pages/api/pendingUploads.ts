@@ -26,11 +26,11 @@ const MoveFile = (origin: PathLike, destination: PathLike) => {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method == "GET") {
         try {
-            const { currentUser } = await serverAuth(req, res);
+            await serverAuth(req, res);
             const { uploadId } = req.query;
 
             if (isUndefined(uploadId)) {
-                const pendigUploads = await prismadb.PendingMedia.findMany();
+                const pendigUploads = await prismadb.pendingMedia.findMany();
 
                 return res.status(200).json(pendigUploads);
             }
@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 throw new Error("Invalid ID.")
             }
 
-            const upload = await prismadb.PendingMedia.findUnique({
+            const upload: any = await prismadb.pendingMedia.findUnique({
                 where: {
                     id: uploadId
                 }
@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             fs.rmdir(origin, { recursive: true }, (err) => { if (err?.code !== 'ENOENT') console.log(err) })
 
 
-            const media = await prismadb.Media.create({
+            const media = await prismadb.media.create({
                 data: {
                     id: upload?.id,
                     title: upload?.title,
@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             })
 
-            await prismadb.PendingMedia.delete({
+            await prismadb.pendingMedia.delete({
                 where: {
                     id: uploadId,
                 }
@@ -83,10 +83,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == 'DELETE') {
         try {
-            const { currentUser } = await serverAuth(req, res);
+            await serverAuth(req, res);
             const { uploadId } = req.body;
 
-            const upload = await prismadb.PendingMedia.delete({
+            const upload = await prismadb.pendingMedia.delete({
                 where: {
                     id: uploadId,
                 }
