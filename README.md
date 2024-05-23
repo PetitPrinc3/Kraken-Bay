@@ -10,7 +10,7 @@ Open source Media Center and Netflix-like server.
 | :-: | :-: |  :-: |
 | Installer | :large_blue_circle: | OK: Ongoing |
 | Hotspot mode | :green_circle: | Create util to toggle ON/OFF |
-| Media Server | :black_circle: | |
+| Media Server | :big_blue_circle: | |
 | Web Player | :green_circle: | Basic functionalities OK |
 | Uploader | :green_circle: | UI/DB: OK, enhance security on file types. |
 | Account management | :green_circle: | UI: OK / DB: OK |

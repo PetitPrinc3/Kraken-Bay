@@ -1,6 +1,7 @@
 import useNewNotifications from "@/hooks/useNewNotifications";
 import axios from "axios";
 import { isUndefined } from "lodash";
+import { useRouter } from "next/router";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { BsBell } from "react-icons/bs";
 import { IoIosInformationCircle, IoIosWarning, IoIosCheckmarkCircle } from "react-icons/io";
@@ -12,6 +13,7 @@ const NotificationBell = () => {
     const [firstLoad, setFirstLoad] = useState(true)
     let { data: notifications } = useNewNotifications();
     const notificatioPanel = useRef(null)
+    const router = useRouter();
 
     useEffect(() => {
         if (firstLoad && !isUndefined(notifications)) {
@@ -76,7 +78,7 @@ const NotificationBell = () => {
                                 ))}
                             </div>
                             {notifications.length > 0 && (<hr className="w-[90%] border-1 mt-2 border-zinc-400" />)}
-                            <a href="/account" className="relative bottom-0 text-white my-2 hover:underline">View all notifications</a>
+                            <div onClick={() => router.push("/account")} className="relative bottom-0 text-white my-2 hover:underline">View all notifications</div>
                         </div>
                     </div>
                 ) : null}

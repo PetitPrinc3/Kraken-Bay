@@ -69,7 +69,7 @@ export default function Admin() {
                         <p>You are not an administrator and the access to this page is restricted.</p>
                         <p className="hidden md:block">Your current roles is : {user?.roles} </p>
                     </div>
-                    <a className="py-2 px-4 bg-red-600 rounded-md mb-4 text-white font-semibold" href="/home">Go home</a>
+                    <div className="py-2 px-4 bg-red-600 rounded-md mb-4 text-white font-semibold" onClick={() => router.push("/home")}>Go home</div>
                 </div>
             </div>
         )

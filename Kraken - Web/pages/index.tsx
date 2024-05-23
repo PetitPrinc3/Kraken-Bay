@@ -1,11 +1,15 @@
+import { useRouter } from "next/router";
 import { FcVlc } from "react-icons/fc";
 import { SiVlcmediaplayer } from "react-icons/si";
 
 export default function Index() {
+
+    const router = useRouter()
+
     return (
         <div className="flex flex-col bg-black w-full h-full">
             <div className="flex flex-row w-full justify-end">
-                <a className="mr-4 mt-4 transition duration-300 underline text-white hover:text-zinc-400" href="/home">Web</a>
+                <div className="mr-4 mt-4 transition duration-300 underline text-white hover:text-red-600" onClick={() => router.push("/home")}>Web</div>
             </div>
             <div className="w-full flex flex-col items-center my-10">
                 <p className="text-white text-3xl font-extrabold">Welcome !</p>

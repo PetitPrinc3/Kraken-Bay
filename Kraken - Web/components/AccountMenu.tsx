@@ -1,6 +1,7 @@
 import { signOut } from "next-auth/react";
 import React, { useRef } from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { useRouter } from "next/router";
 
 interface AccountMenuProps {
     visible?: boolean;
@@ -8,6 +9,7 @@ interface AccountMenuProps {
 
 const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
     const { data: user } = useCurrentUser();
+    const router = useRouter();
 
     if (!visible) {
         return null;
@@ -18,16 +20,16 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
             <div className="flex flex-col gap-3">
                 <div className="px-3 group/item flex flex-row gap-3 items-center w-full">
                     <img className="w-8 rounded-md" src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
-                    <a href="/account" className="text-white text-sm group-hover/item:underline">
+                    <div onClick={() => router.push("/account")} className="text-white text-sm group-hover/item:underline">
                         {user?.name} ({user?.roles})
-                    </a>
+                    </div>
                 </div>
                 <hr className={`${user?.roles != "admin" ? "hidden" : ""} mx-4 bg-gray-600 border-0 h-px`} />
                 <div className={`${user?.roles != "admin" ? "hidden" : ""} flex flex-col items-center`}>
                     <div className="px-3 group/item flex flex-row gap-3 items-center justify-center w-full">
-                        <a className="text-white text-sm group-hover/item:underline" href="/admin">
+                        <div className="text-white text-sm group-hover/item:underline" onClick={() => router.push("/admin")}>
                             Admin Pannel
-                        </a>
+                        </div>
                     </div>
 
                 </div>

@@ -9,6 +9,7 @@ import NotificationBell from "./NotificationBell";
 import { useRef } from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { isUndefined } from "lodash";
+import { useRouter } from "next/router";
 
 const TOP_OFFSET = 66;
 
@@ -18,6 +19,7 @@ const Navbar = () => {
     const [showBackground, setShowBackground] = useState(false);
     const accountMenu = useRef(null)
     const mobileMenu = useRef(null)
+    const router = useRouter();
     const { data: user } = useCurrentUser()
 
     useEffect(() => {
@@ -71,9 +73,9 @@ const Navbar = () => {
     return (
         <nav className="w-full fixed z-40">
             <div className={`px-4 md:px-16 py-4 flex flex-row items-center transition duration-500 ${showBackground ? 'bg-zinc-900 bg-opacity-90' : ''}`}>
-                <a href="/home">
+                <div onClick={() => router.push("/home")}>
                     <img className="h-4 lg:h-8 cursor-pointer" src="/Assets/Images/logo.png" alt="" />
-                </a>
+                </div>
                 <div className="flex-row ml-8 gap-7 hidden lg:flex">
                     <NavbarItem label="Home" url="/home" />
                     <NavbarItem label="TV Shows" url="/series" />

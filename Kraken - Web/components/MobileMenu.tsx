@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React from "react";
 
 interface MobileMenuProps {
@@ -5,6 +6,7 @@ interface MobileMenuProps {
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ visible }) => {
+    const router = useRouter();
     if (!visible) {
         return null;
     }
@@ -12,18 +14,18 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ visible }) => {
     return (
         <div className="bg-black bg-opacity-80 w-56 absolute top-10 md:top-14 left-0 py-5 flex-col border-2 rounded-md border-gray-800 flex">
             <div className="flex flex-col gap-4">
-                <a href="/home" className="px-3 text-center text-white hover:underline">
+                <div onClick={() => router.push("/home")} className="px-3 text-center text-white hover:underline">
                     Home
-                </a>
-                <a href="/series" className="px-3 text-center text-white hover:underline">
+                </div>
+                <div onClick={() => router.push("/series")} className="px-3 text-center text-white hover:underline">
                     Series
-                </a>
-                <a href="/movies" className="px-3 text-center text-white hover:underline">
+                </div>
+                <div onClick={() => router.push("/movies")} className="px-3 text-center text-white hover:underline">
                     Films
-                </a>
-                <a href="/latest" className="px-3 text-center text-white hover:underline">
+                </div>
+                <div onClick={() => router.push("/latest")} className="px-3 text-center text-white hover:underline">
                     Latest
-                </a>
+                </div>
             </div>
         </div>
     )
