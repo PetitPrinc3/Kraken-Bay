@@ -119,9 +119,9 @@ const Uploader = () => {
                     pauseOnHover
                     theme="colored" />
             </div>
-            <div className="py-[10vh] flex flex-col items-center">
+            <div className="py-[10vh] flex flex-col items-center overf">
                 <div className="w-[90%] mt-4 bg-zinc-600 rounded-md">
-                    <div className="w-full flex flex-row px-4 h-20 ">
+                    <div className="w-full flex flex-row px-4 h-20">
                         <div className="w-[50%] md:w-[40%] mr-4 m-auto ml-0">
                             <Input
                                 label="Title"

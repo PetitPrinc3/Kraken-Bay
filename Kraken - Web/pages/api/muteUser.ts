@@ -15,8 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error("Invalid value.")
         }
 
-        console.log(muteValue)
-
         const user = await prismadb.user.update({
             where: {
                 id: currentUser.id,

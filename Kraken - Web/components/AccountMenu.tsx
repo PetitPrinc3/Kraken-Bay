@@ -34,7 +34,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
 
                 </div>
                 <hr className={`${user?.roles == "admin" ? "" : "my-4"} bg-gray-600 border-0 h-px`} />
-                <div onClick={() => signOut()} className="px-3 text-center text-white text-sm hoverunderline">
+                <div onClick={() => signOut()} className="px-3 text-center text-white text-sm hover:underline">
                     Sign Out
                 </div>
             </div>

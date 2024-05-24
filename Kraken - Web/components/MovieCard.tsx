@@ -22,7 +22,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
     const isNew: boolean = (todayDate.getFullYear() - uploadDate.getFullYear()) * 12 + (todayDate.getMonth() - uploadDate.getMonth()) < 2
 
     return (
-        <div className="group bg-zinc-900 col-span relative md:h-[12vw]">
+        <div className="group bg-transparent col-span relative md:h-[12vw]">
             <div onClick={() => openModal(data?.id)}
                 className="w-full h-auto md:h-[12vw] p-0 m-0 cursor-pointer object-cover transition duration delay-300 shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0"
             >
