@@ -33,18 +33,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         })
     }).catch((err) => { res.status(400).json(err) })
 
+    var fileType = await mime(uploadFile.file.pic[0].filepath)
+    if (fileType.mime != "Image") {
+        fs.rm(uploadFile.file.pic[0].filepath, (err) => console.log(err))
+        return res.status(400).json("Invalid file type.")
+    }
+
     const newFile = uploadFile.file.pic[0].newFilename
     if (!isNull(currentUser.image)) {
         const oldFile = path.basename(currentUser.image)
         if (oldFile !== newFile) {
             fs.rm(path.join(uploadDir, oldFile), (err) => { console.log(err) })
         }
-    }
-
-    var fileType = await mime(uploadFile.file.pic[0].filepath)
-    if (isUndefined(fileType?.mime) || !fileType.mime.startsWith("image/")) {
-        fs.rm(uploadFile.file.pic[0].filepath, (err) => console.log(err))
-        return res.status(400).json("Invalid file type.")
     }
 
     const user = await prismadb.user.update({

@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import formidable from 'formidable';
 import path from 'path';
 import fs from 'fs';
-import { isUndefined } from 'lodash';
 import mime from '@/lib/mime';
 
 export const config = {
@@ -34,8 +33,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (uploadFile.file?.video) {
         var fileType = await mime(uploadFile.file.video[0].filepath)
-        if (isUndefined(fileType?.mime) || !fileType.mime.startsWith("video/")) {
-            fs.rm(uploadFile.file.Thumbnail[0].filepath, (err) => console.log(err))
+        if (fileType.mime != "Video") {
+            fs.rm(uploadFile.file.video[0].filepath, (err) => { })
             return res.status(400).json("Invalid file type.")
         }
     }

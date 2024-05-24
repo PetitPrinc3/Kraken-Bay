@@ -1,6 +1,25 @@
+import { NextPageContext } from "next";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { SiVlcmediaplayer } from "react-icons/si";
 import { useEffect } from "react";
+
+export async function getServerSideProps(context: NextPageContext) {
+    const session = await getSession(context);
+
+    if (session) {
+        return {
+            redirect: {
+                destination: "/home",
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+}
 
 export default function Index() {
 
@@ -10,7 +29,7 @@ export default function Index() {
     return (
         <div className="flex flex-col bg-black w-full h-full">
             <div className="flex flex-row w-full justify-end">
-                <div className="mr-4 mt-4 transition duration-300 underline text-white hover:text-red-600" onClick={() => router.push("/home")}>Web</div>
+                <div className="mr-4 mt-4 transition duration-300 underline text-white hover:text-red-600 cursor-pointer" onClick={() => router.push("/home")}>Web</div>
             </div>
             <div className="w-full flex flex-col items-center my-10">
                 <p className="text-white text-3xl font-extrabold">Welcome !</p>
