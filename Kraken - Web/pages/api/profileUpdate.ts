@@ -1,10 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import formidable from 'formidable';
-import path from 'path';
-import fs from 'fs'
-import serverAuth from '@/lib/serverAuth';
 import { isNull } from 'lodash';
+import { isUndefined } from 'lodash';
+import formidable from 'formidable';
+import fs from 'fs'
+import path from 'path';
+import serverAuth from '@/lib/serverAuth';
 import prismadb from '@/lib/prismadb'
+import mime from '@/lib/mime';
 
 export const config = {
     api: {
@@ -39,7 +41,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
     }
 
-    console.log(newFile)
+    var fileType = await mime(uploadFile.file.pic[0].filepath)
+    if (isUndefined(fileType?.mime) || !fileType.mime.startsWith("image/")) {
+        fs.rm(uploadFile.file.pic[0].filepath, (err) => console.log(err))
+        return res.status(400).json("Invalid file type.")
+    }
 
     const user = await prismadb.user.update({
         where: {

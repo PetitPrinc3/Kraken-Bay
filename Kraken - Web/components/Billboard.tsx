@@ -31,7 +31,7 @@ const Billboard = () => {
         }
     }, [setMuted, isMuted, user, firstLoad, setFirstLoad])
 
-    if (isUndefined(user)) {
+    if (isUndefined(user) || isUndefined(data)) {
         return null
     }
 
@@ -42,9 +42,9 @@ const Billboard = () => {
 
     const Icon = isMuted ? GoMute : GoUnmute
 
-    if (window.innerWidth > 768) {
-        return (
-            <div className="relative max-h-[90vh] z-0">
+    return (
+        <>
+            <div className="hidden md:block relative max-h-[90vh] z-0">
                 <div className="relative max-h-[110vh] overflow-hidden">
                     <video
                         className="
@@ -88,32 +88,32 @@ const Billboard = () => {
                     <Icon size={25} />
                 </div>
             </div>
-        )
-    } else {
-        return (
-            <div className="relative h-[80vh] flex flex-col items-center">
+            <div className="relative md:hidden flex flex-col items-center h-[80vh]">
                 <div style={{ "backgroundImage": `url('${data?.posterUrl}')` }} className="absolute left-0 top-0 z-0 w-full h-full overflow-hidden bg-cover bg-no-repeat bg-center blur-xl" />
                 <div className="absolute left-auto top-20 z-10 w-[90vw] h-[60vh] flex flex-col items-center">
                     <div className="relative">
                         <div className="absolute left-0 top-0 z-0 w-full h-full overflow-hidden bg-cover bg-no-repeat bg-center bg-gradient-to-t from-neutral-700 from-5% to-transparent to-45% rounded-md" />
                         <img src={data?.thumbUrl} className="max-h-[60vh] max-w-[90vw] rounded-md  border-2 border-neutral-600 border-opacity-30 shadow-xl shadow-neutral-800" alt="" />
-                        <div className="absolute bottom-0 left-0 w-full px-4 py-4 grid grid-cols-2 gap-4">
-                            <div className="right-0 mr-auto w-full">
-                                <button onClick={() => router.push(`/watch/${data?.movieId}`)} className="bg-white rounded-md py-2 px-4 w-full text-xs font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
-                                    <BsFillPlayFill size={20} className="mr-1 ml-auto" />
-                                    <p className="mr-auto">Play</p>
+                        <div className="absolute bottom-0 left-0 w-full px-4 py-4 flex flex-col gap-2 items-center">
+                            <p className="w-full text-center text-white text-sm font-semibold">{data?.genre.split(", ").slice(0, 3).join(" • ")}</p>
+                            <div className="w-full grid grid-cols-2 gap-4">
+                                <div className="right-0 mr-auto w-full">
+                                    <button onClick={() => router.push(`/watch/${data?.movieId}`)} className="bg-white rounded-md py-1 px-4 w-full font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
+                                        <BsFillPlayFill size={20} className="mr-1 ml-auto" />
+                                        <p className="mr-auto">Play</p>
+                                    </button>
+                                </div>
+                                <button onClick={handleOpenModal} className="left-0 ml-auto bg-white text-white bg-opacity-30 rounded-md py-1 px-4 w-full font-semibold flex flex-row items-center hover:bg-opacity-20 transition">
+                                    <AiOutlineInfoCircle className="mr-1 ml-auto" size={20} />
+                                    <p className="mr-auto">More Info</p>
                                 </button>
                             </div>
-                            <button onClick={handleOpenModal} className="left-0 ml-auto bg-white text-white bg-opacity-30 rounded-md py-2 px-4 w-full text-xs font-semibold flex flex-row items-center hover:bg-opacity-20 transition">
-                                <AiOutlineInfoCircle className="mr-1 ml-auto" size={20} />
-                                <p className="mr-auto">More Info</p>
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        )
-    }
+        </>
+    )
 
 }
 
