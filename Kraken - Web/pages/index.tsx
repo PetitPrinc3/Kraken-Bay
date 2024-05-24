@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
-import { FcVlc } from "react-icons/fc";
 import { SiVlcmediaplayer } from "react-icons/si";
+import { useEffect } from "react";
 
 export default function Index() {
 
     const router = useRouter()
+    useEffect(() => { document.title = "Kraken Bay" }, [])
 
     return (
         <div className="flex flex-col bg-black w-full h-full">

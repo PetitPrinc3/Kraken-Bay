@@ -39,7 +39,7 @@ export default function Home() {
       <InfoModal visible={isOpen} onClose={closeModal} />
       <Navbar />
       <Billboard />
-      <div className="pb-40">
+      <div className="pb-10">
         <MovieList title="My List" data={favorites} />
         <MovieList title="Movies" data={movies} />
         <MovieList title="Series" data={series} />

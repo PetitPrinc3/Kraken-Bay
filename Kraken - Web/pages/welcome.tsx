@@ -2,9 +2,8 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa";
-import prismadb from '@/lib/prismadb'
 import axios from "axios";
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -40,6 +39,7 @@ const Welcome = () => {
     const router = useRouter();
     const { data: user } = useCurrentUser();
     const [neverShow, setNeverShow] = useState(false)
+    useEffect(() => { document.title = "Kraken Bay • Welcome" }, [])
 
     return (
         <div className="flex items-center h-full justify-center">

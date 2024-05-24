@@ -78,10 +78,12 @@ const Movies = () => {
     const [searchText, setSearchText] = useState('')
     const [searchResult, setSearchResult] = useState([["", ""]]);
     const [firstLoad, setFirstLoad] = useState(true)
-    const { isOpen, closeModal } = useInfoModal();
-    const searchInput: any = useRef(null)
-    const { data: genresList } = useGenresList();
     const [gDispList, setGDispList] = useState(new genreList())
+    const { isOpen, closeModal } = useInfoModal();
+    const { data: genresList } = useGenresList();
+    const searchInput: any = useRef(null)
+
+    useEffect(() => { document.title = "Kraken Bay • Movies" }, [])
 
     const getList = () => {
         return gDispList?.genreList

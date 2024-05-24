@@ -42,7 +42,10 @@ const Account = () => {
         if (firstLoad && !isUndefined(user)) {
             setImage(user.image)
             setFirstLoad(false)
+            document.title = `Kraken Bay • ${user.name}`
+
         }
+
     }, [firstLoad, user])
 
     const imageClick = () => {

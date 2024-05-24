@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import useCurrentUser from "@/hooks/useCurrentUser"
@@ -49,8 +49,10 @@ export default function Admin() {
     const [isOnline, setIsOnline] = useState(true)
     const [webStatus, setWebstatus] = useState(true)
     const [smbStatus, setSmbStatus] = useState(true)
-
     const router = useRouter();
+
+    useEffect(() => { document.title = "Kraken Bay • Admin" }, [])
+
     const OnlineStatus = isOnline ? IoCloudSharp : IoCloudOfflineSharp
 
     if (isUndefined(user) || isUndefined(pendingUploads) || isUndefined(pendingAccounts)) {

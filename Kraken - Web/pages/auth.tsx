@@ -1,6 +1,6 @@
 import axios from "axios";
 import Input from "@/components/Input"
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,14 +31,16 @@ const Auth = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-    const [variant, setVariant] = useState('login')
+    const [variant, setVariant] = useState('Login')
     const router = useRouter();
 
     const toggleVariant = useCallback(() => {
-        setVariant((currentVariant) => currentVariant == 'login' ? 'register' : 'login')
+        setVariant((currentVariant) => currentVariant == 'Login' ? 'Register' : 'Login')
     }, []);
 
-    const login = useCallback(async () => {
+    useEffect(() => { document.title = `Kraken Bay • ${variant}` }, [variant])
+
+    const Login = useCallback(async () => {
 
         const loading = toast.loading("Loging...", {
             position: "bottom-right",
@@ -69,7 +71,7 @@ const Auth = () => {
         }
     }, [email, password, router])
 
-    const register = useCallback(async () => {
+    const Register = useCallback(async () => {
         try {
             const loading = toast.loading("Creating your account...", {
                 position: "bottom-center",
@@ -106,12 +108,12 @@ const Auth = () => {
                 </nav>
                 <div className="flex justify-center">
                     <div className="bg-black bg-opacity-70 px-16 py-16 self-center mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full">
-                        <form onKeyDown={(e) => { if (e.key === "Enter") { variant == "login" ? login() : register() } }} action="">
+                        <form onKeyDown={(e) => { if (e.key === "Enter") { variant == "Login" ? Login() : Register() } }} action="">
                             <h2 className="text-white text-4xl mb-8 font-semibold">
-                                {variant == 'login' ? 'Sign in' : 'Register'}
+                                {variant == 'Login' ? 'Sign in' : 'Register'}
                             </h2>
                             <div className="flex flex-col gap-4">
-                                {variant == 'register' && (
+                                {variant == 'Register' && (
                                     <Input
                                         label="Username"
                                         onChange={(ev: any) => setName(ev.target.value)}
@@ -136,13 +138,13 @@ const Auth = () => {
                                 />
                             </div>
                         </form>
-                        <button onClick={variant == "login" ? login : register} className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
-                            {variant == 'login' ? 'Log in' : 'Sign up'}
+                        <button onClick={variant == "Login" ? Login : Register} className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
+                            {variant == 'Login' ? 'Log in' : 'Sign up'}
                         </button>
                         <p className="text-neutral-500 mt-12">
-                            {variant == 'login' ? 'First time using Netflix ?' : 'Already have an account ?'}
+                            {variant == 'Login' ? 'First time using Netflix ?' : 'Already have an account ?'}
                             <span onClick={toggleVariant} className="text-white ml-1 hover:underline cursor-pointer">
-                                {variant == 'login' ? 'Create an account' : 'Log In'}
+                                {variant == 'Login' ? 'Create an account' : 'Log In'}
                             </span>
                         </p>
                     </div>

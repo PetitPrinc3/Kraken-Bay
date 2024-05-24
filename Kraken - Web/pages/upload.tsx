@@ -1,23 +1,18 @@
-import React, { useRef, useState } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 import { isUndefined } from "lodash";
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
-
+import { toast, ToastContainer, ToastOptions } from "react-toastify";
+import { IoSend } from "react-icons/io5";
+import axios from "axios";
 import Navbar from "@/components/Navbar";
 import VideoUpload from "@/components/VideoUpload";
 import Input from "@/components/Input";
 import ImageUploadInput from "@/components/ImageUploadInput";
 import GenreModal from "@/components/GenreModal";
-
 import useUploadModal from "@/hooks/useUploadProps";
-import useCurrentUser from "@/hooks/useCurrentUser";
-
-import { toast, ToastContainer, ToastOptions } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'
-
-import { IoSend } from "react-icons/io5";
 import Footer from "@/components/Footer";
+import 'react-toastify/dist/ReactToastify.css'
 
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
@@ -50,7 +45,7 @@ const ToastProps: ToastOptions = {
 
 const Uploader = () => {
     const uploadProps = useUploadModal()
-    const { data: user } = useCurrentUser();
+    useEffect(() => { document.title = "Kraken Bay • Upload" }, [])
 
     const handleUpload = async () => {
 
