@@ -1,4 +1,4 @@
-from prints import *
+from .prints import *
 import os
 import imdb
 import requests

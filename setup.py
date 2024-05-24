@@ -1,14 +1,14 @@
 try:
-    from spinner import *
+    from PythonModules.spinner import *
     with spinner("Importing python libraries..."):
-        from prints import *
+        from PythonModules.prints import *
         import subprocess
         import os
         import sys
         import bcrypt
         import uuid
         import mysql.connector
-        from manager import *
+        from PythonModules.manager import *
     banner()
 except:
     fail("Library import failed.")

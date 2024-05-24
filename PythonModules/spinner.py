@@ -11,7 +11,7 @@
 from threading import Thread
 from time import sleep, time
 from itertools import cycle
-from prints import *
+from .prints import *
 
 
 ################################################################################
