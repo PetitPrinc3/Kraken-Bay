@@ -64,7 +64,7 @@ const Vlc = () => {
                             <p className="text-white font-semibold">Download</p>
                         </a>
                     </div>
-                    <div className="w-full grid grid-flow-row lg:grid-cols-5 gap-4 mt-5">
+                    <div className="hidden lg:grid w-full grid-cols-5 gap-4 mt-5">
                         <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
                             <p className="h-8 underline text-white">Step 1 : Copy link</p>
                             <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/step1.png" alt="" />
@@ -73,7 +73,7 @@ const Vlc = () => {
                         <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
                             <p className="h-8 underline text-white">Step 2 : Open VLC</p>
                             <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/step2.png" alt="" />
-                            <p className="h-5 text-xs text-white text-light">Open the &quot;Media&quot; tab..</p>
+                            <p className="h-5 text-xs text-white text-light">Open the &quot;Media&quot; tab.</p>
                         </div>
                         <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
                             <p className="h-8 underline text-white">Step 3 : Open a stream</p>
@@ -90,6 +90,34 @@ const Vlc = () => {
                             <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/step5.png" alt="" />
                             <p className="h-5 text-xs text-white text-light">With full audio & subtitles.</p>
                         </div>
+                    </div>
+                    <div className="grid lg:hidden w-full grid-flow-row gap-4 mt-5">
+                        <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
+                            <p className="h-8 underline text-white">Step 1 : Open VLC app.</p>
+                            <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/mobstep1.png" alt="" />
+                            <p className="h-5 text-xs text-white text-light"></p>
+                        </div>
+                        <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
+                            <p className="h-8 underline text-white">Step 2 : Go to Explore</p>
+                            <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/mobstep2.png" alt="" />
+                            <p className="h-5 text-xs text-white text-light">Open the &quot;Explore&quot; tab.</p>
+                        </div>
+                        <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
+                            <p className="h-8 underline text-white">Step 3 : Open Kraken</p>
+                            <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/mobstep3.png" alt="" />
+                            <p className="h-5 text-xs text-white text-light">Choose Kraken under local network.</p>
+                        </div>
+                        <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
+                            <p className="h-8 underline text-white">Step 4 : Find you file</p>
+                            <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/mobstep4.png" alt="" />
+                            <p className="h-5 text-xs text-white text-light">Follow the above path.</p>
+                        </div>
+                        <div className="w-full h-fit flex flex-col gap-4 py-2 px-4 rounded-md shadow-black shadow-lg hover:translate-x-1 hover:-translate-y-2 hover:scale-105 transition-all duration-500 cursor-pointer">
+                            <p className="h-8 underline text-white">Step 5 : Enjoy !</p>
+                            <img className="w-full lg:w-auto lg:h-32" src="/Assets/Vlc/mobstep5.png" alt="" />
+                            <p className="h-5 text-xs text-white text-light">With full audio & subtitles.</p>
+                        </div>
+
                     </div>
                 </div>
             </div>
