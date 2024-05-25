@@ -15,6 +15,29 @@ Open source Media Center and Netflix-like server.
 | Uploader | :green_circle: | UI/DB: OK, enhance security on file types. |
 | Account management | :green_circle: | UI: OK / DB: OK |
 
+## Features :
+
+### Web server :
+
+- Random reactive billboard
+- Information modal
+- TV Shows episodes grouped by season
+- Full text search
+- Search by genre
+- Media download
+- Media uploader
+- Account Menu
+- Notifications
+- Admin panel
+- React video Player
+- Vlc streaming tutorial and downloads
+
+## Todo :
+
+### Web server
+
+- Better seek slider for video player
+
 ## Collaborate
 
 Feel free to get in touch to share your ideas :

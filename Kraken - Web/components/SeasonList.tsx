@@ -69,7 +69,7 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                         key={ep.id}
                         className="w-full flex flex-row items-center my-2 border-2 border-white cursor-pointer rounded-md">
                         <div
-                            onClick={() => router.push(`/watch/show/${ep?.id}`)}
+                            onClick={() => router.push(`/watch/${ep?.id}`)}
                             className="flex flex-row items-center gap-4 w-[90%] max-w-[90%]">
                             <img src={currentMovie?.thumbUrl} alt="Poster" className="h-[10vh] w-auto rounded-md" />
                             <div>{ep?.title}</div>

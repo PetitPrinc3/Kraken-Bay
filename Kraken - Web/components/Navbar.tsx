@@ -1,11 +1,11 @@
-import NavbarItem from "./Navbaritem";
-import MobileMenu from "./MobileMenu";
-import AccountMenu from "./AccountMenu";
-import { BsChevronDown, BsBell } from 'react-icons/bs';
+import NavbarItem from "@/components/Navbaritem";
+import MobileMenu from "@/components/MobileMenu";
+import AccountMenu from "@/components/AccountMenu";
+import { BsChevronDown } from 'react-icons/bs';
 import { useState, useCallback, useEffect } from "react";
-import SearchBar from "./SearchBar";
-import UploadItem from "./UploadItem";
-import NotificationBell from "./NotificationBell";
+import SearchBar from "@/components/SearchBar";
+import UploadItem from "@/components/UploadItem";
+import NotificationBell from "@/components/NotificationBell";
 import { useRef } from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { isUndefined } from "lodash";
