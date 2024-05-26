@@ -31,13 +31,13 @@ def getIface():
     if strength == "": return
     strength = eval(strength.split("=")[1].split(" ")[0])
     if strength < 0.25:
-        return("[\033[91m\033[1m▂\033[0m▄▆█]")
+        return("\033[0m[\033[91m\033[1m▂\033[0m▄▆█]")
     elif strength < 0.5:
-        return("[\033[93m\033[1m▂▄\033[0m▆█]")
+        return("\033[0m[\033[93m\033[1m▂▄\033[0m▆█]")
     elif strength < 0.75:
-        return("[\033[94m\033[1m▂▄▆\033[0m█]")
+        return("\033[0m[\033[94m\033[1m▂▄▆\033[0m█]")
     else:
-        return("[\033[92m\033[1m▂▄▆█\033[0m]")
+        return("\033[0m[\033[92m\033[1m▂▄▆█\033[0m]")
 
 def menu():
 
