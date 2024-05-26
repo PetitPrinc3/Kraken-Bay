@@ -148,6 +148,8 @@ with spinner("Installing node packages."):
     cmd_run('cd "Kraken - Web" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "Kraken - Web" and run > npm i', critical=True)
 with spinner("Pushing prisma db schema."):
     cmd_run('cd "Kraken - Web" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
+with spinner("Building app..."):
+    cmd_run('cd "Kraken - Web" && npm run build')
 
 info("Adding selected user to database...")
 
@@ -228,22 +230,20 @@ if ptfrm == "linux":
         
         success("You will need to reboot your system to apply the changes.")
 
-    service_conf = f"""
-    [Unit]
-    Description=Web Service
+    service_conf = f"""[Unit]
+Description=Web Service
 
-    [Service]
-    ExecStart="npm --prefix {os.path.join(os.getcwd(), "Kraken - Web")} run dev"
-    Restart=always
-    User=nobody
-    Group=nogroup
-    Environment=PATH=/usr/bin:/usr/local/bin
-    Environment=NODE_ENV=production
-    WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
+[Service]
+ExecStart="npm --prefix {os.path.join(os.getcwd(), "Kraken - Web")} start"
+Restart=always
+User={username}
+Group={username}
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
 
-    [Install]
-    WantedBy=multi-user.target
-    """
+[Install]
+WantedBy=multi-user.target"""
 
     info("Creating service")
     with open("/etc/systemd/system/kraken.service", "w", encoding="utf-8") as service:
