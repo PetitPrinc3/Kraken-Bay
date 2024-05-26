@@ -28,6 +28,7 @@ def getIface():
             break
     if interface == "" : return
     strength = os.popen(f'iwconfig {interface} | grep "Link Quality"').read().strip()
+    if strength == "": return
     strength = eval(strength.split("=")[1].split(" ")[0])
     if strength < 0.25:
         return("[\033[91m\033[1m▂\033[0m▄▆█]")
