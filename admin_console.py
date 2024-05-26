@@ -5,6 +5,7 @@ from PythonModules.spinner import *
 import os
 import shutil
 import netifaces
+from time import sleep
 
 def banner():
     print("""\033[91m
@@ -77,8 +78,13 @@ def menu():
         case 2 :
             if netw :
                 cmd_run("sudo systemctl start create_ap")
+                with spinner("Starting hotspot ..."):
+                    sleep(10)
             else:
                 cmd_run("sudo systemctl stop create_ap")
+                cmd_run("sudo nmcli radio wifi on")
+                with spinner("Stopping hotspot ..."):
+                    sleep(10)
         case 3 :
             with spinner("Cleaning empty folders ..."):
                 for fold in os.listdir("Kraken - Web/public/Assets/PendingUploads"):
