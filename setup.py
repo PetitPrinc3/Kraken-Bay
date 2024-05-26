@@ -183,53 +183,79 @@ if ptfrm == "linux":
             print(f'[>] {intf}')
         interface = question("Which interface do you wish to use for hotspot ?")
 
-        dhcpcd_conf = f"""
-        interface {interface}
-            static ip_address=192.168.1.1/24
-            nohook wpa_supplicant
-        """
-        dnsmasq_conf = f"""
-        interface={interface}
-        dhcp-range=192.168.1.2,192.168.1.20,255.255.255.0,24h
-        domain=wlan
-        address=/{hostname}/192.168.1.1
-        """
-        hostapd_conf = f"""country_code=US
-        interface={interface}
-        ssid={hostname.split(".")[0]}
-        hw_mode=g
-        channel=7
-        macaddr_acl=0
-        auth_algs=1
-        ignore_broadcast_ssid=0
-        """
-        
-        with spinner("Installing binaries..."):
-            cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent hostapd dnsmasq")
-            cmd_run("sudo systemctl unmask hostapd")
-            cmd_run("sudo systemctl enable hostapd")
-        with spinner("Backing up configurations..."):
-            cmd_run("sudo cp /etc/dhcpcd.conf dhcpcd.conf.old")
-            cmd_run("sudo cp /etc/dnsmasq.conf dnsmasq.conf.old")
-            cmd_run("sudo cp /etc/hostapd/hostapd.conf hostapd.conf.old")
+        with spinner("Cloning create_ap from @oblique..."):
+            cmd_run("git clone https://github.com/oblique/create_app")
+
+        with spinner("Installing create_ap..."):
+            cmd_run("cd create_ap && sudo make install")
+
+            createap_conf = f"""CHANNEL=default
+GATEWAY=192.168.1.1
+WPA_VERSION=2
+ETC_HOSTS=0
+DHCP_DNS=gateway
+NO_DNS=0
+NO_DNSMASQ=0
+HIDDEN=0
+MAC_FILTER=0
+MAC_FILTER_ACCEPT=/etc/hostapd/hostapd.accept
+ISOLATE_CLIENTS=0
+SHARE_METHOD=none
+IEEE80211N=0
+IEEE80211AC=0
+HT_CAPAB=[HT40+]
+VHT_CAPAB=
+DRIVER=nl80211
+NO_VIRT=0
+COUNTRY=
+FREQ_BAND=2.4
+NEW_MACADDR=
+DAEMONIZE=0
+NO_HAVEGED=0
+WIFI_IFACE={interface}
+INTERNET_IFACE=
+SSID=Kraken Bay
+PASSPHRASE=
+USE_PSK=0
+"""
+            with open("/etc/create_ap.conf", "w", encoding="utf-8") as createap_file:
+                createap_file.write(createap_conf)
+                createap_file.close()
+            with open("/usr/bin/create_ap_start", "w", encoding="utf-8") as createap_start:
+                createap_start.write("""#!/bin/bash
+rfkill unblock wlan
+
+if test -f "/tmp/create_ap.all.lock"; then
+    rm /tmp/create_ap.all.lock
+fi
+                                     
+/usr/bin/create_ap --config /etc/create_ap.conf
+
+""")
+                cmd_run("chmod u=rwx /usr/bin/create_ap_start")
+
+            with open("/usr/lib/systemd/system/create_ap.service", "w", encoding="utf-8") as createap_service:
+                createap_service.write("""[Unit]
+Description=Create AP Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/create_ap_start
+User=root
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+""")
+
 
         info("Setting up hot spot ...")
-
-        with open("/etc/dhcpcd.conf", "w", encoding="utf-8") as dhcpd:
-            dhcpd.write(dhcpcd_conf)
-            dhcpd.close()
-        
-        with open("/etc/dnsmasq.conf", "w", encoding="utf-8") as dnsmasq:
-            dnsmasq.write(dnsmasq_conf)
-            dnsmasq.close()
-        
-        cmd_run("rfkill unblock wlan")
-
-        with open("/etc/hostapd/hostapd.conf", "w", encoding="utf-8") as hostapd:
-            hostapd.write(hostapd_conf)
-            hostapd.close()
-        
-        success("You will need to reboot your system to apply the changes.")
+        cmd_run("sudo systemctl enable create_ap")
+        cmd_run("sudo systemctl start create_ap")
+        success("We are now in hotspot mode !")
 
     service_conf = f"""[Unit]
 Description=Web Service
