@@ -58,10 +58,10 @@ def replace_field(file, field, value):
 
 def cmd_run(cmd, succ = "", err = "", critical = False):
     try:
-        if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+        if subprocess.Popen("sudo" + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
             warning('Process failed once. Trying again.')
             try:
-                if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+                if subprocess.Popen("sudo" + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
                     fail('Process failed. This is critical.                                                  ')
                     if err != "" : warning(err)
                     if critical: exit()
@@ -74,7 +74,7 @@ def cmd_run(cmd, succ = "", err = "", critical = False):
     except subprocess.TimeoutExpired:
         warning('Command timed out. Trying again.')
         try:
-            if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+            if subprocess.Popen("sudo" + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
                 fail('Process failed. This is critical.')
                 if err != "" : warning(err)
                 if critical: exit()
@@ -192,8 +192,7 @@ if ptfrm == "linux":
         ignore_broadcast_ssid=0
         """
         
-        cmd_run("apt install -y hostapd dnsmasq")
-        cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent")
+        cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent hostapd dnsmasq")
         cmd_run("systemctl unmask hostapd")
         cmd_run("systemctl enable hostapd")
         cmd_run("cp /etc/dhcpcd.conf dhcpcd.conf.old")
