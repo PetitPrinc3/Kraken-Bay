@@ -226,11 +226,13 @@ User=root
 Group=root
 
 [Install]
-WantedBy=multi-user.target
-""")
+WantedBy=multi-user.target""")
         service.close()
-    cmd_run("sudo systemcl enable krakenSmb")
-    cmd_run("sudo systemcl start krakenSmb")
+
+    cmd_run("sudo systemctl daemon-reload")
+    cmd_run("sudo systemctl enable krakenSmb")
+    cmd_run("sudo systemctl start krakenSmb")
+
 success("Share is visible !")
 
 if ptfrm == "linux":
