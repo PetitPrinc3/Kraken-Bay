@@ -55,7 +55,7 @@ def menu():
     info(f"Found host : \033[91m{hostname}\033[0m , user : \033[91m{username}\033[0m , password : \033[91m{password}\033[0m, database : \033[91m{database}\033[0m ", "discreet")
     netw = getIface()
     if netw :
-        info(f"We are online : {netw}")
+        info(f"We are online : {netw}", "discreet")
     else :
         warning("We are offline")
     actions = [
