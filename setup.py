@@ -206,6 +206,13 @@ with spinner("Building container..."):
     cmd_run("cd Docker/Samba && docker compose up -d")
 success("Samba is up !")
 
+if ptfrm == "linux":
+    import netifaces
+    info("The following interfaces are available :")
+    for intf in netifaces.interfaces() :
+        print(f'[>] {intf}')
+    interface = question("Which interface do you wish to use for external access ?")
+
 with spinner("Making smb share visible..."):
     cmd_run("sudo apt install wsdd")
     with open("/etc/systemd/system/krakenSmb.service", "w", encoding="utf-8") as service:
@@ -229,12 +236,6 @@ success("Share is visible !")
 if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
-        import netifaces
-        info("The following interfaces are available :")
-        for intf in netifaces.interfaces() :
-            print(f'[>] {intf}')
-        interface = question("Which interface do you wish to use for hotspot ?")
-
         info("Cloning create_ap from @oblique...")
         cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")
         success("Done.")
