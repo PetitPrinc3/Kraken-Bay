@@ -75,7 +75,10 @@ def menu():
         case 1 :
             return
         case 2 :
-            return
+            if netw :
+                cmd_run("sudo systemctl start create_ap")
+            else:
+                cmd_run("sudo systemctl stop create_ap")
         case 3 :
             with spinner("Cleaning empty folders ..."):
                 for fold in os.listdir("Kraken - Web/public/Assets/PendingUploads"):
