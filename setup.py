@@ -117,6 +117,8 @@ replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{user
 replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="http://{hostname}"')
+replace_line("Docker/Samba/docker-compose.yml", "      - Movies", f"      - {os.path.join(os.getcwd(), "Kraken - Web/public/Assets/Movies")}:/shares/Movies")
+replace_line("Docker/Samba/docker-compose.yml", "      - Series", f"      - {os.path.join(os.getcwd(), "Kraken - Web/public/Assets/Series")}:/shares/Series")
 
 with spinner("Installing npm..."):
     if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm")
@@ -282,13 +284,38 @@ WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
 WantedBy=multi-user.target"""
 
     info("Creating service")
-    with open("/etc/systemd/system/kraken.service", "w", encoding="utf-8") as service:
+    with open("/etc/systemd/system/krakenWeb.service", "w", encoding="utf-8") as service:
         service.write(service_conf)
         service.close()
     cmd_run("sudo systemctl daemon-reload")
-    cmd_run("sudo systemctl enable kraken")
+    cmd_run("sudo systemctl enable krakenWeb")
     info("Starting web server <3")
-    cmd_run("sudo systemctl start kraken", "Service created successfully.", "Starting the service failed. Please try manually.")
+    cmd_run("sudo systemctl start krakenWeb", "Service created successfully.", "Starting the service failed. Please try manually.")
+
+info("Setting up Samba")
+with spinner("Building container..."):
+    cmd_run("cd Docker/Samba && docker compose up -d")
+success("Samba is up !")
+
+with spinner("Making smb share visible..."):
+    cmd_run("sudo apt install wsdd")
+    with open("/etc/systemd/system/krakenSmb.service", "w", encoding="utf-8") as service:
+        service.write(f"""[Unit]
+Description=Kraken SMB Service (Make it discoverable)
+
+[Service]
+ExecStart=/usr/bin/wsdd --interface {interface}
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+""")
+        service.close()
+    cmd_run("sudo systemcl enable krakenSmb")
+    cmd_run("sudo systemcl start krakenSmb")
+success("Share is visible !")
 
 if question("Setup complete. Do you wish to reboot now ? [Y/n]").lower() == "y":
     if ptfrm == "linux" : cmd_run("systemctl reboot")
