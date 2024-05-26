@@ -89,6 +89,12 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                             <p className="text-white text-lg my-4">
                                 {data?.description}
                             </p>
+                            {data?.languages && (<p className="text-zinc-400 text-xs mb-2">
+                                Languages : {data?.languages}
+                            </p>)}
+                            {data?.subtitles && (<p className="text-zinc-400 text-xs">
+                                Subtitles : {data?.languages}
+                            </p>)}
                         </div>
                         {data?.type == "Series" && (
                             <div className="relative px-12 py-8 rounded-md">

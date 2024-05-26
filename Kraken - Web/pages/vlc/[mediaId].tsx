@@ -16,7 +16,7 @@ const Vlc = () => {
     const handleCopy = async () => {
         navigator.clipboard.writeText(`http://kraken.local${data?.videoUrl}`)
         setToast(true)
-        await new Promise(f => setTimeout(f, 1000));
+        await new Promise(f => setTimeout(f, 2000));
         setToast(false)
     }
 
@@ -41,7 +41,7 @@ const Vlc = () => {
                         <div className="hover:opacity-70 transition-all duration-500">
                             <BiCopy className="w-fit" size={25} />
                         </div>
-                        <div className={`absolute ${toast ? "visible" : "hidden"} flex flex-col items-center w-fit top-8 transition-all duration-500`}>
+                        <div className={`absolute ${toast ? "opacity-100" : "opacity-0"} flex flex-col items-center w-fit top-8 transition-all duration-500`}>
                             <div className="w-4 border-b-neutral-700 border-b-8 border-r-transparent border-r-8 border-l-transparent border-l-8"></div>
                             <div className="h-8 flex flex-row items-center w-14 bg-neutral-700 rounded-md border-neutral-700 border-2 p-2">
                                 <p className="text-white text-xs">Copied</p>

@@ -14,3 +14,15 @@ body {
 html {
   @apply h-full;
 }
+
+input[type="range"]::-webkit-slider-thumb {
+  pointer-events: auto;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: solid 2px white;
+  -webkit-appearance: none;
+  @apply bg-red-600;
+
+}

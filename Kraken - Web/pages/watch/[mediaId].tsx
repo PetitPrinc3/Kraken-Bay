@@ -10,6 +10,25 @@ import { SiVlcmediaplayer } from "react-icons/si";
 import { useRouter } from "next/router";
 import useMedia from "@/hooks/useMedia";
 import screenfull from 'screenfull';
+import { NextPageContext } from "next";
+import { getSession } from "next-auth/react";
+
+export async function getServerSideProps(context: NextPageContext) {
+    const session = await getSession(context);
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/auth",
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+}
 
 const Player = () => {
     const router = useRouter();
@@ -42,6 +61,7 @@ const Player = () => {
     const seekProgress = (e: any) => {
         const progress = e.target.valueAsNumber
         setSeek(progress)
+        console.log(progress)
         playerRef.current?.seekTo(playerRef.current.getDuration() * progress)
     }
 
@@ -110,10 +130,14 @@ const Player = () => {
                     </div>
                     <div className="relative z-40 flex flex-col gap-2 pt-4 pb-8 text-white">
                         <div className="px-16 w-full grid grid-cols-[95%_5%] gap-4">
-                            <div className="w-full">
-                                <input className="w-full h-2 bg-neutral-600 accent-red-600 rounded-lg cursor-pointer"
+                            <div className="group relative w-full mb-2">
+                                <div className="absolute bottom-8 rounded-md w-18 h-fit bg-neutral-700 bg-opacity-80 py-1 px-2 opacity-0 transition-all duration-200 group-active:opacity-100" style={{ left: `${(seek * 100).toFixed()}%`, transform: "translate(-50%)" }}>
+                                    {playerRef.current && (new Date(playerRef.current.getDuration() * seek * 1000).toISOString().slice(11, 19))}
+                                </div>
+                                <input className="w-full h-1 bg-neutral-600 accent-red-600 transition-all duration-1000 rounded-lg cursor-pointer"
                                     type="range" min={0} max={1} step={0.0001} value={seek}
-                                    onChange={seekProgress} />
+                                    onChange={seekProgress}
+                                />
                             </div>
                             <div className="h-full w-full flex flex-row items-center">
                                 <p className="text-xs m-auto md:text-base">{timeDisp}</p>

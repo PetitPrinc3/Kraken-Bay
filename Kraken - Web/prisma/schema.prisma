@@ -55,6 +55,8 @@ model Media {
   id          String     @id @default(uuid())
   title       String
   altTitle    String?
+  languages   String?    @db.LongText
+  subtitles   String?    @db.LongText
   type        String
   description String?    @db.LongText
   videoUrl    String     @db.LongText

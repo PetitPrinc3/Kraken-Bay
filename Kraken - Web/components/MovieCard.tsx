@@ -74,7 +74,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 ">
                     <div className="flex-row items-center gap-3 hidden sm:flex">
                         <div
-                            className={`${data?.type == "Movies" ? "visible" : "hidden"} cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300`}
+                            className={`cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300`}
                             onClick={() => { router.push(`/watch/${data?.id}`) }}>
                             <BsFillPlayFill size={30} />
                         </div>
