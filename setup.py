@@ -176,6 +176,56 @@ dum = question("Do you wish to setup the demo with dummy data ? [Y/n]")
 if dum.lower() == "y" or dum.strip() == "":
     dummy(username, password, database)
 
+
+    service_conf = f"""[Unit]
+Description=Web Service
+
+[Service]
+ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "Kraken - Web")}" start
+Restart=always
+User=root
+Group=root
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
+
+[Install]
+WantedBy=multi-user.target"""
+
+    info("Creating service")
+    with open("/etc/systemd/system/krakenWeb.service", "w", encoding="utf-8") as service:
+        service.write(service_conf)
+        service.close()
+    cmd_run("sudo systemctl daemon-reload")
+    cmd_run("sudo systemctl enable krakenWeb")
+    info("Starting web server <3")
+    cmd_run("sudo systemctl start krakenWeb", "Service created successfully.", "Starting the service failed. Please try manually.")
+
+info("Setting up Samba")
+with spinner("Building container..."):
+    cmd_run("cd Docker/Samba && docker compose up -d")
+success("Samba is up !")
+
+with spinner("Making smb share visible..."):
+    cmd_run("sudo apt install wsdd")
+    with open("/etc/systemd/system/krakenSmb.service", "w", encoding="utf-8") as service:
+        service.write(f"""[Unit]
+Description=Kraken SMB Service (Make it discoverable)
+
+[Service]
+ExecStart=/usr/bin/wsdd --interface {interface}
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+""")
+        service.close()
+    cmd_run("sudo systemcl enable krakenSmb")
+    cmd_run("sudo systemcl start krakenSmb")
+success("Share is visible !")
+
 if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
@@ -267,55 +317,6 @@ WantedBy=multi-user.target
         cmd_run("sudo systemctl start create_ap")
         cmd_run("sudo rm -r /tmp/create_ap")
         success("We are now in hotspot mode !")
-
-    service_conf = f"""[Unit]
-Description=Web Service
-
-[Service]
-ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "Kraken - Web")}" start
-Restart=always
-User=root
-Group=root
-Environment=PATH=/usr/bin:/usr/local/bin
-Environment=NODE_ENV=production
-WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
-
-[Install]
-WantedBy=multi-user.target"""
-
-    info("Creating service")
-    with open("/etc/systemd/system/krakenWeb.service", "w", encoding="utf-8") as service:
-        service.write(service_conf)
-        service.close()
-    cmd_run("sudo systemctl daemon-reload")
-    cmd_run("sudo systemctl enable krakenWeb")
-    info("Starting web server <3")
-    cmd_run("sudo systemctl start krakenWeb", "Service created successfully.", "Starting the service failed. Please try manually.")
-
-info("Setting up Samba")
-with spinner("Building container..."):
-    cmd_run("cd Docker/Samba && docker compose up -d")
-success("Samba is up !")
-
-with spinner("Making smb share visible..."):
-    cmd_run("sudo apt install wsdd")
-    with open("/etc/systemd/system/krakenSmb.service", "w", encoding="utf-8") as service:
-        service.write(f"""[Unit]
-Description=Kraken SMB Service (Make it discoverable)
-
-[Service]
-ExecStart=/usr/bin/wsdd --interface {interface}
-Restart=always
-User=root
-Group=root
-
-[Install]
-WantedBy=multi-user.target
-""")
-        service.close()
-    cmd_run("sudo systemcl enable krakenSmb")
-    cmd_run("sudo systemcl start krakenSmb")
-success("Share is visible !")
 
 if question("Setup complete. Do you wish to reboot now ? [Y/n]").lower() == "y":
     if ptfrm == "linux" : cmd_run("systemctl reboot")
