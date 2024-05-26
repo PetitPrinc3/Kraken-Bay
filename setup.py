@@ -129,13 +129,14 @@ with spinner("Installing docker-compose..."):
     if ptfrm != "linux" : 
         warning("Make sure you installed docker-compse.")
         quit
-    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y ca-certificates curl", "Step 1/7 Ok.                                               ")
-    cmd_run("sudo install -m 0755 -d /etc/apt/keyrings", "Step 2/7 Ok.                                               ")
-    cmd_run("sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc", "Step 3/7 Ok.                                               ")
-    cmd_run("sudo chmod a+r /etc/apt/keyrings/docker.asc", "Step 4/7 Ok.                                               ")
-    cmd_run('echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null', "Step 5/7 Ok.                                               ")    
-    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt update -y", "Step 6/7 Ok.                                               ")
-    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose", "Step 7/7 Ok.                                               ")
+    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y ca-certificates curl", "Step 1/8 Ok.                                               ")
+    cmd_run("sudo install -m 0755 -d /etc/apt/keyrings", "Step 2/8 Ok.                                               ")
+    cmd_run("sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc", "Step 3/8 Ok.                                               ")
+    cmd_run("sudo chmod a+r /etc/apt/keyrings/docker.asc", "Step 4/8 Ok.                                               ")
+    cmd_run('echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null', "Step 5/8 Ok.                                               ")    
+    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt update -y", "Step 6/8 Ok.                                               ")
+    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose", "Step 7/8 Ok.                                               ")
+    cmd_run("sudo service docker start", "Step 8/8 Ok.                                               ")
 
 success("Installed npm, docker and mysql.")
 
