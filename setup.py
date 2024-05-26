@@ -166,7 +166,7 @@ if len(cursor.fetchall()) > 0:
     warning(f"Another user with email {username}@local was found. No new user will be created.")
 else:
     dbpass = bcrypt.hashpw(password.encode("utf-8"), cryptsalt).decode("utf-8")
-    cursor.execute(f"INSERT INTO User (id, name, email, hashedPassword, roles, updatedAt) VALUES (UUID(), '{username}', '{username.lower()}@local', '{dbpass}', 'admin', NOW());")
+    cursor.execute(f"INSERT INTO User (id, name, email, hashedPassword, roles, updatedAt) VALUES (UUID(), '{username}', '{username.lower()}@{hostname}', '{dbpass}', 'admin', NOW());")
     client.commit()
     success("Admin user added to web DB.")
 
@@ -183,11 +183,11 @@ if ptfrm == "linux":
             print(f'[>] {intf}')
         interface = question("Which interface do you wish to use for hotspot ?")
 
-        with spinner("Cloning create_ap from @oblique..."):
-            cmd_run("git clone https://github.com/oblique/create_app")
+        info("Cloning create_ap from @oblique...")
+        subprocess.Popen("cd /tmp && git clone https://github.com/oblique/create_ap", shell=True)
 
         with spinner("Installing create_ap..."):
-            cmd_run("cd create_ap && sudo make install")
+            cmd_run("cd /tmp/create_ap && sudo make install")
 
             createap_conf = f"""CHANNEL=default
 GATEWAY=192.168.1.1
@@ -255,6 +255,7 @@ WantedBy=multi-user.target
         info("Setting up hot spot ...")
         cmd_run("sudo systemctl enable create_ap")
         cmd_run("sudo systemctl start create_ap")
+        cmd_run("sudo rm -r /tmp/create_ap")
         success("We are now in hotspot mode !")
 
     service_conf = f"""[Unit]
