@@ -118,15 +118,15 @@ replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET=
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 
 with spinner("Installing npm..."):
-    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive -y apt install npm")
+    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt -y install npm")
     else : warning("Make sure you installed npm.")
 
 with spinner("Installing mysql-client..."):
-    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive -y apt install mysql-client")
+    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt -y install mysql-client")
     else : warning("Make sure you installed mysql-client.")
 
 with spinner("Installing npm..."):
-    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive -y apt install docker-compose")
+    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt -y install docker-compose")
     else : warning("Make sure you installed docker-compse.")
 
 success("Installed npm, docker and mysql.")
