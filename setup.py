@@ -246,7 +246,9 @@ if ptfrm == "linux":
     """
 
     info("Creating service")
-    cmd_run(f"echo {service_conf} > /etc/systemd/system/kraken.service")
+    with open("/etc/systemd/system/kraken.service", "w", encoding="utf-8") as service:
+        service.write(service_conf)
+        service.close()
     cmd_run("sudo systemctl enable kraken")
     info("Starting web server <3")
     cmd_run("sudo systemctl start kraken", "Service created successfully.", "Starting the service failed. Please try manually.")
