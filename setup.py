@@ -117,8 +117,6 @@ replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{user
 replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="http://{hostname}"')
-replace_line("Docker/Samba/docker-compose.yml", "      - Movies", f"      - {os.path.join(os.getcwd(), "Kraken - Web/public/Assets/Movies")}:/shares/Movies")
-replace_line("Docker/Samba/docker-compose.yml", "      - Series", f"      - {os.path.join(os.getcwd(), "Kraken - Web/public/Assets/Series")}:/shares/Series")
 
 with spinner("Installing npm..."):
     if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm")
@@ -153,6 +151,30 @@ with spinner("Pushing prisma db schema."):
     cmd_run('cd "Kraken - Web" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
 with spinner("Building app..."):
     cmd_run('cd "Kraken - Web" && npm run build')
+    
+service_conf = f"""[Unit]
+Description=Web Service
+
+[Service]
+ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "Kraken - Web")}" start
+Restart=always
+User=root
+Group=root
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
+
+[Install]
+WantedBy=multi-user.target"""
+
+info("Creating service")
+with open("/etc/systemd/system/krakenWeb.service", "w", encoding="utf-8") as service:
+    service.write(service_conf)
+    service.close()
+cmd_run("sudo systemctl daemon-reload")
+cmd_run("sudo systemctl enable krakenWeb")
+info("Starting web server <3")
+cmd_run("sudo systemctl start krakenWeb", "Service created successfully.", "Starting the service failed. Please try manually.")
 
 info("Adding selected user to database...")
 
@@ -176,68 +198,56 @@ dum = question("Do you wish to setup the demo with dummy data ? [Y/n]")
 if dum.lower() == "y" or dum.strip() == "":
     dummy(username, password, database)
 
-
-    service_conf = f"""[Unit]
-Description=Web Service
-
-[Service]
-ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "Kraken - Web")}" start
-Restart=always
-User=root
-Group=root
-Environment=PATH=/usr/bin:/usr/local/bin
-Environment=NODE_ENV=production
-WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
-
-[Install]
-WantedBy=multi-user.target"""
-
-    info("Creating service")
-    with open("/etc/systemd/system/krakenWeb.service", "w", encoding="utf-8") as service:
-        service.write(service_conf)
-        service.close()
-    cmd_run("sudo systemctl daemon-reload")
-    cmd_run("sudo systemctl enable krakenWeb")
-    info("Starting web server <3")
-    cmd_run("sudo systemctl start krakenWeb", "Service created successfully.", "Starting the service failed. Please try manually.")
-
 info("Setting up Samba")
-with spinner("Building container..."):
-    cmd_run("cd Docker/Samba && docker compose up -d")
+with spinner("Downloading packages..."):
+    cmd_run("sudo apt install samba")
+
+info("Creating share.")
+smbshare = f"""
+[KrakenMovies]
+    comment = Kraken Bay - Movies <3
+    path = "{os.path.join(os.getcwd(), "/Kraken - Web/public/Assets/Movies")}"
+    available = yes
+    read only = yes
+    create mask = 666
+    directory mask = 777
+    browsable = yes
+    public = yes
+    guest only = yes
+    force user = kraken
+    force group = kraken
+
+[KrakenShows]
+    comment = Kraken Bay - Movies <3
+    path = "{os.path.join(os.getcwd(), "/Kraken - Web/public/Assets/Series")}"
+    available = yes
+    read only = yes
+    create mask = 666
+    directory mask = 777
+    browsable = yes
+    public = yes
+    guest only = yes
+    force user = kraken
+    force group = kraken
+"""
+
+with open("/etc/samba/smb.conf", "r+", encoding="utf-8") as smbconf:
+    smbconf.write(smbshare)
+
+with spinner("Starting Samba..."):
+    cmd_run("sudo service smbd restart")
+    cmd_run("sudo ufw allow samba")
 success("Samba is up !")
-
-if ptfrm == "linux":
-    import netifaces
-    info("The following interfaces are available :")
-    for intf in netifaces.interfaces() :
-        print(f'[>] {intf}')
-    interface = question("Which interface do you wish to use for external access ?")
-
-with spinner("Making smb share visible..."):
-    cmd_run("sudo apt install wsdd")
-    with open("/etc/systemd/system/krakenSmb.service", "w", encoding="utf-8") as service:
-        service.write(f"""[Unit]
-Description=Kraken SMB Service (Make it discoverable)
-
-[Service]
-ExecStart=/usr/bin/wsdd --interface {interface}
-Restart=always
-User=root
-Group=root
-
-[Install]
-WantedBy=multi-user.target""")
-        service.close()
-
-    cmd_run("sudo systemctl daemon-reload")
-    cmd_run("sudo systemctl enable krakenSmb")
-    cmd_run("sudo systemctl start krakenSmb")
-
-success("Share is visible !")
 
 if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
+        import netifaces
+        info("The following interfaces are available :")
+        for intf in netifaces.interfaces() :
+            print(f'[>] {intf}')
+        interface = question("Which interface do you wish to use for hotspot ?")
+
         info("Cloning create_ap from @oblique...")
         cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")
         success("Done.")
