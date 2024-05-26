@@ -161,9 +161,9 @@ client = mysql.connector.connect(
         database=database,
     )
 cursor = client.cursor()
-cursor.execute(f'SELECT id FROM User WHERE email="{username.lower()}@local";')
+cursor.execute(f'SELECT id FROM User WHERE email="{username.lower()}@{hostname}";')
 if len(cursor.fetchall()) > 0:
-    warning(f"Another user with email {username}@local was found. No new user will be created.")
+    warning(f"Another user with email {username}@{hostname} was found. No new user will be created.")
 else:
     dbpass = bcrypt.hashpw(password.encode("utf-8"), cryptsalt).decode("utf-8")
     cursor.execute(f"INSERT INTO User (id, name, email, hashedPassword, roles, updatedAt) VALUES (UUID(), '{username}', '{username.lower()}@{hostname}', '{dbpass}', 'admin', NOW());")
@@ -184,7 +184,7 @@ if ptfrm == "linux":
         interface = question("Which interface do you wish to use for hotspot ?")
 
         info("Cloning create_ap from @oblique...")
-        subprocess.Popen("cd /tmp && git clone https://github.com/oblique/create_ap", shell=True)
+        cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")
         success("Done.")
 
         with spinner("Installing create_ap..."):
@@ -225,6 +225,9 @@ USE_PSK=0
                 createap_file.close()
         with open("/usr/bin/create_ap_start", "w", encoding="utf-8") as createap_start:
                 createap_start.write("""#!/bin/bash
+                                     
+nmcli radio wifi off
+
 rfkill unblock wlan
 
 if test -f "/tmp/create_ap.all.lock"; then
@@ -257,6 +260,7 @@ WantedBy=multi-user.target
                 createap_service.close()
 
         info("Setting up hot spot ...")
+        cmd_run("sudo systemctl daemon-reload")
         cmd_run("sudo systemctl enable create_ap")
         cmd_run("sudo systemctl start create_ap")
         cmd_run("sudo rm -r /tmp/create_ap")
