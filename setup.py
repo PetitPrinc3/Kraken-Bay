@@ -201,12 +201,14 @@ if ptfrm == "linux":
         ignore_broadcast_ssid=0
         """
         
-        cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent hostapd dnsmasq")
-        cmd_run("systemctl unmask hostapd")
-        cmd_run("systemctl enable hostapd")
-        cmd_run("cp /etc/dhcpcd.conf dhcpcd.conf.old")
-        cmd_run("cp /etc/dnsmasq.conf dnsmasq.conf.old")
-        cmd_run("cp /etc/hostapd/hostapd.conf hostapd.conf.old")
+        with spinner("Installing binaries..."):
+            cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent hostapd dnsmasq")
+            cmd_run("sudo systemctl unmask hostapd")
+            cmd_run("sudo systemctl enable hostapd")
+        with spinner("Backing up configurations..."):
+            cmd_run("sudo cp /etc/dhcpcd.conf dhcpcd.conf.old")
+            cmd_run("sudo cp /etc/dnsmasq.conf dnsmasq.conf.old")
+            cmd_run("sudo cp /etc/hostapd/hostapd.conf hostapd.conf.old")
 
         info("Setting up hot spot ...")
 
@@ -244,10 +246,10 @@ if ptfrm == "linux":
     """
 
     info("Creating service")
-    cmd_run(f"echo {service_conf} > /etc/systemd/system/cocopi.service")
-    cmd_run("systemctl enable cocopi")
+    cmd_run(f"echo {service_conf} > /etc/systemd/system/kraken.service")
+    cmd_run("sudo systemctl enable kraken")
     info("Starting web server <3")
-    cmd_run("systemctl start cocopi", "Service created successfully.", "Starting the service failed. Please try manually.")
+    cmd_run("sudo systemctl start kraken", "Service created successfully.", "Starting the service failed. Please try manually.")
 
 if question("Setup complete. Do you wish to reboot now ? [Y/n]").lower() == "y":
     if ptfrm == "linux" : cmd_run("systemctl reboot")
