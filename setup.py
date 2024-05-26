@@ -117,9 +117,19 @@ replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{user
 replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 
-with spinner("Installing npm, mysql-shell and docker..."):
-    if ptfrm == "linux" : cmd_run("apt install npm mysql-client openssh-server -y")
-    else : warning("Make sure you installed docker and mysqlsh.")
+with spinner("Installing npm..."):
+    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive -y apt install npm")
+    else : warning("Make sure you installed npm.")
+
+with spinner("Installing mysql-client..."):
+    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive -y apt install mysql-client")
+    else : warning("Make sure you installed mysql-client.")
+
+with spinner("Installing npm..."):
+    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive -y apt install docker-compose")
+    else : warning("Make sure you installed docker-compse.")
+
+success("Installed npm, docker and mysql.")
 
 cryptsalt = bcrypt.gensalt() 
 
@@ -170,21 +180,17 @@ if ptfrm == "linux":
         interface={interface}
         dhcp-range=192.168.1.2,192.168.1.20,255.255.255.0,24h
         domain=wlan
-        address=/cocopi/192.168.1.1
+        address=/{hostname}/192.168.1.1
         """
         hostapd_conf = f"""country_code=US
         interface={interface}
-        ssid={hostname}
+        ssid={hostname.split(".")[0]}
         hw_mode=g
         channel=7
         macaddr_acl=0
         auth_algs=1
         ignore_broadcast_ssid=0
-        wpa=2
-        wpa_passphrase={password}
-        wpa_key_mgmt=WPA-PSK
-        wpa_pairwise=TKIP
-        rsn_pairwise=CCMP"""
+        """
         
         cmd_run("apt install -y hostapd dnsmasq")
         cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent")
