@@ -116,7 +116,7 @@ replace_field("Docker/Mysql/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQ
 replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
-replace_line("Kraken - Web/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="{hostname}"')
+replace_line("Kraken - Web/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="http://{hostname}"')
 
 with spinner("Installing npm..."):
     if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm")
@@ -237,8 +237,8 @@ Description=Web Service
 [Service]
 ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "Kraken - Web")}" start
 Restart=always
-User={username}
-Group={username}
+User=root
+Group=root
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
 WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
