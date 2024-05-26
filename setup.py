@@ -125,7 +125,7 @@ with spinner("Installing mysql-client..."):
     if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y mysql-client")
     else : warning("Make sure you installed mysql-client.")
 
-with spinner("Installing npm..."):
+with spinner("Installing docker-compose..."):
     if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y docker-compose")
     else : warning("Make sure you installed docker-compse.")
 
