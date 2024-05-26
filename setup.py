@@ -58,10 +58,10 @@ def replace_field(file, field, value):
 
 def cmd_run(cmd, succ = "", err = "", critical = False):
     try:
-        if subprocess.Popen("sudo " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+        if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
             warning('Process failed once. Trying again.')
             try:
-                if subprocess.Popen("sudo " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+                if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
                     fail('Process failed. This is critical.                                                  ')
                     if err != "" : warning(err)
                     if critical: exit()
@@ -74,7 +74,7 @@ def cmd_run(cmd, succ = "", err = "", critical = False):
     except subprocess.TimeoutExpired:
         warning('Command timed out. Trying again.')
         try:
-            if subprocess.Popen("sudo " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+            if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
                 fail('Process failed. This is critical.')
                 if err != "" : warning(err)
                 if critical: exit()
@@ -118,16 +118,25 @@ replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET=
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 
 with spinner("Installing npm..."):
-    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y npm")
+    if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm")
     else : warning("Make sure you installed npm.")
 
 with spinner("Installing mysql-client..."):
-    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y mysql-client")
+    if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y mysql-client")
     else : warning("Make sure you installed mysql-client.")
 
 with spinner("Installing docker-compose..."):
-    if ptfrm == "linux" : cmd_run("DEBIAN_FRONTEND=noninteractive apt install -y docker-compose")
-    else : warning("Make sure you installed docker-compse.")
+    if ptfrm != "linux" : 
+        warning("Make sure you installed docker-compse.")
+        quit
+    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y docker docker-compose")
+    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y ca-certificates curl")
+    cmd_run("sudo install -m 0755 -d /etc/apt/keyrings")
+    cmd_run("sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc")
+    cmd_run("sudo chmod a+r /etc/apt/keyrings/docker.asc")
+    cmd_run('echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null')    
+    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt update -y")
+    cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin")
 
 success("Installed npm, docker and mysql.")
 
