@@ -185,11 +185,13 @@ if ptfrm == "linux":
 
         info("Cloning create_ap from @oblique...")
         subprocess.Popen("cd /tmp && git clone https://github.com/oblique/create_ap", shell=True)
+        success("Done.")
 
         with spinner("Installing create_ap..."):
             cmd_run("cd /tmp/create_ap && sudo make install")
 
-            createap_conf = f"""CHANNEL=default
+
+        createap_conf = f"""CHANNEL=default
 GATEWAY=192.168.1.1
 WPA_VERSION=2
 ETC_HOSTS=0
@@ -218,10 +220,10 @@ SSID=Kraken Bay
 PASSPHRASE=
 USE_PSK=0
 """
-            with open("/etc/create_ap.conf", "w", encoding="utf-8") as createap_file:
+        with open("/etc/create_ap.conf", "w", encoding="utf-8") as createap_file:
                 createap_file.write(createap_conf)
                 createap_file.close()
-            with open("/usr/bin/create_ap_start", "w", encoding="utf-8") as createap_start:
+        with open("/usr/bin/create_ap_start", "w", encoding="utf-8") as createap_start:
                 createap_start.write("""#!/bin/bash
 rfkill unblock wlan
 
@@ -232,9 +234,11 @@ fi
 /usr/bin/create_ap --config /etc/create_ap.conf
 
 """)
-                cmd_run("chmod u=rwx /usr/bin/create_ap_start")
+                createap_start.close()
 
-            with open("/usr/lib/systemd/system/create_ap.service", "w", encoding="utf-8") as createap_service:
+        cmd_run("chmod u=rwx /usr/bin/create_ap_start")
+
+        with open("/usr/lib/systemd/system/create_ap.service", "w", encoding="utf-8") as createap_service:
                 createap_service.write("""[Unit]
 Description=Create AP Service
 After=network.target
@@ -250,7 +254,7 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 """)
-
+                createap_service.close()
 
         info("Setting up hot spot ...")
         cmd_run("sudo systemctl enable create_ap")
