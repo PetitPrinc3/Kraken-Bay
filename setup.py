@@ -31,7 +31,7 @@ def replace_line(file, line, value):
                     filedata[l] = value + "\n"
     with open(file, "w") as out :
         out.writelines(filedata)
-        out.close()    
+        out.close()
 
 def replace_field(file, field, value):
     with open(file, "r") as inp :
@@ -97,9 +97,11 @@ if not hasattr(os, "geteuid"):
         if question("Are you running this as administrator ? [Y/n]").strip().lower() != "y":
             fail("Please restart the software as administrator.")
             exit(1)
-elif "linux" in ptfrm & os.getuid() != 0:
+elif (ptfrm == 'linux') and (os.geteuid() != 0):
     fail("This program must be run as r00t !")
     exit(1) 
+elif (ptfrm == 'linux') and (os.geteuid() == 0):
+    success("Running as r00t on linux, let's go !")
 else:
     warning("This program should be run as r00t on a unix system.")
     fail("Could not determine your platform.")
@@ -110,7 +112,7 @@ username = question("Choose your admin username for DB and Web management.")
 password = question("Choose your admin password for DB and Web management.")
 database = question("Choose the name of the database.")
 
-replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
+replace_field("Docker/Mysql/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
 replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
@@ -122,7 +124,7 @@ with spinner("Installing npm, mysql-shell and docker..."):
 cryptsalt = bcrypt.gensalt() 
 
 with spinner("Creating mysql db container..."):
-    cmd_run("cd Docker && docker-compose up -d", "Crated mysql server container.", "Did you install docker ?", critical=True)
+    cmd_run("cd Docker/Mysql && docker-compose up -d", "Crated mysql server container.", "Did you install docker ?", critical=True)
 with spinner("Installing node packages."):
     cmd_run('cd "Kraken - Web" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "Kraken - Web" and run > npm i', critical=True)
 with spinner("Pushing prisma db schema."):
