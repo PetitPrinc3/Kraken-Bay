@@ -116,6 +116,7 @@ replace_field("Docker/Mysql/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQ
 replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
+replace_line("Kraken - Web/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="{hostname}"')
 
 with spinner("Installing npm..."):
     if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm")
@@ -234,7 +235,7 @@ if ptfrm == "linux":
 Description=Web Service
 
 [Service]
-ExecStart="npm --prefix {os.path.join(os.getcwd(), "Kraken - Web")} start"
+ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "Kraken - Web")}" start
 Restart=always
 User={username}
 Group={username}
@@ -249,6 +250,7 @@ WantedBy=multi-user.target"""
     with open("/etc/systemd/system/kraken.service", "w", encoding="utf-8") as service:
         service.write(service_conf)
         service.close()
+    cmd_run("sudo systemctl daemon-reload")
     cmd_run("sudo systemctl enable kraken")
     info("Starting web server <3")
     cmd_run("sudo systemctl start kraken", "Service created successfully.", "Starting the service failed. Please try manually.")
