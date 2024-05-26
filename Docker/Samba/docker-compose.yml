@@ -8,7 +8,7 @@ services:
     environment:
       ACCOUNT_kraken: kraken
       UID_kraken: 1
-      SAMBA_VOLUME_CONFIG_Kraken: "[sharename]; path=/shares/location; available = yes; browsable = yes; writable = no; read only = yes; public = yes; guest ok = yes"
+      SAMBA_VOLUME_CONFIG_Kraken: "[Kraken]; path=/shares/location; available = yes; browsable = yes; writable = no; read only = yes; public = yes; guest ok = yes"
     volumes:
       - ./test:/shares/location
     ports:
