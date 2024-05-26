@@ -4,6 +4,7 @@ from PythonModules.cmd_run import cmd_run
 from PythonModules.spinner import *
 import os
 import shutil
+import netifaces
 
 def banner():
     print("""\033[91m
@@ -16,6 +17,25 @@ def banner():
           \033[0m
     ⚠️  This is the admin console. Use with caution. ⚠️
     """)
+
+def getIface():
+    interfaces  = netifaces.interfaces()
+    interface = ""
+    for i in interfaces:
+        if "wlp" in i or "wlan" in i:
+            interface = i
+            break
+    if interface == "" : return
+    strength = os.popen(f'iwconfig {interface} | grep "Link Quality"').read().strip()
+    strength = eval(strength.split("=")[1].split(" ")[0])
+    if strength < 0.25:
+        return("[\033[91m\033[1m▂\033[0m▄▆█]")
+    elif strength < 0.5:
+        return("[\033[93m\033[1m▂▄\033[0m▆█]")
+    elif strength < 0.75:
+        return("[\033[94m\033[1m▂▄▆\033[0m█]")
+    else:
+        return("[\033[92m\033[1m▂▄▆█\033[0m]")
 
 def menu():
 
@@ -31,7 +51,11 @@ def menu():
 
     print()
     info(f"Found host : \033[91m{hostname}\033[0m , user : \033[91m{username}\033[0m , password : \033[91m{password}\033[0m, database : \033[91m{database}\033[0m ", "discreet")
-
+    netw = getIface()
+    if netw :
+        info(f"We are online : {netw}")
+    else :
+        warning("We are offline")
     actions = [
         "Restart Web server.",
         "Restart SMB server.",
