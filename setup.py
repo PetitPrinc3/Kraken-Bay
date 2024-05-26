@@ -58,10 +58,10 @@ def replace_field(file, field, value):
 
 def cmd_run(cmd, succ = "", err = "", critical = False):
     try:
-        if subprocess.Popen("sudo" + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+        if subprocess.Popen("sudo " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
             warning('Process failed once. Trying again.')
             try:
-                if subprocess.Popen("sudo" + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+                if subprocess.Popen("sudo " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
                     fail('Process failed. This is critical.                                                  ')
                     if err != "" : warning(err)
                     if critical: exit()
@@ -74,7 +74,7 @@ def cmd_run(cmd, succ = "", err = "", critical = False):
     except subprocess.TimeoutExpired:
         warning('Command timed out. Trying again.')
         try:
-            if subprocess.Popen("sudo" + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
+            if subprocess.Popen("sudo " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=600) != 0:
                 fail('Process failed. This is critical.')
                 if err != "" : warning(err)
                 if critical: exit()
