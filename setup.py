@@ -205,7 +205,7 @@ if dum.lower() == "y" or dum.strip() == "":
 
 info("Setting up Samba")
 with spinner("Downloading packages..."):
-    cmd_run("sudo apt install samba")
+    cmd_run("sudo apt install -y samba")
 
 info("Creating share.")
 smbshare = [_ + "\n" for _ in (f"""
