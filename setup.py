@@ -203,7 +203,7 @@ with spinner("Downloading packages..."):
     cmd_run("sudo apt install samba")
 
 info("Creating share.")
-smbshare = f"""
+smbshare = [_ + "\n" for _ in (f"""
 [KrakenMovies]
     comment = Kraken Bay - Movies <3
     path = "{os.path.join(os.getcwd(), "/Kraken - Web/public/Assets/Movies")}"
@@ -229,14 +229,24 @@ smbshare = f"""
     guest only = yes
     force user = kraken
     force group = kraken
-"""
+""").split("\n")]
 
 with open("/etc/samba/smb.conf", "r+", encoding="utf-8") as smbconf:
-    smbconf.write(smbshare)
+    old_conf = smbconf.readlines()
+    for l in old_conf:
+        if "WORKGROUP" in l:
+            old_conf.insert(old_conf.index(l) + 1, "   multicast dns register = yes")
+            old_conf.insert(old_conf.index(l) + 1, "   disable netbios = yes")
+        if l.startswith("[print"):
+            ind = old_conf.index(l)
+            for _ in range(6):
+                old_conf.pop(ind)
+    old_conf += smbshare
+    smbconf.writelines(old_conf)
+    smbconf.close()
 
 with spinner("Starting Samba..."):
     cmd_run("sudo service smbd restart")
-    cmd_run("sudo ufw allow samba")
 success("Samba is up !")
 
 if ptfrm == "linux":
