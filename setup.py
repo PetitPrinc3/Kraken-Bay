@@ -231,17 +231,20 @@ smbshare = [_ + "\n" for _ in (f"""
     force group = kraken
 """).split("\n")]
 
-with open("/etc/samba/smb.conf", "r+", encoding="utf-8") as smbconf:
+with open("/etc/samba/smb.conf", "r", encoding="utf-8") as smbconf:
     old_conf = smbconf.readlines()
     for l in old_conf:
         if "WORKGROUP" in l:
-            old_conf.insert(old_conf.index(l) + 1, "   multicast dns register = yes")
-            old_conf.insert(old_conf.index(l) + 1, "   disable netbios = yes")
+            old_conf.insert(old_conf.index(l) + 1, "   multicast dns register = yes\n")
+            old_conf.insert(old_conf.index(l) + 1, "   disable netbios = yes\n")
         if l.startswith("[print"):
             ind = old_conf.index(l)
             for _ in range(6):
                 old_conf.pop(ind)
     old_conf += smbshare
+    smbconf.close()
+    
+with open("/etc/samba/smb.conf", "w", encoding="utf-8") as smbconf:
     smbconf.writelines(old_conf)
     smbconf.close()
 
