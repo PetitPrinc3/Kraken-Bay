@@ -107,10 +107,15 @@ else:
     fail("Could not determine your platform.")
     exit()
 
-hostname = question("Choose your hostname.")
-username = question("Choose your admin username for DB and Web management.")
-password = question("Choose your admin password for DB and Web management.")
-database = question("Choose the name of the database.")
+hostname = "kraken.local"
+username = "kraken"
+password = "kraken"
+database = "kraken"
+
+info(f"Using hostname : {hostname}")
+info(f"Using username : {username}")
+info(f"Using password : {password}")
+info(f"Using database : {database}")
 
 replace_field("Docker/Mysql/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
 replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
@@ -243,7 +248,7 @@ with open("/etc/samba/smb.conf", "r", encoding="utf-8") as smbconf:
                 old_conf.pop(ind)
     old_conf += smbshare
     smbconf.close()
-    
+
 with open("/etc/samba/smb.conf", "w", encoding="utf-8") as smbconf:
     smbconf.writelines(old_conf)
     smbconf.close()
