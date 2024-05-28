@@ -8,39 +8,40 @@ import requests
 import imdb
 import uuid
 import questionary
-g_list = loads("""{"genres": []}""")
 
 GENRES = loads("""{"genres":[{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":14,"name":"Fantasy"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":10402,"name":"Music"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science Fiction"},{"id":10770,"name":"TV Movie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"},{"id":10759,"name":"Action & Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":10762,"name":"Kids"},{"id":9648,"name":"Mystery"},{"id":10763,"name":"News"},{"id":10764,"name":"Reality"},{"id":10765,"name":"Sci-Fi & Fantasy"},{"id":10766,"name":"Soap"},{"id":10767,"name":"Talk"},{"id":10768,"name":"War & Politics"},{"id":37,"name":"Western"}]}""")
 
 import os
 
-def movieFetcher() :
-    if os.path.exists(f'{json_fold}/genres.json'):
-        existing_genres = open(f'{json_fold}/genres.json', 'r', encoding='utf-8').read()
+def movieFetcher(API_KEY) :
+    g_list = loads("""{"genres": []}""")
+    if os.path.exists(f'{json_fold}genres.json'):
+        existing_genres = open(f'{json_fold}genres.json', 'r', encoding='utf-8').read()
         g_list = loads(existing_genres)
 
     valid_extensions = ["mp4", "mkv", "avi", "MKV"]
 
     existing_movies_json = loads('{"Titles": []}')
     existing_movies = []
-    if os.path.exists(f"{json_fold}/movies.json"):
-        with open(f"{json_fold}/movies.json", 'r', encoding='utf-8') as old :
+    if os.path.exists(f"{json_fold}movies.json"):
+        with open(f"{json_fold}movies.json", 'r', encoding='utf-8') as old :
             existing_movies_json = loads(old.read())
             for movie in existing_movies_json["Titles"]:
                 existing_movies.append(os.path.basename(movie["videoUrl"]))
     movies = []
 
-    for _ in os.listdir(m_path) :
+    for _ in os.listdir(b_path + m_path) :
         if _.split('.')[-1] in valid_extensions and _ not in existing_movies:
-            movies.append(f'{m_path}/{_}')
-    info(f'Found {len(movies)} files in "{m_path}"', 'discreet')
+            movies.append(f'{b_path + m_path}/{_}')
+    info(f'Found {len(movies)} files in "{b_path + m_path}"', 'discreet')
 
     data = loads('{"Titles" : []}')
 
     for file in movies:
+
         try:
             file_id = uuid.uuid4()
-            f_fold = f"{i_path}/{file_id}"
+            f_fold = f"{b_path}{i_path}/{file_id}"
             os.makedirs(f_fold)
             file_nme = file
             search_name = os.path.basename(" ".join(file_nme.split(".")[:-1]))
@@ -77,19 +78,19 @@ def movieFetcher() :
 
                 #Thumbnail / Poster data
                 try:
-                    t_src = 'http://image.tmdb.org/t/p/w500/' + req['poster_path']
+                    t_src = 'http://image.tmdb.org/t/p/w500' + req['poster_path']
                     d_path = f_fold + req['poster_path']
                     urlretrieve(t_src, d_path)
-                    t_url = b_url + f_fold + req['poster_path']
-                    p_src = 'http://image.tmdb.org/t/p/w500/' + req['backdrop_path']
+                    t_url = f"{b_url}{i_path}{file_id}{req['poster_path']}"
+                    p_src = 'http://image.tmdb.org/t/p/w500' + req['backdrop_path']
                     p_path = f_fold + req['backdrop_path']
                     urlretrieve(p_src, p_path)
-                    p_url = b_url + f_fold + req['backdrop_path']
+                    p_url = f"{b_url}{i_path}{file_id}{req['backdrop_path']}"
                 except:
                     warning("No poster")
-                    t_src = 'http://image.tmdb.org/t/p/w500/' + req['backdrop_path']
+                    t_src = 'http://image.tmdb.org/t/p/w500' + req['backdrop_path']
                     d_path = f_fold + req['backdrop_path']
-                    t_url = b_url + f_fold + req['backdrop_path']
+                    t_url = f"{b_url}{i_path}{file_id}{req['poster_path']}"
                     urlretrieve(t_src, d_path)
                     p_url = ""
 
@@ -126,7 +127,7 @@ def movieFetcher() :
                     "altTitle": t,
                     "type": "Movies",
                     "description": ovw,
-                    "videoUrl": b_url + file_nme,
+                    "videoUrl": b_url + m_path + os.path.basename(file_nme),
                     "thumbUrl": t_url,
                     "posterUrl": p_url,
                     "duration": duration,
@@ -138,10 +139,10 @@ def movieFetcher() :
 
                 data["Titles"].append(json)
 
-        except: 
-            warning(f"Something went wrong for {file}")
+        except:
+            warning(f'Something went wrong for {movie}')
 
-    with open(f'{json_fold}/movies.json', 'w', encoding='utf-8') as new:
+    with open(f'{json_fold}movies.json', 'w', encoding='utf-8') as new:
         for _ in data["Titles"]:
             existing_movies_json["Titles"].append(_)
         dump(existing_movies_json, new, ensure_ascii=False, indent=4)

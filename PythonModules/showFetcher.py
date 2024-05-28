@@ -2,51 +2,47 @@ from .krakenConf import *
 from .prints import *
 from .mkvInfo import *
 from json import loads, dump
-from moviepy.editor import VideoFileClip
 from urllib.request import urlretrieve
 import requests
 import imdb
 import uuid
 import questionary
-g_list = loads("""{"genres": []}""")
 
 GENRES = loads("""{"genres":[{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":14,"name":"Fantasy"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":10402,"name":"Music"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science Fiction"},{"id":10770,"name":"TV Movie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"},{"id":10759,"name":"Action & Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":10762,"name":"Kids"},{"id":9648,"name":"Mystery"},{"id":10763,"name":"News"},{"id":10764,"name":"Reality"},{"id":10765,"name":"Sci-Fi & Fantasy"},{"id":10766,"name":"Soap"},{"id":10767,"name":"Talk"},{"id":10768,"name":"War & Politics"},{"id":37,"name":"Western"}]}""")
 
-def showFetcher() :
-
-    if os.path.exists(f'{json_fold}/genres.json'):
-        existing_genres = open(f'{json_fold}/genres.json', 'r', encoding='utf-8').read()
+def showFetcher(API_KEY) :
+    g_list = loads("""{"genres": []}""")
+    if os.path.exists(f'{json_fold}genres.json'):
+        existing_genres = open(f'{json_fold}genres.json', 'r', encoding='utf-8').read()
         g_list = loads(existing_genres)
 
     valid_extensions = ["mp4", "mkv", "avi", "MKV"]
 
     existing_series_json = loads('{"Titles" : []}')
     existing_series = []
-    if os.path.exists(f"{json_fold}/series.json"):
-        with open(f"{json_fold}/series.json", 'r', encoding='utf-8') as old :
+    if os.path.exists(f"{json_fold}series.json"):
+        with open(f"{json_fold}series.json", 'r', encoding='utf-8') as old :
             existing_series_json = loads(old.read())
             for serie in existing_series_json["Titles"]:
                 existing_series.append(os.path.basename(serie["videoUrl"]))
 
     series = []
-    for _ in os.listdir(s_path) :
-        if os.path.isdir(f'{s_path}/{_}') and _ not in existing_series:
-            series.append(f'{s_path}/{_}')
-    info(f'Found {len(series)} files in "{s_path}"', 'discreet')
+    for _ in os.listdir(b_path + s_path) :
+        if os.path.isdir(f'{b_path + s_path}/{_}') and _ not in existing_series:
+            series.append(f'{b_path + s_path}/{_}')
+    info(f'Found {len(series)} files in "{b_path + s_path}"', 'discreet')
 
     data = loads('{"Titles" : []}')
 
     for fold in series:
 
-        try:
-        
             file_id = uuid.uuid4()
-            f_fold = f"{i_path}/{file_id}"
+            f_fold = f"{b_path}{i_path}/{file_id}"
             os.makedirs(f_fold)
 
             #Choosing TV Show source
             ia = imdb.IMDb()
-            t = question(f"Search for a movie: (Default : {os.path.basename(fold)}, / to bypass this file)", 'discreet')        
+            t = question(f"Search for a show: (Default : {os.path.basename(fold)}, / to bypass this file)", 'discreet')        
             if t == "":
                 t = os.path.basename(fold)
             if t != "/":    
@@ -72,21 +68,21 @@ def showFetcher() :
                 
                 #Thumbnail / Poster data
                 try:
-                    t_src = 'http://image.tmdb.org/t/p/w500/' + req['poster_path']
+                    t_src = 'http://image.tmdb.org/t/p/w500' + req['poster_path']
                     d_path = f_fold + req['poster_path']
                     urlretrieve(t_src, d_path)
-                    t_url = b_url + f_fold + req['poster_path']
-                    p_src = 'http://image.tmdb.org/t/p/w500/' + req['backdrop_path']
+                    t_url = f"{b_url}{i_path}{file_id}{req['poster_path']}"
+                    p_src = 'http://image.tmdb.org/t/p/w500' + req['backdrop_path']
                     p_path = f_fold + req['backdrop_path']
                     urlretrieve(p_src, p_path)
-                    p_url = b_url + f_fold + req['backdrop_path']
+                    p_url = f"{b_url}{i_path}{file_id}{req['backdrop_path']}"
                 except:
-                    warning("No Poster")
-                    t_src = 'http://image.tmdb.org/t/p/w500/' + req['backdrop_path']
+                    warning("No poster")
+                    t_src = 'http://image.tmdb.org/t/p/w500' + req['backdrop_path']
                     d_path = f_fold + req['backdrop_path']
-                    p_url = b_url + f_fold + "/" + req['backdrop_path']
+                    t_url = f"{b_url}{i_path}{file_id}{req['poster_path']}"
                     urlretrieve(t_src, d_path)
-                    t_url = p_url
+                    p_url = ""
 
 
                 #Genre
@@ -101,27 +97,22 @@ def showFetcher() :
                 genres = ", ".join(list)
 
                 ovw = req['overview']
-                seasons = [ _[2:] for _ in os.listdir(fold) if "SO" in _ ]
-
-
+                seasons = [ _ for _ in os.listdir(fold) if "SO" in _ ]
 
                 first_ep_url = ""
                 subtitles = []
                 languages = []
                 for season in seasons:
                     ep_data = loads('{"Titles" : [], "serieUrl": ""}')
-                    ep_data["serieUrl"] = b_url + fold,
                     s_fold = fold + "/" + season
                     episodes = os.listdir(s_fold)
-                    if len(season.split(" "))>1:
-                        s_number = int(season.split(" ")[-1])
-                    else:
-                        s_number = int(season)
+                    s_number = int(season.split("SO")[-1])
                     info(f'Found {len(episodes)} for season {s_number}')
                     for episode in episodes:
                         if episode.split('.')[-1] in valid_extensions :
+                            ep_url = f"{b_url}{s_path}{os.path.basename(fold)}/{season}/{episode}"
                             if first_ep_url == "" : 
-                                first_ep_url = b_url + s_fold + "/" + episode
+                                first_ep_url = ep_url
                                 #Languages recovery
                                 languages = getAudioLanguages(s_fold + "/" + episode)
                                 subtitles = getSubLanguages(s_fold + "/" + episode)
@@ -130,10 +121,11 @@ def showFetcher() :
                                 "title": f"{req['original_name']}: So {s_number}, Ep {e_number + 1}",
                                 "season": str(s_number),
                                 "episode": str(e_number + 1),
-                                "videoUrl": b_url + s_fold + "/" + episode,
+                                "videoUrl": ep_url,
                             }
 
                             ep_data["Titles"].append(e_json)
+                    ep_data["serieUrl"] = first_ep_url,
                     with open(json_fold + req['original_name'] + 'SO' + str(s_number) + '.json', 'w', encoding='utf-8') as f:
                         dump(ep_data, f, ensure_ascii=False, indent=4)
                 
@@ -148,16 +140,13 @@ def showFetcher() :
                     "languages": ", ".join(languages),
                     "subtitles": ", ".join(subtitles),
                     "duration": "",
-                    "seasons": ",".join(seasons),
+                    "seasons": ",".join([str(int(_.split("SO")[-1])) for _ in seasons]),
                     "genre": genres
                 }
 
                 data["Titles"].append(json)
         
-        except: 
-            warning(f"Something wrong happend for {fold}")
-
-    with open(f'{json_fold}/series.json', 'w', encoding='utf-8') as new:
+    with open(f'{json_fold}series.json', 'w', encoding='utf-8') as new:
         for _ in data["Titles"]:
             existing_series_json["Titles"].append(_)
         dump(existing_series_json, new, ensure_ascii=False, indent=4)

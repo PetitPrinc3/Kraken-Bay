@@ -7,16 +7,16 @@ import os
 def upload_json(folder = json_fold):   
 
     data = build_data(f'{folder}/movies.json')
-    push(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+    push(data, hostname, username, password, database)
     data = build_data(f'{folder}/series.json')
-    push(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+    push(data, hostname, username, password, database)
 
     for json_file in os.listdir(folder):
         data = build_data(f'{folder}/{json_file}')
         if json_file == "genres.json" :
-            push_genre(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+            push_genre(data, hostname, username, password, database)
         elif json_file not in ["movies.json", "series.json"] :
-            push_ep(data, mysql_srv, mysql_usr, mysql_pwd, mysql_dbs)
+            push_ep(data, hostname, username, password, database)
 
 def build_data(file):
     with open(file, 'r', encoding='utf-8') as f:
@@ -33,12 +33,12 @@ def push(data, m, u, p, d):
 
     cursor = client.cursor()
 
-    sql = f"INSERT INTO Media (id, title, altTitle, type, description, videoUrl, thumbUrl, posterUrl, duration, seasons, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = f"INSERT INTO Media (id, title, altTitle, type, languages, subtitles, description, videoUrl, thumbUrl, posterUrl, duration, seasons, genre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     for d in data["Titles"] :
         cursor.execute("SELECT UUID();")
         uuid = cursor.fetchall()[0][0]
-        val = (uuid, d["title"], d["altTitle"], d["type"], d["description"], d["videoUrl"], d["thumbUrl"], d["posterUrl"], d["duration"], d["seasons"], d["genre"])
+        val = (uuid, d["title"], d["altTitle"], d["type"], d["languages"], d["subtitles"], d["description"], d["videoUrl"], d["thumbUrl"], d["posterUrl"], d["duration"], d["seasons"], d["genre"])
         cursor.execute(sql, val)
         info(f'Inserted {d["title"]}', 'discreet')
     client.commit()
@@ -82,7 +82,7 @@ def push_ep(data, m, u, p, d):
 
     cursor = client.cursor()
 
-    sql = cursor.execute(f"""SELECT id FROM Media WHERE videoUrl = "{data["serieUrl"][0]}";""")
+    sql = cursor.execute(f"""SELECT id FROM Media WHERE type="Series" AND videoUrl="{data["serieUrl"][0]}";""")
     cursor.execute(sql)
     serieId = cursor.fetchall()[0][0]
 

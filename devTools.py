@@ -4,7 +4,7 @@ from urllib.request import urlretrieve
 from PythonModules.krakenConf import *
 from PythonModules.mkvInfo import *
 
-JSON_PATH = "public/Assets/JSON_DMPS/"
+JSON_PATH = "Kraken - Web/public/Assets/JSON_DMPS/"
 
 def checkImages() :
     existing_file = []

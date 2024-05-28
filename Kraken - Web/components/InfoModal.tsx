@@ -48,11 +48,12 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
     const todayDate = new Date()
     const isNew: boolean = (todayDate.getFullYear() - uploadDate.getFullYear()) * 12 + (todayDate.getMonth() - uploadDate.getMonth()) < 2
 
+    console.log(data)
     return (
         <div className="z-50 transition duration-300 bg-black bg-opacity-80 flex justify-center items-center overflow-x-hidden overflow-y-scroll fixed inset-0 py-5">
             <div className="fixed h-full w-full" onClick={() => handleClose()} />
             <div className="relative w-auto max-w-[90vw] md:max-w-3xl rounded-md overflow-hidden mt-auto">
-                <div className={`${isVisible ? 'scale-100' : 'scale-0'} transform duration-300 relative flex-auto rounded-t-md bg-zinc-900 drop-shadow-md`}>
+                <div className={`${isVisible ? 'scale-100' : 'scale-0'} transform duration-300 relative flex-auto rounded-t-md bg-zinc-900 drop-shadow-md rounded-md`}>
                     <div className="my-10">
                         <div className="relative h-96 mt-10">
                             <video className="w-full brightness-[60%] rounded-t-md object-cover h-full" autoPlay muted loop src={data?.videoUrl} poster={data?.posterUrl}></video>
@@ -89,11 +90,11 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                             <p className="text-white text-lg my-4">
                                 {data?.description}
                             </p>
-                            {data?.languages && (<p className="text-zinc-400 text-xs mb-2">
-                                Languages : {data?.languages}
+                            {data?.languages != "" && (<p className="text-zinc-400 text-xs mb-2">
+                                Languages : {data.languages}
                             </p>)}
-                            {data?.subtitles && (<p className="text-zinc-400 text-xs">
-                                Subtitles : {data?.languages}
+                            {data?.subtitles != "" && (<p className="text-zinc-400 text-xs">
+                                Subtitles : {data.subtitles}
                             </p>)}
                         </div>
                         {data?.type == "Series" && (

@@ -64,13 +64,14 @@ def dbManager():
         ╚═ ...
     """)
                 folder = question(f"Select JSON_folder path. (default : {json_fold}) ").strip()
+                if folder.strip() == "": folder = json_fold
                 upload_json(folder)
             except:
                 fail("Something went wrong.")
             dbManager()
         case 6 :
-            movieFetcher()
-            showFetcher()
+            movieFetcher(API_KEY)
+            showFetcher(API_KEY)
             upload_json()
         case 7 :
             dummy()
