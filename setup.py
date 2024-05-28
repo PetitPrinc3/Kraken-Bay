@@ -2,19 +2,27 @@ try:
     from PythonModules.spinner import *
     with spinner("Importing python libraries..."):
         from PythonModules.prints import *
-        import subprocess
+        from PythonModules.cmd_run import cmd_run
         import os
         import sys
         import bcrypt
         import uuid
         import mysql.connector
-        from PythonModules.manager import *
-    banner()
+        from PythonModules.dbManager import *
 except:
     fail("Library import failed.")
     warning("Please install required libraries running 'pip install -r requirements.txt'.")
     exit()
 
+print("""\033[91m
+    ██╗  ██╗██████╗  █████╗ ██╗  ██╗███████╗███╗   ██╗
+    ██║ ██╔╝██╔══██╗██╔══██╗██║ ██╔╝██╔════╝████╗  ██║
+    █████╔╝ ██████╔╝███████║█████╔╝ █████╗  ██╔██╗ ██║
+    ██╔═██╗ ██╔══██╗██╔══██║██╔═██╗ ██╔══╝  ██║╚██╗██║
+    ██║  ██╗██║  ██║██║  ██║██║  ██╗███████╗██║ ╚████║
+    ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝
+          \033[0m                Kraken setup by @PetitPrinc3
+    """)
 
 def replace_line(file, line, value):
     with open(file, "r") as inp :
@@ -55,37 +63,6 @@ def replace_field(file, field, value):
     with open(file, "w") as out :
         out.writelines(filedata)
         out.close()
-
-def cmd_run(cmd, succ = "", err = "", critical = False):
-    try:
-        if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
-            warning('Process failed once. Trying again.')
-            try:
-                if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
-                    fail('Process failed. This is critical.                                                  ')
-                    if err != "" : warning(err)
-                    if critical: exit()
-                    return 1
-            except subprocess.TimeoutExpired:
-                    fail('Command timed out. This is critical.                                               ')
-                    if err != "" : warning(err)
-                    if critical: exit()
-                    return 1
-    except subprocess.TimeoutExpired:
-        warning('Command timed out. Trying again.')
-        try:
-            if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
-                fail('Process failed. This is critical.')
-                if err != "" : warning(err)
-                if critical: exit()
-                return 1
-        except subprocess.TimeoutExpired:
-                fail('Command timed out twice. This is critical.')
-                if err != "" : warning(err)
-                if critical: exit()
-                return 1
-    if succ != "" : success(succ)
-    return 0
 
 ptfrm = sys.platform
 
@@ -207,9 +184,9 @@ info("Setting up Samba")
 with spinner("Downloading packages..."):
     cmd_run("sudo apt install -y samba")
 
-info("Creating share.")
-smbshare = [_ + "\n" for _ in (f"""
-[KrakenMovies]
+info("Creating shares.")
+movies_share = [_ + "\n" for _ in (f"""
+[Movies]
     comment = Kraken Bay - Movies <3
     path = "{os.path.join(os.getcwd(), "/Kraken - Web/public/Assets/Movies")}"
     available = yes
@@ -221,9 +198,10 @@ smbshare = [_ + "\n" for _ in (f"""
     guest only = yes
     force user = kraken
     force group = kraken
-
-[KrakenShows]
-    comment = Kraken Bay - Movies <3
+""").split("\n")]
+shows_share = [_ + "\n" for _ in (f"""
+[TVShows]
+    comment = Kraken Bay - TV Shows <3
     path = "{os.path.join(os.getcwd(), "/Kraken - Web/public/Assets/Series")}"
     available = yes
     read only = yes
@@ -236,17 +214,26 @@ smbshare = [_ + "\n" for _ in (f"""
     force group = kraken
 """).split("\n")]
 
+mov, ser = True, True
+
 with open("/etc/samba/smb.conf", "r", encoding="utf-8") as smbconf:
     old_conf = smbconf.readlines()
-    for l in old_conf:
-        if "WORKGROUP" in l:
-            old_conf.insert(old_conf.index(l) + 1, "   multicast dns register = yes\n")
-            old_conf.insert(old_conf.index(l) + 1, "   disable netbios = yes\n")
-        if l.startswith("[print"):
-            ind = old_conf.index(l)
+    if "[Movies]\n" in old_conf:
+        warning("Oops, Movies share already exists !")
+        mov = False
+    if "[TVShows]\n" in old_conf:
+        warning("Oops, TVShows share already exists !")
+        ser = False
+    for i in range(len(old_conf)):
+        if "WORKGROUP" in old_conf[i]:
+            if old_conf[i + 1] != "   disable netbios = yes\n":
+                old_conf.insert(i + 1, "   multicast dns register = yes\n")
+                old_conf.insert(i + 1, "   disable netbios = yes\n")
+        if old_conf[i].startswith("[print"):
             for _ in range(6):
-                old_conf.pop(ind)
-    old_conf += smbshare
+                old_conf.pop(i)
+    if mov : old_conf += movies_share
+    if ser : old_conf += shows_share
     smbconf.close()
 
 with open("/etc/samba/smb.conf", "w", encoding="utf-8") as smbconf:
