@@ -54,25 +54,22 @@ def menu():
         else :
             warning("We are offline")
     actions = [
+        "DB Management",
         "Restart Web server.",
         "Restart SMB server.",
-        "DB Management",
         "Toggle hotspot mode on/off.",
         "Clean upload folder.",
-        "Import new files from storage.",
-        "Setup dummy demo.",
-        "Edit user profile.",
         "Leave."
     ]
     choice = questionary.select("Select action : ", choices=actions).ask()
 
     match actions.index(choice):
         case 0 :
-            return
+            dbManager()
         case 1 :
             return
         case 2 :
-            dbManager()
+            return
         case 3 :
             if netw :
                 cmd_run("sudo systemctl start create_ap")
@@ -104,14 +101,6 @@ def menu():
                         shutil.rmtree(path, ignore_errors=True)
                         success(f'Removed "{path}"', "discreet")
         case 5 :
-            return
-        case 6 :
-            from PythonModules.dbManager import dummy
-            dummy(username, password, database)
-            success("Dummy demo is up !")
-        case 7 :
-            return
-        case 8 :
             fail("Bye !")
             return
     menu()

@@ -42,9 +42,9 @@ def dbManager():
             userList()
             dbManager()
         case 1 :
-            return
-        case 2 :
             userUpdate()
+            dbManager()
+        case 2 :
             dbManager()
         case 3 :
             mediaList()
@@ -110,14 +110,12 @@ def mediaList():
 
 def mediaUpdate():
     try:
-        user_id = question("Choose media uuid : ")
-        
-        
-        sql = f'SELECT id, type, title, genre, videoUrl, thumbUrl, posterUrl FROM User where id = "{user_id}";'
+        media_id = question("Choose media uuid : ")
+        sql = f'SELECT id, type, title, genre, videoUrl, thumbUrl, posterUrl FROM Media where id = "{media_id}";'
         cursor.execute(sql)
         user_data = cursor.fetchall()[0]
         info(f"User id : {user_data[0]}, type : {user_data[1]}, title : {user_data[2]}, genre : {user_data[3]}, video : {user_data[3]}, thumb : {user_data[3]}, poster : {user_data[3]}")
-        fields = ["type, title, genre, video, thumb, poster, leave"]
+        fields = ["type", "title", "genre", "video", "thumb", "poster", "leave"]
         field = questionary.select("Select field to update : ", choices=fields).ask()
         if field == "leave": return
         value = question(f"What value do you want for media {user_data[0]} in field {field}")
@@ -154,7 +152,7 @@ def userUpdate():
         cursor.execute(sql)
         user_data = cursor.fetchall()[0]
         info(f"User id : {user_data[0]}, email : {user_data[1]}, roles : {user_data[2]}, image : {user_data[3]}")
-        fields = ["email, roles, image", "leave"]
+        fields = ["email", "roles", "image", "leave"]
         field = questionary.select("Select field to update : ", choices=fields).ask()
         if field == "leave": return
         value = question(f"What value do you want for user {user_data[0]} in field {field}")
