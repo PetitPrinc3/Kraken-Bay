@@ -134,7 +134,38 @@ with spinner("Pushing prisma db schema."):
     cmd_run('cd "Kraken - Web" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
 with spinner("Building app..."):
     cmd_run('cd "Kraken - Web" && npm run build')
-    
+
+if question("Do you wish to run this software on an external drive ? [y/n]").lower() == "y":
+    mnt_point = question("Choose mount point.")
+    if not os.path.exists(mnt_point) :
+        os.makedirs(mnt_point)
+    drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
+    drive = questionary("Select drive : ", drives).ask()
+    device = os.popen(f"ls -al /dev/disk/by-label/{drive}").read().split("/")[-1].strip()
+    drive_uuid = os.popen(f"ls -al /dev/disk/by-uuid | grep {device}").read().split("->")[0].strip().split(" ")[-1]
+    user_uid = question("Select user uid. (default : 1000)")
+    if user_uid.strip() == "":
+        user_uid = str(1000)
+    group_uid = question("Select group uid. (default : 1000)")
+    if group_uid.strip() == "":
+        group_uid = str(1000)
+    auto_params = f'UUID={drive_uuid} {mnt_point} ntfs3 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
+
+    cmd_run("cp /etc/fstab fstab.old")
+
+    with open("/etc/fstab", "r+", encoding="utf-8") as fstab:
+        conf = fstab.readlines()
+        write = True
+        for line in conf:
+            if drive_uuid in line:
+                fail("Drive already fstabbed.")
+                write = False
+        if write :
+            conf.append(auto_params)
+            fstab.writelines(conf)
+            success("Drive fstabbed.")
+
+
 service_conf = f"""[Unit]
 Description=Web Service
 
