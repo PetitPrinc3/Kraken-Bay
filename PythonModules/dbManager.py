@@ -64,7 +64,8 @@ def dbManager():
         ╚═ ...
     """)
                 folder = question(f"Select JSON_folder path. (default : {json_fold}) ").strip()
-                if folder.strip() == "": folder = json_fold
+                if folder.strip() == "": 
+                    folder = json_fold
                 upload_json(folder)
             except:
                 fail("Something went wrong.")

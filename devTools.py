@@ -4,7 +4,10 @@ from urllib.request import urlretrieve
 from PythonModules.krakenConf import *
 from PythonModules.mkvInfo import *
 
-JSON_PATH = "Kraken - Web/public/Assets/JSON_DMPS/"
+ASSETS_PATH = "Kraken - Web/public/Assets/"
+JSON_PATH = ASSETS_PATH + "JSON_DMPS/"
+MOVIES_PATH = ASSETS_PATH + "Movies/"
+SERIES_PATH = ASSETS_PATH + "Movies/"
 
 def checkImages() :
     existing_file = []
@@ -79,33 +82,69 @@ def resetGenres() :
 
 def addSubTrack():
     with open(f"{JSON_PATH}movies.json", "r", encoding="utf-8") as old:
-        movies = loads(old)["Titles"]
+        movies = loads(old.read())["Titles"]
 
-    newTitles = loads({ "Titles": [] })
+    newTitles = loads('{ "Titles": [] }')
 
     for movie in movies :
-
-        languages = getAudioLanguages(movie)
-        subtitles = getSubLanguages(movie)
+        if os.path.basename(movie["videoUrl"]).split(".")[-1].lower() == "mkv":
+            languages = getAudioLanguages("Kraken - Web/public" + movie["videoUrl"])
+            subtitles = getSubLanguages("Kraken - Web/public" + movie["videoUrl"])
+        else:
+            languages = ""
+            subtitles = ""
 
         newJson ={
                 "title": movie["title"],
                 "altTitle": movie["altTitle"],
                 "type": movie["type"],
-                "description": movie["descritpion"],
+                "description": movie["description"],
                 "videoUrl": movie["videoUrl"],
                 "thumbUrl": movie["thumbUrl"],
                 "posterUrl": movie["posterUrl"],
+                "seasons": movie["seasons"],
                 "duration": movie["duration"],
                 "languages": ", ".join(languages),
                 "subtitles": ", ".join(subtitles),
-                "seasons":movie["seasons"],
                 "genre": movie["genre"]
             }
 
         newTitles["Titles"].append(newJson)
 
     with open(f"{JSON_PATH}movies.json", "w", encoding="utf-8") as new:
+        dump(newTitles, new, ensure_ascii=False, indent=4)
+
+    with open(f"{JSON_PATH}series.json", "r", encoding="utf-8") as old:
+        movies = loads(old.read())["Titles"]
+
+    newTitles = loads('{ "Titles": [] }')
+
+    for movie in movies :
+        if os.path.basename(movie["videoUrl"]).split(".")[-1].lower() == "mkv":
+            languages = getAudioLanguages("Kraken - Web/public" + movie["videoUrl"])
+            subtitles = getSubLanguages("Kraken - Web/public" + movie["videoUrl"])
+        else:
+            languages = ""
+            subtitles = ""
+
+        newJson ={
+                "title": movie["title"],
+                "altTitle": movie["altTitle"],
+                "type": movie["type"],
+                "description": movie["description"],
+                "videoUrl": movie["videoUrl"],
+                "thumbUrl": movie["thumbUrl"],
+                "posterUrl": movie["posterUrl"],
+                "seasons": movie["seasons"],
+                "duration": movie["duration"],
+                "languages": ", ".join(languages),
+                "subtitles": ", ".join(subtitles),
+                "genre": movie["genre"]
+            }
+
+        newTitles["Titles"].append(newJson)
+
+    with open(f"{JSON_PATH}series.json", "w", encoding="utf-8") as new:
         dump(newTitles, new, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
