@@ -140,7 +140,7 @@ if question("Do you wish to run this software on an external drive ? [y/n]").low
     if not os.path.exists(mnt_point) :
         os.makedirs(mnt_point)
     drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
-    drive = questionary("Select drive : ", drives).ask()
+    drive = questionary.select("Select drive : ", drives).ask()
     device = os.popen(f"ls -al /dev/disk/by-label/{drive}").read().split("/")[-1].strip()
     drive_uuid = os.popen(f"ls -al /dev/disk/by-uuid | grep {device}").read().split("->")[0].strip().split(" ")[-1]
     user_uid = question("Select user uid. (default : 1000)")
