@@ -135,10 +135,12 @@ with spinner("Pushing prisma db schema."):
 with spinner("Building app..."):
     cmd_run('cd "Kraken - Web" && npm run build')
 
-if question("Do you wish to run this software on an external drive ? [y/n]").lower() == "y":
-    mnt_point = question("Choose mount point.")
-    if not os.path.exists(mnt_point) :
-        os.makedirs(mnt_point)
+install_path = os.getcwd()
+
+if question("Are we running on an external drive ? [y/n]").lower() == "y":
+    install_path = question("Choose mount point.")
+    if not os.path.exists(install_path) :
+        os.makedirs(install_path)
     drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
     drive = questionary.select("Select drive : ", drives).ask()
     device = os.popen(f"ls -al /dev/disk/by-label/{drive}").read().split("/")[-1].strip()
@@ -149,7 +151,7 @@ if question("Do you wish to run this software on an external drive ? [y/n]").low
     group_uid = question("Select group uid. (default : 1000)")
     if group_uid.strip() == "":
         group_uid = str(1000)
-    auto_params = f'UUID={drive_uuid} {mnt_point} ntfs3 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
+    auto_params = f'UUID={drive_uuid} {install_path} ntfs3 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
 
     cmd_run("cp /etc/fstab fstab.old")
 
@@ -170,13 +172,13 @@ service_conf = f"""[Unit]
 Description=Web Service
 
 [Service]
-ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "Kraken - Web")}" start
+ExecStart=/usr/bin/npm --prefix "{os.path.join(install_path, "Kraken - Web")}" start
 Restart=always
 User=root
 Group=root
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
-WorkingDirectory={os.path.join(os.getcwd(), "Kraken - Web")}
+WorkingDirectory={os.path.join(install_path, "Kraken - Web")}
 
 [Install]
 WantedBy=multi-user.target"""
@@ -220,7 +222,7 @@ info("Creating shares.")
 movies_share = [_ + "\n" for _ in (f"""
 [Movies]
     comment = Kraken Bay - Movies <3
-    path = "{os.path.join(os.getcwd(), "/Kraken - Web/public/Assets/Movies")}"
+    path = "{os.path.join(install_path, "/Kraken - Web/public/Assets/Movies")}"
     available = yes
     read only = yes
     create mask = 666
@@ -234,7 +236,7 @@ movies_share = [_ + "\n" for _ in (f"""
 shows_share = [_ + "\n" for _ in (f"""
 [TVShows]
     comment = Kraken Bay - TV Shows <3
-    path = "{os.path.join(os.getcwd(), "/Kraken - Web/public/Assets/Series")}"
+    path = "{os.path.join(install_path, "/Kraken - Web/public/Assets/Series")}"
     available = yes
     read only = yes
     create mask = 666
