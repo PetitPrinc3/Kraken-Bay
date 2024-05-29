@@ -82,7 +82,8 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                                 {isNew ? "New" : ""}
                             </p>
                             <p className="text-white text-s">
-                                {data?.type == "Movies" ? data?.duration : (data?.seasons.split(",")).length + " Seasons"}
+                                {data?.type == "Movies" && data?.duration}
+                                {data?.type == "Series" && (data?.seasons.split(",")).length + " Seasons"}
                             </p>
                             <p className="text-white text-s">
                                 Genres : {data?.genre}
