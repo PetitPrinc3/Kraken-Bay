@@ -166,6 +166,7 @@ if question("Are we running on an external drive ? [y/n]").lower() == "y":
             conf.append(auto_params)
             fstab.writelines(conf)
             success("Drive fstabbed.")
+    install_path = os.path.join(install_path, "Kraken-Bay")
 
 
 service_conf = f"""[Unit]
