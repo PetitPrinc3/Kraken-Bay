@@ -143,15 +143,14 @@ if question("Are we running on an external drive ? [y/n]").lower() == "y":
         os.makedirs(install_path)
     drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
     drive = questionary.select("Select drive : ", drives).ask()
-    device = os.popen(f"ls -al /dev/disk/by-label/{drive}").read().split("/")[-1].strip()
-    drive_uuid = os.popen(f"ls -al /dev/disk/by-uuid | grep {device}").read().split("->")[0].strip().split(" ")[-1]
+    device = os.popen(f"ls -al /dev/disk/by-label | grep {drive}").read().split("->")[0].strip().split(" ")[-1]
     user_uid = question("Select user uid. (default : 1000)")
     if user_uid.strip() == "":
         user_uid = str(1000)
     group_uid = question("Select group uid. (default : 1000)")
     if group_uid.strip() == "":
         group_uid = str(1000)
-    auto_params = f'UUID={drive_uuid} {install_path} ntfs3 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
+    auto_params = f'/dev/{device} {install_path} ext4 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
 
     cmd_run("cp /etc/fstab fstab.old")
 
@@ -159,7 +158,7 @@ if question("Are we running on an external drive ? [y/n]").lower() == "y":
         conf = fstab.readlines()
         write = True
         for line in conf:
-            if drive_uuid in line:
+            if device in line:
                 fail("Drive already fstabbed.")
                 write = False
         if write :
