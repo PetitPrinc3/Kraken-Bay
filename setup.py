@@ -143,7 +143,7 @@ if question("Are we running on an external drive ? [y/n]").lower() == "y":
         os.makedirs(install_path)
     drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
     drive = questionary.select("Select drive : ", drives).ask()
-    device = os.popen(f"ls -al /dev/disk/by-label | grep {drive}").read().split("->")[0].strip().split(" ")[-1]
+    device = os.popen(f"ls -al /dev/disk/by-label/{drive}").read().split("->")[0].strip().split(" ")[-1]
     user_uid = question("Select user uid. (default : 1000)")
     if user_uid.strip() == "":
         user_uid = str(1000)
@@ -282,11 +282,7 @@ if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
         import netifaces
-        info("The following interfaces are available :")
-        for intf in netifaces.interfaces() :
-            print(f'[>] {intf}')
-        interface = question("Which interface do you wish to use for hotspot ?")
-
+        interface = questionary("Choose interface for hotspot : ", netifaces.interfaces())
         info("Cloning create_ap from @oblique...")
         cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")
         success("Done.")
