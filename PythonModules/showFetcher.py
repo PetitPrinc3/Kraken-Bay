@@ -19,22 +19,86 @@ def showFetcher(API_KEY) :
     valid_extensions = ["mp4", "mkv", "avi", "MKV"]
 
     existing_series_json = loads('{"Titles" : []}')
+    existing_titles = []
     existing_series = []
     if os.path.exists(f"{json_fold}series.json"):
         with open(f"{json_fold}series.json", 'r', encoding='utf-8') as old :
-            existing_series_json = loads(old.read())
-            for serie in existing_series_json["Titles"]:
-                existing_series.append(os.path.basename(serie["videoUrl"]))
+            existing_titles_json = loads(old.read())
+            for serie in existing_titles_json["Titles"]:
+                existing_titles.append(serie["title"])
+                existing_series.append({
+                    "title": serie["title"],
+                    "path": serie["videoUrl"].split("/")[3],
+                    "seasons": serie["seasons"].split(",")
+                })
 
-    series = []
+    for serie in existing_series:
+        seasons = os.listdir(b_path + serie["path"])
+        existing_seasons_path = [b_path + serie["path"] + "/" + _ for _ in seasons if _.split("SO")[-1] in serie["seasons"]]
+        for existing_season in existing_seasons_path:
+            exisisting_eps = []
+            with open(f"{json_fold}/{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1]}.json", "r", encoding="utf-8") as eps:
+                for _ in eps.read()["Titles"] :
+                    exisisting_eps.append(os.path.basename(_["videoUrl"]))
+            present_eps = os.listdir(existing_season)
+            if len(present_eps) > len(exisisting_eps):
+                info(f"Found {len(present_eps) - len(exisisting_eps)} new episodes for {serie["title"]} SO {os.path.basename(existing_season).split("SO")[-1]}")
+                ep_data = [] 
+                for episode in present_eps:
+                    if episode not in exisisting_eps and episode.split('.')[-1] in valid_extensions :
+                        ep_url = f"{b_url}{s_path}{os.path.basename(serie["path"])}/{os.path.basename(existing_season)}/{episode}"
+                        e_number = present_eps.index(episode)
+                        e_json = {
+                            "title": f"{serie["title"]}: So {os.path.basename(existing_season).split("SO")[-1]}, Ep {e_number + 1}",
+                            "season": str(os.path.basename(existing_season).split("SO")[-1]),
+                            "episode": str(e_number + 1),
+                            "videoUrl": ep_url,
+                        }
+                        ep_data.append(e_json)
+                with open(f"{json_fold}/{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1]}.json", "r+", encoding="utf-8") as eps:
+                    data = loads(eps)
+                    for _ in ep_data:
+                        data["Titles"].append(_)
+                    eps.write(data)
+
+        if len(seasons) > len(serie["seasons"]):
+            info(f'Found {len(seasons) - len(serie["seasons"])} new seasons for {serie["title"]}')
+            for season in seasons:
+                s_number = int(season.split("SO")[-1])
+                if s_number not in serie["seasons"]:
+                    serie["seasons"].append(s_number)
+                    s_fold = b_path + serie["path"] + "/" + season
+                    
+                    episodes = os.listdir(s_fold)
+                    ep_data = loads('{"Titles" : [], "serieUrl": ""}')
+                    info(f'Found {len(episodes)} for season {s_number}')
+                    for episode in episodes:
+                        if episode.split('.')[-1] in valid_extensions :
+                            ep_url = f"{b_url}{s_path}{os.path.basename(serie["path"])}/{season}/{episode}"
+                            e_number = episodes.index(episode)
+                            e_json = {
+                                "title": f"{req['original_name']}: So {s_number}, Ep {e_number + 1}",
+                                "season": str(s_number),
+                                "episode": str(e_number + 1),
+                                "videoUrl": ep_url,
+                            }
+                            ep_data["Titles"].append(e_json)
+                    with open(json_fold + serie["title"] + 'SO' + str(s_number) + '.json', 'w', encoding='utf-8') as f:
+                        dump(ep_data, f, ensure_ascii=False, indent=4)
+            
+            serie["seasons"].sort()
+
+
+
+    new_series = []
     for _ in os.listdir(b_path + s_path) :
-        if os.path.isdir(f'{b_path + s_path}/{_}') and _ not in existing_series:
-            series.append(f'{b_path + s_path}/{_}')
-    info(f'Found {len(series)} files in "{b_path + s_path}"', 'discreet')
+        if os.path.isdir(f'{b_path + s_path}/{_}') and _ not in existing_titles:
+            new_series.append(f'{b_path + s_path}/{_}')
+    info(f'Found {len(new_series)} files in "{b_path + s_path}"', 'discreet')
 
     data = loads('{"Titles" : []}')
 
-    for fold in series:
+    for fold in new_series:
 
             file_id = uuid.uuid4()
             f_fold = f"{b_path}{i_path}/{file_id}"

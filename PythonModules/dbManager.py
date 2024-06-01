@@ -28,7 +28,7 @@ def dbManager():
         "List Media",
         "Update existing Media by ID",
         "Import new Media from JSON",
-        "Massive media db setup",
+        "Fetch new medias with JSON comparison",
         "Setup dummy demo",
         "Purge User",
         "Purge Media",

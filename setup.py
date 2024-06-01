@@ -222,7 +222,7 @@ info("Creating shares.")
 movies_share = [_ + "\n" for _ in (f"""
 [Movies]
     comment = Kraken Bay - Movies <3
-    path = "{os.path.join(install_path, "/Kraken - Web/public/Assets/Movies")}"
+    path = "{os.path.join(install_path, "Kraken - Web/public/Assets/Movies")}"
     available = yes
     read only = yes
     create mask = 666
@@ -236,7 +236,7 @@ movies_share = [_ + "\n" for _ in (f"""
 shows_share = [_ + "\n" for _ in (f"""
 [TVShows]
     comment = Kraken Bay - TV Shows <3
-    path = "{os.path.join(install_path, "/Kraken - Web/public/Assets/Series")}"
+    path = "{os.path.join(install_path, "Kraken - Web/public/Assets/Series")}"
     available = yes
     read only = yes
     create mask = 666

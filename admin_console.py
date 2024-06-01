@@ -67,19 +67,23 @@ def menu():
         case 0 :
             dbManager()
         case 1 :
-            return
+            with spinner("Restarting Web server..."):
+                cmd_run("sudo systemctl restart krakenWeb")
+                sleep(2)
         case 2 :
-            return
+            with spinner("Restarting Web server..."):
+                cmd_run("sudo service smbd restart")
+                sleep(2)
         case 3 :
             if netw :
-                cmd_run("sudo systemctl start create_ap")
                 with spinner("Starting hotspot ..."):
-                    sleep(5)
+                    cmd_run("sudo systemctl start create_ap")
+                    sleep(4)
             else:
-                cmd_run("sudo systemctl stop create_ap")
-                cmd_run("sudo nmcli radio wifi on")
                 with spinner("Stopping hotspot ..."):
-                    sleep(5)
+                    cmd_run("sudo systemctl stop create_ap")
+                    cmd_run("sudo nmcli radio wifi on")
+                    sleep(4)
         case 4 :
             with spinner("Cleaning empty folders ..."):
                 for fold in os.listdir("Kraken - Web/public/Assets/PendingUploads"):
