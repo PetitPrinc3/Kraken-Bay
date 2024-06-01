@@ -167,7 +167,7 @@ def showFetcher(API_KEY) :
 
                 ovw = req['overview']
                 seasons = [ _ for _ in os.listdir(fold) if "SO" in _ ]
-
+                seasons.sort()
                 first_ep_url = ""
                 subtitles = []
                 languages = []
