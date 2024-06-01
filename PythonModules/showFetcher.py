@@ -18,7 +18,7 @@ def showFetcher(API_KEY) :
 
     valid_extensions = ["mp4", "mkv", "avi", "MKV"]
 
-    existing_series_json = loads('{"Titles" : []}')
+    existing_titles_json = loads('{"Titles" : []}')
     existing_titles = []
     existing_series = []
     if os.path.exists(f"{json_fold}series.json"):
@@ -34,13 +34,15 @@ def showFetcher(API_KEY) :
 
     for serie in existing_series:
         seasons = os.listdir(b_path + s_path + serie["path"])
-        existing_seasons_path = [b_path + s_path + serie["path"] + "/" + _ for _ in seasons if _.split("SO")[-1] in serie["seasons"]]
+        seasons.sort()
+        existing_seasons_path = [b_path + s_path + serie["path"] + "/" + _ for _ in seasons if str(_.split("SO")[-1]).strip() in serie["seasons"]]
         for existing_season in existing_seasons_path:
             exisisting_eps = []
-            with open(f"{json_fold}/{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1]}.json", "r", encoding="utf-8") as eps:
+            with open(f"{json_fold}{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1].strip()}.json", "r", encoding="utf-8") as eps:
                 for _ in loads(eps.read())["Titles"] :
                     exisisting_eps.append(os.path.basename(_["videoUrl"]))
             present_eps = os.listdir(existing_season)
+            present_eps.sort()
             if len(present_eps) > len(exisisting_eps):
                 info(f"Found {len(present_eps) - len(exisisting_eps)} new episodes for {serie["title"]} SO {os.path.basename(existing_season).split("SO")[-1]}")
                 ep_data = [] 
@@ -55,21 +57,23 @@ def showFetcher(API_KEY) :
                             "videoUrl": ep_url,
                         }
                         ep_data.append(e_json)
-                with open(f"{json_fold}/{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1]}.json", "r+", encoding="utf-8") as eps:
-                    data = loads(eps)
+                with open(f"{json_fold}{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1].strip()}.json", "r+", encoding="utf-8") as eps:
+                    data = loads(eps.read())
                     for _ in ep_data:
                         data["Titles"].append(_)
-                    eps.write(data)
+                with open(f"{json_fold}{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1].strip()}.json", "w", encoding="utf-8") as eps:
+                    dump(data, eps, ensure_ascii=False, indent=4)
 
         if len(seasons) > len(serie["seasons"]):
             info(f'Found {len(seasons) - len(serie["seasons"])} new seasons for {serie["title"]}')
             for season in seasons:
-                s_number = int(season.split("SO")[-1])
+                s_number = season.split("SO")[-1].strip()
                 if s_number not in serie["seasons"]:
                     serie["seasons"].append(s_number)
                     s_fold = b_path + s_path + serie["path"] + "/" + season
                     
                     episodes = os.listdir(s_fold)
+                    episodes.sort()
                     ep_data = loads('{"Titles" : [], "serieUrl": ""}')
                     info(f'Found {len(episodes)} for season {s_number}')
                     for episode in episodes:
@@ -77,12 +81,13 @@ def showFetcher(API_KEY) :
                             ep_url = f"{b_url}{s_path}{os.path.basename(serie["path"])}/{season}/{episode}"
                             e_number = episodes.index(episode)
                             e_json = {
-                                "title": f"{req['original_name']}: So {s_number}, Ep {e_number + 1}",
+                                "title": f"{serie["title"]}: So {s_number}, Ep {e_number + 1}",
                                 "season": str(s_number),
                                 "episode": str(e_number + 1),
                                 "videoUrl": ep_url,
                             }
                             ep_data["Titles"].append(e_json)
+                    ep_data["serieUrl"] = loads(open(f"{json_fold}{serie["title"]}SO{serie["seasons"][0]}.json", "r", encoding="utf-8").read())["serieUrl"]
                     with open(json_fold + serie["title"] + 'SO' + str(s_number) + '.json', 'w', encoding='utf-8') as f:
                         dump(ep_data, f, ensure_ascii=False, indent=4)
             
@@ -170,6 +175,7 @@ def showFetcher(API_KEY) :
                     ep_data = loads('{"Titles" : [], "serieUrl": ""}')
                     s_fold = fold + "/" + season
                     episodes = os.listdir(s_fold)
+                    episodes.sort()
                     s_number = int(season.split("SO")[-1])
                     info(f'Found {len(episodes)} for season {s_number}')
                     for episode in episodes:
@@ -212,8 +218,8 @@ def showFetcher(API_KEY) :
         
     with open(f'{json_fold}series.json', 'w', encoding='utf-8') as new:
         for _ in data["Titles"]:
-            existing_series_json["Titles"].append(_)
-        dump(existing_series_json, new, ensure_ascii=False, indent=4)
+            existing_titles_json["Titles"].append(_)
+        dump(existing_titles_json, new, ensure_ascii=False, indent=4)
 
     success("Done for series.")
 

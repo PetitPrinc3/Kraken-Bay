@@ -73,7 +73,6 @@ def dbManager():
         case 6 :
             movieFetcher(API_KEY)
             showFetcher(API_KEY)
-            upload_json()
         case 7 :
             dummy()
             dbManager()
