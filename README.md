@@ -3,17 +3,17 @@
 # Kraken Bay
 
 Open source Media Center and Netflix-like server.  
+Tested on Ubuntu 24.04
 
 ## Project
 
 | Feature | Status | Observation |
 | :-: | :-: |  :-: |
-| Installer | :large_blue_circle: | OK: Ongoing |
-| Hotspot mode | :green_circle: | Create util to toggle ON/OFF |
-| Media Server | :large_blue_circle: | |
-| Web Player | :green_circle: | Basic functionalities OK |
-| Uploader | :green_circle: | UI/DB: OK, enhance security on file types. |
-| Account management | :green_circle: | UI: OK / DB: OK |
+| Web Server | :green_circle: | Ok |
+| Media Server | :green_circle: | Ok |
+| Hotspot mode | :green_circle: | Ok |
+| Admin tools | :green_circle: | Ok |
+| Installer | :green_circle: | OK: Not fully automatic but enough. |
 
 ## Features :
 
@@ -36,7 +36,8 @@ Open source Media Center and Netflix-like server.
 
 ### Web server
 
-- Better seek slider for video player
+- Mobile web player
+- Detect soundless media (MKV files)
 
 ## Collaborate
 
