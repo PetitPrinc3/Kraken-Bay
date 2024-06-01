@@ -25,7 +25,7 @@ def showFetcher(API_KEY) :
         with open(f"{json_fold}series.json", 'r', encoding='utf-8') as old :
             existing_titles_json = loads(old.read())
             for serie in existing_titles_json["Titles"]:
-                existing_titles.append(serie["title"])
+                existing_titles.append(serie["videoUrl"].split("/")[3])
                 existing_series.append({
                     "title": serie["title"],
                     "path": serie["videoUrl"].split("/")[3],
