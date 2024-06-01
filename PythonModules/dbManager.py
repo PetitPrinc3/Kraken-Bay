@@ -23,12 +23,13 @@ except:
 def dbManager():
     actions = [
         "List Users",
-        "Update existing User by ID",
-        "Create new User",
+        "Update User by ID",
+        "Create User",
         "List Media",
-        "Update existing Media by ID",
-        "Import new Media from JSON",
-        "Fetch new medias with JSON comparison",
+        "Update Media by ID",
+        "Import Media from JSON",
+        "Detect new Medias",
+        "Sync DB with JSON"
         "Setup dummy demo",
         "Purge User",
         "Purge Media",
@@ -74,15 +75,18 @@ def dbManager():
             movieFetcher(API_KEY)
             showFetcher(API_KEY)
         case 7 :
+            mediaPurge()
+            upload_json()
+        case 8 :
             dummy()
             dbManager()
-        case 8 :
+        case 9 :
             userPurge()
             dbManager()
-        case 9 :
+        case 10 :
             mediaPurge()
             dbManager()
-        case 10 :
+        case 11 :
             return
     return
 
