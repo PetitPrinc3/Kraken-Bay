@@ -38,7 +38,7 @@ def showFetcher(API_KEY) :
         for existing_season in existing_seasons_path:
             exisisting_eps = []
             with open(f"{json_fold}/{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1]}.json", "r", encoding="utf-8") as eps:
-                for _ in eps.read()["Titles"] :
+                for _ in loads(eps.read())["Titles"] :
                     exisisting_eps.append(os.path.basename(_["videoUrl"]))
             present_eps = os.listdir(existing_season)
             if len(present_eps) > len(exisisting_eps):
