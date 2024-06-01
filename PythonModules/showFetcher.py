@@ -93,10 +93,10 @@ def showFetcher(API_KEY) :
             
             serie["seasons"].sort()
 
-
-
     new_series = []
-    for _ in os.listdir(b_path + s_path) :
+    seasons = os.listdir(b_path + s_path)
+    seasons.sort()
+    for _ in seasons :
         if os.path.isdir(f'{b_path + s_path}/{_}') and _ not in existing_titles:
             new_series.append(f'{b_path + s_path}/{_}')
     info(f'Found {len(new_series)} files in "{b_path + s_path}"', 'discreet')
