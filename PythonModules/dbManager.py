@@ -29,7 +29,7 @@ def dbManager():
         "Update Media by ID",
         "Import Media from JSON",
         "Detect new Medias",
-        "Sync DB with JSON"
+        "Sync DB with JSON",
         "Setup dummy demo",
         "Purge User",
         "Purge Media",
