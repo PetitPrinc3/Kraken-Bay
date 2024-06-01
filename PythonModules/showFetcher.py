@@ -33,8 +33,8 @@ def showFetcher(API_KEY) :
                 })
 
     for serie in existing_series:
-        seasons = os.listdir(b_path + serie["path"])
-        existing_seasons_path = [b_path + serie["path"] + "/" + _ for _ in seasons if _.split("SO")[-1] in serie["seasons"]]
+        seasons = os.listdir(b_path + s_path + serie["path"])
+        existing_seasons_path = [b_path + s_path + serie["path"] + "/" + _ for _ in seasons if _.split("SO")[-1] in serie["seasons"]]
         for existing_season in existing_seasons_path:
             exisisting_eps = []
             with open(f"{json_fold}/{serie["title"]}SO{os.path.basename(existing_season).split("SO")[-1]}.json", "r", encoding="utf-8") as eps:
@@ -67,7 +67,7 @@ def showFetcher(API_KEY) :
                 s_number = int(season.split("SO")[-1])
                 if s_number not in serie["seasons"]:
                     serie["seasons"].append(s_number)
-                    s_fold = b_path + serie["path"] + "/" + season
+                    s_fold = b_path + s_path + serie["path"] + "/" + season
                     
                     episodes = os.listdir(s_fold)
                     ep_data = loads('{"Titles" : [], "serieUrl": ""}')
