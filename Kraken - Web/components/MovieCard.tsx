@@ -5,7 +5,9 @@ import FavoriteButton from "./FavoriteButton";
 import { useRouter } from "next/router";
 import useInfoModal from "@/hooks/useInfoModal";
 import DownloadButton from "./DownloadButton";
-
+import CopyButton from "./CopyButton";
+import { BiCopy } from "react-icons/bi";
+import { AiOutlineInfoCircle } from "react-icons/ai"
 interface MovieCardProps {
     data: Record<string, any>;
 }
@@ -22,13 +24,22 @@ const MovieCard: React.FC<MovieCardProps> = ({
     const isNew: boolean = (todayDate.getFullYear() - uploadDate.getFullYear()) * 12 + (todayDate.getMonth() - uploadDate.getMonth()) < 2
 
     return (
-        <div className="group bg-transparent col-span relative md:h-[12vw]">
-            <div onClick={() => openModal(data?.id)}
-                className="w-full h-auto md:h-[12vw] p-0 m-0 cursor-pointer object-cover transition duration delay-300 shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0"
-            >
-                <img
-                    className="rounded-md w-full h-full"
-                    src={data.posterUrl} alt="Thumbnail" />
+        <div className="group bg-transparent col-span relative h-[30vw] md:h-[12vw]">
+            <div className="w-full h-full md:h-[12vw] flex flex-col items-center p-0 m-0 cursor-pointer object-cover transition duration delay-300 shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0">
+                <img className="hidden md:block rounded-md w-full h-full" src={data.posterUrl} alt="Thumbnail" />
+                <div className="relative w-full h-full flex md:hidden flex-col rounded-lg object-fill">
+                    <div className="w-full h-full rounded-lg">
+                        <img onClick={() => openModal(data?.id)} className="w-full h-full rounded-md border-2 border-neutral-800" src={data.thumbUrl} alt="Thumbnail" />
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-full h-[30%] grid grid-cols-2 place-items-center bg-neutral-800 bg-opacity-90 rounded-b-md">
+                        <div onClick={() => navigator.clipboard.writeText(`smb://kraken.local${data?.videoUrl}`)} className="w-full h-full text-white flex items-center justify-center">
+                            <BiCopy size={25} />
+                        </div>
+                        <div onClick={() => openModal(data?.id)} className="w-full h-full text-white flex items-center justify-center">
+                            <AiOutlineInfoCircle size={25} />
+                        </div>
+                    </div>
+                </div>
                 <p className="hidden lg:block absolute bottom-5 left-5 text-white text-xl font-bold max-h-[10vw] overflow-hidden">
                     {data.title}
                 </p>
@@ -83,6 +94,9 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         <FavoriteButton movieId={data?.id} />
                         <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
                             <DownloadButton movieId={data?.id} />
+                        </div>
+                        <div>
+                            <CopyButton mediaId={data?.id} />
                         </div>
                         <div onClick={() => openModal(data?.id)} className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300">
                             <BsChevronDown size={20} className="text-white group-hover/item:text-neutral-300 w-4 font-bold" />

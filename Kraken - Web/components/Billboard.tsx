@@ -8,7 +8,6 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import axios from "axios";
 import { isUndefined } from "lodash";
 import { useRouter } from "next/router";
-import useEpisodeList from "@/hooks/useEpisodeList";
 import { BsFillPlayFill } from "react-icons/bs";
 
 
@@ -53,7 +52,7 @@ const Billboard = () => {
                         object-cover
                         brightness-[60%]
                         "
-                        autoPlay
+                        autoPlay={window.screen.width > 768}
                         loop
                         poster={data?.posterUrl}
                         src={data?.videoUrl}
@@ -73,7 +72,7 @@ const Billboard = () => {
                                 <PlayButton movieId={data?.id} />
                                 <button onClick={handleOpenModal} className="bg-white text-white bg-opacity-30 rounded-md py-2 px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-opacity-20 transition">
                                     <AiOutlineInfoCircle className="mr-1" size={25} />
-                                    <p><span className="hidden md:inline-block">More</span> Info</p>
+                                    <p>More Info</p>
                                 </button>
                             </div>
                         </div>
@@ -88,7 +87,7 @@ const Billboard = () => {
                     <Icon size={25} />
                 </div>
             </div>
-            <div className="relative md:hidden flex flex-col items-center h-[80vh]">
+            <div className="relative md:hidden flex flex-col items-center h-[75vh]">
                 <div style={{ "backgroundImage": `url('${data?.posterUrl}')` }} className="absolute left-0 top-0 z-0 w-full h-full overflow-hidden bg-cover bg-no-repeat bg-center blur-xl" />
                 <div className="absolute left-auto top-20 z-10 w-[90vw] h-[60vh] flex flex-col items-center">
                     <div className="relative">
@@ -97,15 +96,13 @@ const Billboard = () => {
                         <div className="absolute bottom-0 left-0 w-full px-4 py-4 flex flex-col gap-2 items-center">
                             <p className="w-full text-center text-white text-sm font-semibold">{data?.genre.split(", ").slice(0, 3).join(" • ")}</p>
                             <div className="w-full grid grid-cols-2 gap-4">
-                                <div className="right-0 mr-auto w-full">
-                                    <button onClick={() => router.push(`/watch/${data?.movieId}`)} className="bg-white rounded-md py-1 px-4 w-full font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
-                                        <BsFillPlayFill size={20} className="mr-1 ml-auto" />
-                                        <p className="mr-auto">Play</p>
-                                    </button>
-                                </div>
+                                <button onClick={() => router.push(`/watch/${data?.movieId}`)} className="bg-white rounded-md py-1 px-4 w-full font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
+                                    <BsFillPlayFill size={20} className="mr-1 ml-auto" />
+                                    <p className="mr-auto">Play</p>
+                                </button>
                                 <button onClick={handleOpenModal} className="left-0 ml-auto bg-white text-white bg-opacity-30 rounded-md py-1 px-4 w-full font-semibold flex flex-row items-center hover:bg-opacity-20 transition">
                                     <AiOutlineInfoCircle className="mr-1 ml-auto" size={20} />
-                                    <p className="mr-auto">More Info</p>
+                                    <p className="mr-auto">Info</p>
                                 </button>
                             </div>
                         </div>

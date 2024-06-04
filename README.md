@@ -36,8 +36,12 @@ Tested on Ubuntu 24.04
 
 ### Web server
 
-- Mobile web player
+- Enhanced admin panel
+- Mobile Navbar
+- Search Netflix style
+- Mobile web player (orientation)
 - Detect soundless media (MKV files)
+- Better account panel
 
 ## Collaborate
 

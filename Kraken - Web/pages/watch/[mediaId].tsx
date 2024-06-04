@@ -12,6 +12,7 @@ import useMedia from "@/hooks/useMedia";
 import screenfull from 'screenfull';
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
+import { BiCopy } from "react-icons/bi";
 
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
@@ -43,6 +44,14 @@ const Player = () => {
     const screenRef = useRef<any>()
     const { mediaId } = router.query;
     const { data } = useMedia(mediaId as string);
+    const [clicked, setClicked] = useState(false)
+
+    const handleCopy = async () => {
+        setClicked(true)
+        navigator.clipboard.writeText(`http://kraken.local${data?.videoUrl}`)
+        await new Promise(f => setTimeout(f, 2000));
+        setClicked(false)
+    }
 
     const PlayIcon = isPlaying ? FaPlay : FaPause
     const VolumeIcon = isMuted ? IoVolumeMute : volume == 0 ? IoVolumeMute : volume <= 0.4 ? IoVolumeLow : volume <= 0.7 ? IoVolumeMedium : IoVolumeHigh
@@ -182,8 +191,10 @@ const Player = () => {
                                 <div onClick={() => router.push(`/vlc/${mediaId}`)} className="w-[30%] md:w-auto flex flex-col items-center cursor-pointer hover:text-orange-500 transition-all duration-500">
                                     <SiVlcmediaplayer size={25} />
                                 </div>
-                                <div className="hidden md:block cursor-pointer hover:opacity-70 transition-all duration-300">
-                                    <MdInfoOutline size={30} />
+                                <div>
+                                    <div onClick={handleCopy} className="relative cursor-pointer group-item right-0 w-10 h-10 transition-all text-white hover:border-neutral-300 duration-500 flex justify-center items-center">
+                                        <BiCopy className="w-fit" size={25} />
+                                    </div>
                                 </div>
                                 <a href={data?.videoUrl} download={data?.title} className="w-[30%] md:w-auto flex flex-col items-center md:hidden">
                                     <MdFileDownload size={30} />
