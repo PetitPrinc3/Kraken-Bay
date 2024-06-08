@@ -18,11 +18,12 @@ model User {
   id             String         @id @default(uuid())
   name           String
   image          String?
-  email          String?        @unique
+  email          String         @unique
   hashedPassword String
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   favoriteIds    String?        @default("")
+  uploadCount    Int?           @default(0)
   isMuted        Boolean        @default(false)
   accounts       Account[]
   roles          String         @default("")

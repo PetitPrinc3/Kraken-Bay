@@ -7,6 +7,7 @@ interface InputProps {
     label: string;
     type: string;
     isMandatory?: boolean;
+    width?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -15,10 +16,11 @@ const Input: React.FC<InputProps> = ({
     value,
     label,
     type,
-    isMandatory
+    isMandatory,
+    width
 }) => {
     return (
-        <div className="relative">
+        <div className={`relative ${width ? width : ""}`}>
             <input
                 onChange={onChange}
                 type={type}

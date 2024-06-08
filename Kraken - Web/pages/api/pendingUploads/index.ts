@@ -24,16 +24,20 @@ const MoveFile = (origin: PathLike, destination: PathLike) => {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
     if (req.method == "GET") {
         try {
+            const pendigUploads = await prismadb.pendingMedia.findMany();
+            return res.status(200).json(pendigUploads);
+        } catch (error) {
+            return res.status(400).json(error)
+        }
+    }
+
+    if (req.method == "PUT") {
+        try {
             await serverAuth(req, res);
-            const { uploadId } = req.query;
-
-            if (isUndefined(uploadId)) {
-                const pendigUploads = await prismadb.pendingMedia.findMany();
-
-                return res.status(200).json(pendigUploads);
-            }
+            const { uploadId } = req.body;
 
             if (typeof uploadId != 'string') {
                 throw new Error("Invalid ID.")
@@ -72,7 +76,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             })
 
-            return res.status(200).json("Ok !")
+            await prismadb.user.updateMany({
+                where: {
+                    email: upload?.userName,
+                },
+                data: {
+                    uploadCount: { increment: 1 }
+                }
+            })
+
+            return res.status(200).json(media)
 
 
         } catch (error) {

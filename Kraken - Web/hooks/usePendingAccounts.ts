@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const usePending = (id?: string) => {
-    const { data, error, isLoading } = useSWR(id ? `/api/uploader/watch/${id}` : null, fetcher, {
+const usePendingAccounts = (id?: string) => {
+    const { data, error, isLoading, mutate } = useSWR("/api/pendingAccounts", fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -11,8 +11,9 @@ const usePending = (id?: string) => {
     return {
         data,
         error,
-        isLoading
+        isLoading,
+        mutate
     }
 }
 
-export default usePending;
+export default usePendingAccounts;

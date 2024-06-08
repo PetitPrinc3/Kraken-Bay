@@ -11,7 +11,7 @@ const NotificationBell = () => {
     const [visible, setVisible] = useState(false)
     const [hasNew, setHasNew] = useState<boolean>()
     const [firstLoad, setFirstLoad] = useState(true)
-    let { data: notifications } = useNewNotifications();
+    const { data: notifications, mutate: mutateNotifications } = useNewNotifications();
     const notificatioPanel = useRef<HTMLDivElement>(null)
     const router = useRouter();
 
@@ -35,6 +35,7 @@ const NotificationBell = () => {
         }
     }, [notificatioPanel, visible])
 
+
     const handleBlur = useCallback((e: any) => {
         const currentTarget = e.currentTarget;
         requestAnimationFrame(() => {
@@ -42,7 +43,8 @@ const NotificationBell = () => {
                 setVisible(false);
             }
         });
-    }, [setVisible]);
+        mutateNotifications()
+    }, [setVisible, mutateNotifications]);
 
 
     if (isUndefined(notifications)) {

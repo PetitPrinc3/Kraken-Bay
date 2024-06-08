@@ -7,13 +7,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == "GET") {
         try {
-            const pendingAccounts = await prismadb.user.findMany({
+            const existingUser = await prismadb.user.findMany({
                 where: {
-                    roles: ""
+                    NOT: {
+                        roles: ""
+                    }
                 }
             });
 
-            return res.status(200).json(pendingAccounts);
+            return res.status(200).json(existingUser);
 
         } catch (error) {
             console.log(error);
@@ -22,28 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method == "PUT") {
-        const { userId, userRole } = req.body
-
-        try {
-            if (typeof userId == 'string' && typeof userRole == 'string') {
-                const validateAccount = await prismadb.user.update({
-                    where: {
-                        id: userId
-                    },
-                    data: {
-                        roles: {
-                            set: userRole as string
-                        }
-                    }
-                })
-
-                return res.status(200).json(validateAccount);
-            } else {
-                throw new Error("Invalid parameters.")
-            }
-        } catch {
-            return res.status(400)
-        }
+        return res.status(405).end()
     }
 
     if (req.method == 'DELETE') {

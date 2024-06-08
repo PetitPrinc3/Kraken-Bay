@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const useNewNotifications = () => {
-    const { data, error, isLoading, mutate } = useSWR("/api/newNotifications", fetcher, {
+const useStatistics = () => {
+    const { data, error, isLoading } = useSWR("/api/statistics", fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -11,9 +11,8 @@ const useNewNotifications = () => {
     return {
         data,
         error,
-        isLoading,
-        mutate
+        isLoading
     }
 }
 
-export default useNewNotifications;
+export default useStatistics;

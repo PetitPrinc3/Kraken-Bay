@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const useNewNotifications = () => {
-    const { data, error, isLoading, mutate } = useSWR("/api/newNotifications", fetcher, {
+const useBestUploaders = (id?: string) => {
+    const { data, error, isLoading, mutate } = useSWR("/api/bestUploaders", fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -16,4 +16,4 @@ const useNewNotifications = () => {
     }
 }
 
-export default useNewNotifications;
+export default useBestUploaders;

@@ -1,0 +1,133 @@
+import { AdminLayout } from "@/pages/_app";
+import { FaUsers } from "react-icons/fa";
+import { MdMovie } from "react-icons/md";
+import { IoPower } from "react-icons/io5";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import usePendingAccounts from "@/hooks/usePendingAccounts";
+import { isUndefined } from "lodash";
+import useExistingUsers from "@/hooks/useExistingUsers";
+import useExistingMedia from "@/hooks/useExistingMedia";
+import usePendingUploads from "@/hooks/usePendingUploads";
+import useBestUploaders from "@/hooks/useBestUploaders";
+import useStatistics from "@/hooks/useStatistics";
+import useServerProps from "@/hooks/useServerProps";
+
+const formatUptime = (serverUptime: any) => {
+    var d = Math.floor(serverUptime / (3600 * 24));
+    var h = Math.floor(serverUptime % (3600 * 24) / 3600);
+    var m = Math.floor(serverUptime % 3600 / 60);
+    var s = Math.floor(serverUptime % 60);
+
+    var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
+    var hDisplay = h > 0 ? h + "h " : "";
+    var mDisplay = m > 0 ? m + "m " : "";
+
+    return dDisplay + hDisplay + mDisplay;
+}
+
+export default function AdminDashboard() {
+    const pendingAccounts = usePendingAccounts().data
+    const existingUsers = useExistingUsers().data
+    const pendingUploads = usePendingUploads().data
+    const existingMedia = useExistingMedia().data
+    const bestUploaders = useBestUploaders().data
+    const serverUptime = useServerProps().data
+
+    const { data: statistics } = useStatistics();
+
+    if (isUndefined(pendingAccounts) || isUndefined(existingUsers) || isUndefined(existingMedia) || isUndefined(pendingUploads) || isUndefined(bestUploaders) || isUndefined(serverUptime)) return null
+    return (
+        <AdminLayout pageName="admin">
+            <div className="w-full h-full flex flex-col gap-4">
+                <div className="grid grid-cols-3 gap-4">
+                    <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 hover:bg-red-500 duration-300 cursor-default">
+                        <div className="flex flex-row items-center gap-4 text-xl">
+                            <FaUsers />
+                            Total users :
+                        </div>
+                        <div className="text-2xl font-semibold text-center">
+                            {existingUsers.length}
+                        </div>
+                        <div className="text-sm text-center">
+                            And <span className="text-green-500 font-bold">{pendingAccounts.length}</span> pending accounts.
+                        </div>
+                    </div>
+                    <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 hover:bg-red-500 duration-300 cursor-default">
+                        <div className="flex flex-row items-center gap-4 text-xl">
+                            <MdMovie />
+                            Total media :
+                        </div>
+                        <div className="text-2xl font-semibold text-center">
+                            {existingMedia.length}
+                        </div>
+                        <div className="text-sm text-center">
+                            And <span className="text-green-500 font-bold">{pendingUploads.length}</span> pending uploads.
+                        </div>
+                    </div>
+                    <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 hover:bg-red-500 duration-300 cursor-default">
+                        <div className="flex flex-row items-center gap-4 text-xl">
+                            <IoPower />
+                            Uptime :
+                        </div>
+                        <div className="text-2xl font-semibold text-center">
+                            {formatUptime(serverUptime.serverUptime)}
+                        </div>
+                        <div className="text-sm text-center">
+                            Last reboot on <span className="text-green-500 font-bold">{new Date(new Date().getTime() - (serverUptime.serverUptime * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>.
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full h-fit bg-slate-800 rounded-md p-4 flex flex-col">
+                    <p className="text-white text-xl mb-4">Best Uploaders :</p>
+                    <table className="border-separate border-spacing-y-2">
+                        <thead className="w-full">
+                            <tr className="w-full text-white">
+                                <td className="w-[60%]">Name</td>
+                                <td className="w-[10%] text-center">Uploads</td>
+                                <td className="w-[30%]">Latest</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {bestUploaders.map((uploader: any) => (
+                                <tr key={uploader?.email} className="text-white">
+                                    <td className="flex flex-row gap-4 items-center h-10">
+                                        <img src={uploader.image || "/Assets/Images/kraken.png"} className="h-8 w-8 rounded-full" alt="" />
+                                        {uploader.email}
+                                    </td>
+                                    <td className="text-red-500 font-bold text-center">
+                                        {uploader?.uploads}
+                                    </td>
+                                    <td>
+                                        {uploader?.latestUpload}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="w-full h-[50vh] bg-slate-800 rounded-md p-4 grid grid-rows-[15%_85%]">
+                    <p className="text-white text-xl mb-4">Server Trends :</p>
+                    <ResponsiveContainer className="w-full h-full">
+                        <LineChart
+                            className="w-full h-full"
+                            data={statistics}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis dataKey="date" />
+                            <YAxis />
+                            <Tooltip contentStyle={{ background: "#1e293b", border: "none" }} />
+                            <Legend />
+                            <Line type="monotone" dataKey="users" stroke="#8884d8" activeDot={{ r: 6 }} />
+                            <Line type="monotone" dataKey="media" stroke="#82ca9d" activeDot={{ r: 6 }} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+        </AdminLayout>
+    )
+}
