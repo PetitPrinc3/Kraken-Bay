@@ -12,11 +12,11 @@ import useBestUploaders from "@/hooks/useBestUploaders";
 import useStatistics from "@/hooks/useStatistics";
 import useServerProps from "@/hooks/useServerProps";
 
-const formatUptime = (serverUptime: any) => {
-    var d = Math.floor(serverUptime / (3600 * 24));
-    var h = Math.floor(serverUptime % (3600 * 24) / 3600);
-    var m = Math.floor(serverUptime % 3600 / 60);
-    var s = Math.floor(serverUptime % 60);
+const formatUptime = (serverProps: any) => {
+    var d = Math.floor(serverProps / (3600 * 24));
+    var h = Math.floor(serverProps % (3600 * 24) / 3600);
+    var m = Math.floor(serverProps % 3600 / 60);
+    var s = Math.floor(serverProps % 60);
 
     var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
     var hDisplay = h > 0 ? h + "h " : "";
@@ -31,11 +31,12 @@ export default function AdminDashboard() {
     const pendingUploads = usePendingUploads().data
     const existingMedia = useExistingMedia().data
     const bestUploaders = useBestUploaders().data
-    const serverUptime = useServerProps().data
+    const serverProps = useServerProps().data
 
     const { data: statistics } = useStatistics();
 
-    if (isUndefined(pendingAccounts) || isUndefined(existingUsers) || isUndefined(existingMedia) || isUndefined(pendingUploads) || isUndefined(bestUploaders) || isUndefined(serverUptime)) return null
+    if (isUndefined(pendingAccounts) || isUndefined(existingUsers) || isUndefined(existingMedia) || isUndefined(pendingUploads) || isUndefined(bestUploaders) || isUndefined(serverProps)) return null
+    console.log(serverProps)
     return (
         <AdminLayout pageName="admin">
             <div className="w-full h-full flex flex-col gap-4">
@@ -70,10 +71,10 @@ export default function AdminDashboard() {
                             Uptime :
                         </div>
                         <div className="text-2xl font-semibold text-center">
-                            {formatUptime(serverUptime.serverUptime)}
+                            {formatUptime(serverProps.serverUptime)}
                         </div>
                         <div className="text-sm text-center">
-                            Last reboot on <span className="text-green-500 font-bold">{new Date(new Date().getTime() - (serverUptime.serverUptime * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>.
+                            Last reboot on <span className="text-green-500 font-bold">{new Date(new Date().getTime() - (serverProps.serverUptime * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>.
                         </div>
                     </div>
                 </div>

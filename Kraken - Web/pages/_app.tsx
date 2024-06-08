@@ -31,7 +31,7 @@ export function AdminLayout({
   const pendingUsers = 0
   const pendingUploads = 0
   return (
-    <main className="min-w-full w-fit min-h-full h-fit grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950">
+    <main className="min-w-full w-fit max-w-full min-h-full h-fit grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-hidden">
       <div className="h-full w-full bg-slate-800 flex flex-col gap-4 py-2 z-50">
         <div className="relative grid grid-cols-[25%_75%] p-2 z-50">
           <div className="w-full m-auto p-2">
@@ -119,7 +119,9 @@ export function AdminLayout({
             <input type="text" placeholder="Search" className="bg-transparent focus:outline-none text-neutral-900 mr-2" />
           </div>
         </div>
-        {children}
+        <div className="max-w-full overflow-hidden">
+          {children}
+        </div>
         <div className="flex flex-col items-center w-full h-fit rounded-md bg-slate-800 p-4">
           <div className="w-full px-[10%] grid grid-cols-4 text-xs text-white font-semibold">
             <div className="flex flex-col items-center">

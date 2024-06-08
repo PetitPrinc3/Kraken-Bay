@@ -10,8 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         await serverAuth(req, res);
         const os = require("os")
-        const SMB2 = require("smb2")
-        let smbStatus = false
 
         const serverProps = {
             osUptime: os.uptime(),
@@ -19,7 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             osBuild: os.release(),
             osHostName: os.hostname(),
             serverUptime: process.uptime(),
-            smbStatus: smbStatus,
+            hotSpot: false,
+            smbStatus: false,
         }
 
         return res.status(200).json(serverProps);

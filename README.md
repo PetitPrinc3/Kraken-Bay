@@ -36,7 +36,10 @@ Tested on Ubuntu 24.04
 
 ### Web server
 
-- Enhanced admin panel
+- Enhanced admin panel (ongoing) :
+    - Handle pages for lists
+    - Handle system calls
+    - Db management section
 - Mobile Navbar
 - Search Netflix style
 - Mobile web player (orientation)
