@@ -5,7 +5,7 @@ import PlayButton from "./PlayButton";
 import FavoriteButton from "./FavoriteButton";
 import DownloadButton from "./DownloadButton";
 import useInfoModal from "@/hooks/useInfoModal";
-import useMovie from "@/hooks/useMovie";
+import useMedia from "@/hooks/useMedia";
 import SeasonList from "./SeasonList";
 import CopyButton from "./CopyButton";
 
@@ -17,8 +17,8 @@ interface InfoModalProps {
 
 const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
     const [isVisible, setIsVisible] = useState(!!visible);
-    const { movieId } = useInfoModal();
-    const { data = {} } = useMovie(movieId);
+    const { mediaId } = useInfoModal();
+    const { data = {} } = useMedia({ mediaId: mediaId });
 
     useEffect(() => {
         setIsVisible(!!visible);
@@ -66,13 +66,13 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                                 </p>
                                 <div className="flex flex-row gap-4 items-center md:w-full">
                                     <div>
-                                        <PlayButton movieId={data.id} />
+                                        <PlayButton mediaId={data.id} />
                                     </div>
                                     <div>
-                                        <FavoriteButton movieId={data.id} />
+                                        <FavoriteButton mediaId={data.id} />
                                     </div>
                                     <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
-                                        <DownloadButton movieId={data.id} />
+                                        <DownloadButton mediaId={data.id} />
                                     </div>
                                     <div className="md:ml-auto">
                                         <CopyButton mediaId={data.id} />

@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 const Vlc = () => {
     const router = useRouter();
     const { mediaId } = router.query;
-    const { data } = useMedia(mediaId as string);
+    const { data } = useMedia({ mediaId: mediaId as string });
     const [toast, setToast] = useState(false)
 
     const handleCopy = async () => {

@@ -25,10 +25,48 @@ const MoveFile = (origin: PathLike, destination: PathLike) => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
+    const { currentUser }: any = await serverAuth(req, res)
+
+    if (currentUser?.roles != "admin") return res.status(403).end()
+
     if (req.method == "GET") {
         try {
-            const pendigUploads = await prismadb.pendingMedia.findMany();
-            return res.status(200).json(pendigUploads);
+            const { searchText, uploadId } = req.query
+
+            if (isUndefined(searchText) && isUndefined(uploadId)) {
+                const pendigUploads = await prismadb.pendingMedia.findMany();
+                return res.status(200).json(pendigUploads);
+            } else if (!isUndefined(uploadId)) {
+                if (typeof uploadId != 'string') {
+                    throw new Error('Invalid ID');
+                }
+                if (!uploadId) {
+                    throw new Error('Invalid ID');
+                }
+                const media = await prismadb.pendingMedia.findUnique({
+                    where: {
+                        id: uploadId,
+                    }
+                })
+                return res.status(200).json(media)
+            } else if (!isUndefined(searchText)) {
+                const users = await prismadb.pendingMedia.findMany({
+                    where: {
+                        title: {
+                            search: searchText?.toString()
+                        },
+                        description: {
+                            search: searchText?.toString()
+                        },
+                        userName: {
+                            search: searchText?.toString()
+                        }
+                    }
+                })
+
+                return res.status(200).json(users)
+            }
+
         } catch (error) {
             return res.status(400).json(error)
         }

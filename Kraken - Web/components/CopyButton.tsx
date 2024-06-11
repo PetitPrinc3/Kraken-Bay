@@ -7,7 +7,7 @@ interface CopyButtonProps {
 }
 
 const CopyButton: React.FC<CopyButtonProps> = ({ mediaId }) => {
-    const { data } = useMedia(mediaId as string);
+    const { data } = useMedia({ mediaId: mediaId as string });
     const [toast, setToast] = useState(false)
     const [clicked, setClicked] = useState(false)
 

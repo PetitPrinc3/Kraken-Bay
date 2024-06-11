@@ -1,19 +1,45 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prismadb from '@/lib/prismadb';
 import serverAuth from '@/lib/serverAuth';
+import { isUndefined } from "lodash";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { currentUser }: any = await serverAuth(req, res);
+    const { currentUser }: any = await serverAuth(req, res)
+
+    if (currentUser?.roles != "admin") return res.status(403).end()
 
     if (req.method == "GET") {
         try {
-            const pendingAccounts = await prismadb.user.findMany({
-                where: {
-                    roles: ""
-                }
-            });
+            const { searchText } = req.query
 
-            return res.status(200).json(pendingAccounts);
+            if (isUndefined(searchText)) {
+                const pendingAccounts = await prismadb.user.findMany({
+                    where: {
+                        roles: ""
+                    }
+                });
+
+                return res.status(200).json(pendingAccounts);
+            } else {
+                const users = await prismadb.user.findMany({
+                    where: {
+                        AND: [
+                            {
+                                name: {
+                                    search: searchText?.toString()
+                                },
+                                email: {
+                                    search: searchText?.toString()
+                                }
+                            },
+                            {
+                                roles: ""
+                            }]
+                    }
+                })
+
+                return res.status(200).json(users)
+            }
 
         } catch (error) {
             console.log(error);
@@ -48,7 +74,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == 'DELETE') {
         try {
-            await serverAuth(req, res);
             const { userId } = req.body;
 
             const user = await prismadb.user.delete({

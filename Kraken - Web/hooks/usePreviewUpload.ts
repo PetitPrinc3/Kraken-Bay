@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const useMovie = (id?: string) => {
-    const { data, error, isLoading } = useSWR(id ? `/api/movies/${id}` : null, fetcher, {
+const usePendingUploads = (id?: string) => {
+    const { data, error, isLoading, mutate } = useSWR(`/api/pendingUploads/preview/${id}`, fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -11,8 +11,9 @@ const useMovie = (id?: string) => {
     return {
         data,
         error,
-        isLoading
+        isLoading,
+        mutate
     }
 }
 
-export default useMovie;
+export default usePendingUploads;

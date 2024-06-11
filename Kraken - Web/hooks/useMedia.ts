@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const useMedia = (id?: string) => {
-    const { data, error, isLoading } = useSWR(id ? `/api/media/${id}` : null, fetcher, {
+const useMedia = (params?: any) => {
+    const { data, error, isLoading, mutate } = useSWR(["/api/media", params], ([url, params]) => fetcher(url, params), {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -11,7 +11,8 @@ const useMedia = (id?: string) => {
     return {
         data,
         error,
-        isLoading
+        isLoading,
+        mutate
     }
 }
 

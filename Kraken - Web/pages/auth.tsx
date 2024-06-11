@@ -41,15 +41,12 @@ const Auth = () => {
     useEffect(() => { document.title = `Kraken Bay • ${variant}` }, [variant])
 
     const Login = useCallback(async () => {
-
+        toast.clearWaitingQueue()
         const loading = toast.loading("Loging...", {
             position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: false,
-            pauseOnHover: true,
+            autoClose: 1000,
+            closeOnClick: true,
             draggable: true,
-            progress: undefined,
             theme: "colored",
         })
         try {
@@ -73,14 +70,12 @@ const Auth = () => {
 
     const Register = useCallback(async () => {
         try {
+            toast.clearWaitingQueue()
             const loading = toast.loading("Creating your account...", {
                 position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: false,
-                pauseOnHover: true,
+                autoClose: 1000,
+                closeOnClick: true,
                 draggable: true,
-                progress: undefined,
                 theme: "colored",
             })
             axios.post('/api/register', {
@@ -150,15 +145,12 @@ const Auth = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer position="bottom-center"
-                autoClose={2000}
-                hideProgressBar
+            <ToastContainer
+                limit={2}
+                position="bottom-center"
                 newestOnTop
                 closeOnClick={true}
-                rtl={false}
-                pauseOnFocusLoss
                 draggable
-                pauseOnHover
                 theme="colored"
             />
         </div>

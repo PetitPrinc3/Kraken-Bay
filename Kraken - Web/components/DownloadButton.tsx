@@ -1,13 +1,13 @@
 import { MdFileDownload } from "react-icons/md";
 import React, { useState } from "react";
-import useMovie from "@/hooks/useMovie";
+import useMedia from "@/hooks/useMedia";
 
 interface DownloadButtonProps {
-    movieId: string;
+    mediaId: string;
 }
 
-const DownloadButton: React.FC<DownloadButtonProps> = ({ movieId }) => {
-    const { data = {} } = useMovie(movieId);
+const DownloadButton: React.FC<DownloadButtonProps> = ({ mediaId }) => {
+    const { data = {} } = useMedia({ mediaID: mediaId });
     const [currentDownload, setDownload] = useState(false)
 
     const Download = async () => {

@@ -73,7 +73,7 @@ export class genreList {
     }
 }
 
-const Movies = () => {
+const Series = () => {
     const [searchText, setSearchText] = useState('')
     const [searchResult, setSearchResult] = useState([["", ""]]);
     const [firstLoad, setFirstLoad] = useState(true)
@@ -97,7 +97,7 @@ const Movies = () => {
         setGDispList((gDispList) => new genreList(gList))
     }
 
-    const searchMovies = async (st: string = "") => {
+    const searchSeries = async (st: string = "") => {
         const { data: movies } = await axios.get('/api/moviesList', {
             params: {
                 mediaType: "Series",
@@ -109,7 +109,7 @@ const Movies = () => {
         setSearchText(st);
     }
 
-    const genreMovies = async (genre: genre) => {
+    const genreSeries = async (genre: genre) => {
         updateList(genre)
         let gArray: string[] = []
         for (let g of gDispList?.genreList) {
@@ -130,7 +130,7 @@ const Movies = () => {
 
     useEffect(() => {
         if (firstLoad) {
-            searchMovies();
+            searchSeries();
             setFirstLoad((firstLoad) => false)
         }
     }, [firstLoad, setFirstLoad])
@@ -158,7 +158,7 @@ const Movies = () => {
                     <input
                         value={searchText}
                         onChange={e => {
-                            searchMovies(e.currentTarget.value)
+                            searchSeries(e.currentTarget.value)
                         }}
                         ref={searchInput}
                         className="w-full bg-zinc-600 focus:outline-none"
@@ -170,7 +170,7 @@ const Movies = () => {
                 <div className="flex flex-wrap items-center justify-center w-full gap-2 md:px-[20%] my-10">
                     {gDispList?.genreList.map((e) => (
                         <div key={e?.id}>
-                            <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
+                            <input onClick={() => { genreSeries(e) }} id={e?.id} className="hidden" type="checkbox" />
                             <label htmlFor={e?.id} className={`${getList()[gDispList.index(e)].isClicked ? "bg-white border-white" : "bordrer-zing-400"} flex flex-row items-center gap-2 cursor-pointer text-zinc-400 py-1 px-2 rounded-full border-2 transition duration-300`}>
                                 <p className="text-xs sm:text-base">
                                     {e?.genre}
@@ -188,4 +188,4 @@ const Movies = () => {
         </div>
     )
 }
-export default Movies;
+export default Series;

@@ -3,8 +3,8 @@ import { FaUsers } from "react-icons/fa";
 import { MdMovie } from "react-icons/md";
 import { IoPower } from "react-icons/io5";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import usePendingAccounts from "@/hooks/usePendingAccounts";
 import { isUndefined } from "lodash";
+import usePendingAccounts from "@/hooks/usePendingAccounts";
 import useExistingUsers from "@/hooks/useExistingUsers";
 import useExistingMedia from "@/hooks/useExistingMedia";
 import usePendingUploads from "@/hooks/usePendingUploads";
@@ -36,7 +36,6 @@ export default function AdminDashboard() {
     const { data: statistics } = useStatistics();
 
     if (isUndefined(pendingAccounts) || isUndefined(existingUsers) || isUndefined(existingMedia) || isUndefined(pendingUploads) || isUndefined(bestUploaders) || isUndefined(serverProps)) return null
-    console.log(serverProps)
     return (
         <AdminLayout pageName="admin">
             <div className="w-full h-full flex flex-col gap-4">

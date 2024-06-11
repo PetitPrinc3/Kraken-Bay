@@ -58,7 +58,7 @@ const Account = () => {
             setImage(URL.createObjectURL(imageFile))
             const formData = new FormData();
             formData.append("pic", imageFile);
-            const uploadRequest = axios.post(`/api/profileUpdate`, formData).catch((err) => console.log(err))
+            const uploadRequest = await axios.put(`/api/profileUpdate`, formData).catch((err) => console.log(err))
         }
     }
 

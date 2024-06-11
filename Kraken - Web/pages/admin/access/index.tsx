@@ -1,18 +1,30 @@
 import { AdminLayout } from "@/pages/_app";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
-import { MdSearch } from "react-icons/md";
-import { isUndefined } from "lodash";
+import { MdSearch, MdRefresh } from "react-icons/md";
+import { FaPlus } from "react-icons/fa6";
 import usePendingAccounts from "@/hooks/usePendingAccounts";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
 
 export default function Access() {
     const router = useRouter();
-    const { data: pendingAccounts, mutate: mutateAccounts } = usePendingAccounts();
+    const pathname = usePathname();
+    const searchParams = new URLSearchParams(useSearchParams());
+    const q = searchParams.get("q");
+    const { data: pendingAccounts, mutate: mutateAccounts } = usePendingAccounts({ searchText: q } || undefined);
+
+    const handleSearch = (e: any) => {
+        if (e.target.value) {
+            searchParams.set("q", e.target.value);
+            router.replace(`${pathname}?${searchParams}`);
+        } else {
+            router.replace(`${pathname}`);
+        }
+    }
 
     const rejectUser = async (userId: string) => {
-        await axios.delete('/api/pendingAccounts', { data: { userId } }).catch((err) => {
+        await axios.delete('/api/users', { params: { userId: userId } }).catch((err) => {
             toast.error(`Something went wrong : ${err.response.data}`, { containerId: "AdminContainer" })
         }).then(() => {
             toast.success("User rejected.", { containerId: "AdminContainer" })
@@ -20,7 +32,7 @@ export default function Access() {
         mutateAccounts()
     }
     const acceptUser = async (userId: string) => {
-        await axios.put('/api/pendingAccounts', { userId: userId, userRole: "user" }).catch((err) => {
+        await axios.post('/api/users', { userId: userId, userRoles: "user" }).catch((err) => {
             toast.error(`Something went wrong : ${err.response.data}`, { containerId: "AdminContainer" })
         }).then(() => {
             toast.success("User accepted.", { containerId: "AdminContainer" })
@@ -28,17 +40,24 @@ export default function Access() {
         mutateAccounts()
     }
 
-    if (isUndefined(pendingAccounts)) return null
-
     return (
-        <AdminLayout pageName="access" >
+        <AdminLayout pageName="Pending Access" >
             <div className="flex flex-col gap-2 items-center justify-between p-2 bg-slate-800 rounded-md">
                 <div className="w-full flex flex-row items-center justify-between">
                     <div className="w-[30%] flex flex-row items-center gap-2 bg-slate-700 text-neutral-400 text-sm rounded-md p-1 px-2">
                         <MdSearch />
-                        <input type="text" className="bg-transparent focus:outline-none w-full" placeholder="Search for user..." />
+                        <input onChange={(e) => handleSearch(e)} type="text" className="bg-transparent text-white focus:outline-none w-full" placeholder="Search for user..." />
                     </div>
-                    <button onClick={() => { router.push("access/add") }} className="p-1 px-2 rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">Add New</button>
+                    <div className="w-fit flex flex-row items-center gap-2">
+                        <button onClick={() => { mutateAccounts() }} className="p-1 px-6 flex flex-row gap-2 group items-center justify-center rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
+                            <MdRefresh className="hidden lg:block group-hover:animate-spin transition-all duration-300" size={18} />
+                            Refresh
+                        </button>
+                        <button onClick={() => { router.push("access/add") }} className="p-1 px-6 flex flex-row items-center gap-2 rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
+                            <FaPlus />
+                            Add New
+                        </button>
+                    </div>
                 </div>
                 <div className="w-full h-[60vh] px-4">
                     <table className="w-full border-separate border-spacing-y-2">
@@ -51,10 +70,10 @@ export default function Access() {
                             </tr>
                         </thead>
                         <tbody className="w-full h-full rounded-md">
-                            {pendingAccounts.map((account: any) => (
+                            {(pendingAccounts || []).map((account: any) => (
                                 <tr key={account?.id} className="text-white">
                                     <td className="grid grid-cols-[20%_80%] items-center">
-                                        <img src="/Assets/Images/default_profile.png" className="max-h-6" alt="" />
+                                        <img src={account?.image || "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
                                         {account?.name}
                                     </td>
                                     <td>

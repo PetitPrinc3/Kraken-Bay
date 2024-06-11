@@ -40,6 +40,8 @@ Tested on Ubuntu 24.04
     - Handle pages for lists
     - Handle system calls
     - Db management section
+    - Responsiveness
+- Change useMovieList/useSerieList with useMedia instead
 - Mobile Navbar
 - Search Netflix style
 - Mobile web player (orientation)

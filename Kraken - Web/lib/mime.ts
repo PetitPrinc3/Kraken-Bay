@@ -1,4 +1,3 @@
-import { fileTypeFromBuffer } from 'file-type'
 import { createReadStream } from 'fs';
 
 const mime = async (filePath: string) => {

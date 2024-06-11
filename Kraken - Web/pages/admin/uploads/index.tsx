@@ -1,17 +1,28 @@
+import axios from "axios";
+import usePendingUploads from "@/hooks/usePendingUploads";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { AdminLayout } from "@/pages/_app";
 import { FaCheck, FaPlay } from "react-icons/fa";
-import { MdSearch } from "react-icons/md";
+import { MdSearch, MdRefresh } from "react-icons/md";
 import { ImCross } from "react-icons/im";
-import usePendingUploads from "@/hooks/usePendingUploads";
-import { isUndefined } from "lodash";
-import { useRouter } from "next/router";
-import axios from "axios";
-import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Accounts() {
-    const { data: pendingUploads, mutate: mutateUploads } = usePendingUploads();
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = new URLSearchParams(useSearchParams());
+    const q = searchParams.get("q");
+    const { data: pendingUploads, mutate: mutateUploads } = usePendingUploads({ searchText: q } || undefined);
+
+    const handleSearch = (e: any) => {
+        if (e.target.value) {
+            searchParams.set("q", e.target.value);
+        } else {
+            searchParams.delete("q");
+        }
+        router.replace(`${pathname}?${searchParams}`);
+    }
 
     const acceptUpload = async (upload: any) => {
         await axios.put("/api/pendingUploads", { uploadId: upload.id }).catch((err) => {
@@ -39,16 +50,18 @@ export default function Accounts() {
         })
     }
 
-    if (isUndefined(pendingUploads)) return null
     return (
-        <AdminLayout pageName="uploads">
+        <AdminLayout pageName="Pending Uploads">
             <div className="flex flex-col gap-2 justify-between items-start p-2 bg-slate-800 rounded-md">
                 <div className="w-full h-fit flex flex-row items-center justify-between">
                     <div className="w-[30%] flex flex-row items-center gap-2 bg-slate-700 text-neutral-400 text-sm rounded-md p-1 px-2">
                         <MdSearch />
-                        <input type="text" className="bg-transparent focus:outline-none w-full" placeholder="Search for upload..." />
+                        <input onChange={(e) => handleSearch(e)} type="text" className="bg-transparent focus:outline-none w-full text-white" placeholder="Search for upload..." />
                     </div>
-                    <button onClick={() => { mutateUploads() }} className="p-1 px-2 rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">Refresh</button>
+                    <button onClick={() => { mutateUploads() }} className="p-1 px-6 flex flex-row gap-2 group items-center justify-center rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
+                        <MdRefresh className="hidden lg:block group-hover:animate-spin transition-all duration-300" size={18} />
+                        Refresh
+                    </button>
                 </div>
                 <div className="w-full h-[60vh] px-4">
                     <table className="w-full border-separate table-fixed border-spacing-y-2">
@@ -63,8 +76,9 @@ export default function Accounts() {
                         <tbody className="w-full h-full rounded-md text-sm">
                             {(pendingUploads || []).map((upload: any) => (
                                 <tr key={upload.id} className="text-white">
-                                    <td className="truncate text-ellipsis">
-                                        {upload.title}
+                                    <td className="grid grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">
+                                        <img src={upload?.posterUrl ? `/Assets/PendingUploads/${upload.id}/thumb/${upload.posterUrl}` : "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
+                                        {upload?.title}
                                     </td>
                                     <td className="truncate text-ellipsis">
                                         <a href={`/Assets/PendingUploads/${upload.id}`}>{upload.id}</a>

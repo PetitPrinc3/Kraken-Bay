@@ -3,10 +3,10 @@ import { AdminLayout } from "@/pages/_app";
 import { isUndefined } from "lodash";
 import { IoPower } from "react-icons/io5";
 import { FaWindows, FaLinux, FaServer, FaCircle, FaWifi } from "react-icons/fa";
-import { MdOutlineRestartAlt, MdFolderShared } from "react-icons/md";
+import { MdOutlineRestartAlt, MdFolderShared, MdRefresh } from "react-icons/md";
 import { TbWorld } from "react-icons/tb";
 import { BsDatabaseFillGear } from "react-icons/bs";
-import { IoMdRefresh } from "react-icons/io";
+import { useRouter } from "next/router";
 
 const formatUptime = (serverUptime: any) => {
     var d = Math.floor(serverUptime / (3600 * 24));
@@ -23,6 +23,7 @@ const formatUptime = (serverUptime: any) => {
 
 export default function Accounts() {
     const { data: serverProps, mutate: mutateProps } = useServerProps()
+    const router = useRouter()
 
     if (isUndefined(serverProps)) return null
 
@@ -71,10 +72,10 @@ export default function Accounts() {
                 <div className="w-full h-fit rounded-md flex flex-col gap-4 bg-slate-800 p-4">
                     <div className="w-full flex flex-row items-center justify-between">
                         <p className="text-white text-xl">Server Actions :</p>
-                        <div onClick={() => { mutateProps() }} className="p-1 px-2 flex flex-row items-center gap-2 cursor-pointer rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
-                            <IoMdRefresh />
+                        <button onClick={() => { mutateProps() }} className="p-1 px-6 flex flex-row gap-2 group items-center justify-center rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
+                            <MdRefresh className="hidden lg:block group-hover:animate-spin transition-all duration-300" size={18} />
                             Refresh
-                        </div>
+                        </button>
                     </div>
                     <div className="flex overflow-x-scroll scrollbar-hide">
                         <div className="inline-block px-3">
@@ -122,7 +123,7 @@ export default function Accounts() {
                             </div>
                         </div>
                         <div className="inline-block px-3">
-                            <div className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div onClick={() => router.push("/admin/databases/manage")} className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">DB Management</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <BsDatabaseFillGear size={35} />

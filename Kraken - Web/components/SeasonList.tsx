@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useMovie from "@/hooks/useMovie";
+import useMedia from "@/hooks/useMedia";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { BsFillPlayFill } from "react-icons/bs";
@@ -18,7 +18,7 @@ const dropOptions = (seasons: string) => {
 
 const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
 
-    const { data: currentMovie } = useMovie(serieId)
+    const { data: currentMovie } = useMedia({ mediaId: serieId })
     const season_data = dropOptions(currentMovie?.seasons);
     const [epDispList, setEpDispList] = useState<String[]>([]);
     const [firstLoad, setFirstLoad] = useState(true)

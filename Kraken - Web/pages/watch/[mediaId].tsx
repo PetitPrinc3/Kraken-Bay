@@ -13,6 +13,7 @@ import screenfull from 'screenfull';
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
 import { BiCopy } from "react-icons/bi";
+import { isUndefined } from "lodash";
 
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
@@ -43,7 +44,7 @@ const Player = () => {
     const playerRef = useRef<ReactPlayer>(null)
     const screenRef = useRef<any>()
     const { mediaId } = router.query;
-    const { data } = useMedia(mediaId as string);
+    const { data } = useMedia({ mediaId: mediaId as string });
     const [clicked, setClicked] = useState(false)
 
     const handleCopy = async () => {
@@ -84,6 +85,8 @@ const Player = () => {
         setIdleTime(0)
         setOpacity(100)
     }
+
+    if (isUndefined(data)) return null
 
     return (
         <div onMouseMove={handleIdle} className={`w-full h-full overflow-hidden bg-black ${opacity == 0 ? "cursor-none" : "cursor-auto"}`}>

@@ -5,26 +5,26 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import useFavorites from "@/hooks/useFavorites";
 
 interface FavoriteButtonProps {
-    movieId: string;
+    mediaId: string;
 }
 
-const FavoriteButton: React.FC<FavoriteButtonProps> = ({ movieId }) => {
+const FavoriteButton: React.FC<FavoriteButtonProps> = ({ mediaId }) => {
     const { mutate: mutateFavorites } = useFavorites();
     const { data: currentUser, mutate } = useCurrentUser();
 
     const isFavorite = useMemo(() => {
         const list = currentUser?.favoriteIds || "";
 
-        return list.includes(movieId);
-    }, [currentUser, movieId])
+        return list.includes(mediaId);
+    }, [currentUser, mediaId])
 
     const toggleFavorites = useCallback(async () => {
         let response;
 
         if (isFavorite) {
-            response = await axios.delete('/api/favorite', { data: { movieId } });
+            response = await axios.delete('/api/favorite', { data: { mediaId } });
         } else {
-            response = await axios.post('/api/favorite', { movieId });
+            response = await axios.post('/api/favorite', { mediaId });
         }
 
         const updatedFavoriteIds = response?.data?.favoriteIds;
@@ -35,7 +35,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ movieId }) => {
         })
 
         mutateFavorites();
-    }, [movieId, isFavorite, currentUser, mutate, mutateFavorites]);
+    }, [mediaId, isFavorite, currentUser, mutate, mutateFavorites]);
 
     const Icon = isFavorite ? AiOutlineCheck : AiOutlinePlus
 

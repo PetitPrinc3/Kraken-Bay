@@ -5,7 +5,8 @@ import useCurrentUser from "@/hooks/useCurrentUser"
 import { RiDashboardFill, RiUserSettingsFill, RiPassPendingFill } from "react-icons/ri";
 import { BsFillCloudUploadFill, BsDatabaseFillGear } from "react-icons/bs";
 import { BiSolidServer } from "react-icons/bi";
-import { MdMovie, MdNotificationAdd, MdSearch } from "react-icons/md";
+import { MdMovie, MdNotificationAdd } from "react-icons/md";
+import { ImLifebuoy } from "react-icons/im";
 import { FaTools, FaHome, FaGithub, FaStar } from "react-icons/fa";
 import { RiMailSendLine } from "react-icons/ri";
 import { useRouter } from "next/router";
@@ -32,7 +33,7 @@ export function AdminLayout({
   const pendingUploads = 0
   return (
     <main className="min-w-full w-fit max-w-full min-h-full h-fit grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-hidden">
-      <div className="h-full w-full bg-slate-800 flex flex-col gap-4 py-2 z-50">
+      <div className="h-full w-full bg-slate-800 flex flex-col gap-4 py-2 z-10">
         <div className="relative grid grid-cols-[25%_75%] p-2 z-50">
           <div className="w-full m-auto p-2">
             <img className="max-w-full rounded-full bg-neutral-800" src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
@@ -50,7 +51,7 @@ export function AdminLayout({
                 <RiDashboardFill size={dispSize} />
                 Dashboard
               </li>
-              <li onClick={() => { router.push("/admin/access") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "access" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/access") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Access" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
                 <RiPassPendingFill size={dispSize} />
                 Access
                 <div className={`${pendingUsers > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
@@ -64,7 +65,7 @@ export function AdminLayout({
                   <p className="m-auto rounded-full">{pendingUsers}</p>
                 </div>
               </li>
-              <li onClick={() => { router.push("/admin/uploads") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "uploads" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/uploads") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Uploads" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
                 <BsFillCloudUploadFill size={dispSize} />
                 Uploads
                 <div className={`${pendingUploads > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
@@ -79,29 +80,33 @@ export function AdminLayout({
           </div>
           <div className="flex flex-col gap-1">
             <p className="mx-2 font-semibold text-sm text-neutral-400">Databases</p>
-            <ul className="cursor-pointer px-2">
-              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+            <ul className="cursor-pointer px-2 space-y-1">
+              <li onClick={() => { router.push("/admin/databases/manage") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "manage" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+                <BsDatabaseFillGear size={dispSize} />
+                Manage DBs
+              </li>
+              <li onClick={() => { router.push("/admin/databases/media") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "media" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
                 <MdMovie size={dispSize} />
                 Media DB
               </li>
-              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/databases/users") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "users" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
                 <RiUserSettingsFill size={dispSize} />
                 User DB
-              </li>
-              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
-                <BsDatabaseFillGear size={dispSize} />
-                Manage DBs
               </li>
             </ul>
           </div>
           <div className="flex flex-col gap-1">
             <p className="mx-2 font-semibold text-sm text-neutral-400">Settings</p>
-            <ul className="cursor-pointer px-2">
+            <ul className="cursor-pointer px-2 space-y-1">
               <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
                 <FaTools size={dispSize} />
                 Config
               </li>
-              <li className="w-full rounded-md flex flex-row items-center gap-2 hover:bg-red-500 px-4 py-2 font-semibold transition-all duration-200">
+              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+                <ImLifebuoy size={dispSize} />
+                Help
+              </li>
+              <li onClick={() => router.push("/home")} className="w-full rounded-md flex flex-row items-center gap-2 hover:bg-red-500 px-4 py-2 font-semibold transition-all duration-200">
                 <FaHome size={dispSize} />
                 Go Home
               </li>
@@ -114,9 +119,8 @@ export function AdminLayout({
           <p className="ml-0 font-bold text-red-500 capitalize">
             {pageName}
           </p>
-          <div className="h-8 w-[30%] lg:w-[20%] grid grid-cols-[15%_85%] bg-slate-400 rounded-md items-center ml-auto mr-0">
-            <MdSearch className="m-auto" size={20} />
-            <input type="text" placeholder="Search" className="bg-transparent focus:outline-none text-neutral-900 mr-2" />
+          <div className="h-8 ml-auto mr-0">
+            <img src="/Assets/Images/logo.png" className="max-h-full" alt="" />
           </div>
         </div>
         <div className="max-w-full overflow-hidden">
@@ -151,7 +155,7 @@ export function AdminLayout({
           </div>
         </div>
       </div>
-      <div className="absolute">
+      <div className="absolute max-h-[30vh] overflow-hidden">
         <ToastContainer
           position="bottom-right"
           autoClose={2000}

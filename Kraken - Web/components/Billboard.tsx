@@ -69,7 +69,7 @@ const Billboard = () => {
                                 {data?.description}
                             </p>
                             <div className="flex flex-row items-center mt-3 md:mt-4 gap-3">
-                                <PlayButton movieId={data?.id} />
+                                <PlayButton mediaId={data?.id} />
                                 <button onClick={handleOpenModal} className="bg-white text-white bg-opacity-30 rounded-md py-2 px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-opacity-20 transition">
                                     <AiOutlineInfoCircle className="mr-1" size={25} />
                                     <p>More Info</p>
@@ -96,7 +96,7 @@ const Billboard = () => {
                         <div className="absolute bottom-0 left-0 w-full px-4 py-4 flex flex-col gap-2 items-center">
                             <p className="w-full text-center text-white text-sm font-semibold">{data?.genre.split(", ").slice(0, 3).join(" • ")}</p>
                             <div className="w-full grid grid-cols-2 gap-4">
-                                <button onClick={() => router.push(`/watch/${data?.movieId}`)} className="bg-white rounded-md py-1 px-4 w-full font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
+                                <button onClick={() => router.push(`/watch/${data?.mediaId}`)} className="bg-white rounded-md py-1 px-4 w-full font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
                                     <BsFillPlayFill size={20} className="mr-1 ml-auto" />
                                     <p className="mr-auto">Play</p>
                                 </button>

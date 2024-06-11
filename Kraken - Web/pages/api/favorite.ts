@@ -7,10 +7,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (req.method == 'POST') {
             const { currentUser }: any = await serverAuth(req, res);
-            const { movieId } = req.body;
+            const { mediaId } = req.body;
             let existingMovie = await prismadb.media.findUnique({
                 where: {
-                    id: movieId,
+                    id: mediaId,
                 }
             });
 
@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 favoriteIds = [favoriteIds]
             }
 
-            favoriteIds.push(movieId)
+            favoriteIds.push(mediaId)
             const user = await prismadb.user.update({
                 where: {
                     email: currentUser.email || '',
@@ -41,10 +41,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (req.method == 'DELETE') {
             const { currentUser }: any = await serverAuth(req, res);
-            const { movieId } = req.body;
+            const { mediaId } = req.body;
             let existingMovie = await prismadb.media.findUnique({
                 where: {
-                    id: movieId,
+                    id: mediaId,
                 }
             });
 
@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 favoriteIds = [favoriteIds]
             }
 
-            const index = favoriteIds.indexOf(movieId)
+            const index = favoriteIds.indexOf(mediaId)
             favoriteIds.splice(index, 1)
             const user = await prismadb.user.update({
                 where: {

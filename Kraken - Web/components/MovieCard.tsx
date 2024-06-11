@@ -91,9 +91,9 @@ const MovieCard: React.FC<MovieCardProps> = ({
                             onClick={() => { router.push(`/watch/${data?.id}`) }}>
                             <BsFillPlayFill size={30} />
                         </div>
-                        <FavoriteButton movieId={data?.id} />
+                        <FavoriteButton mediaId={data?.id} />
                         <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
-                            <DownloadButton movieId={data?.id} />
+                            <DownloadButton mediaId={data?.id} />
                         </div>
                         <div>
                             <CopyButton mediaId={data?.id} />

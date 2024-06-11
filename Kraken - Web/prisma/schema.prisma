@@ -25,31 +25,13 @@ model User {
   favoriteIds    String?        @default("")
   uploadCount    Int?           @default(0)
   isMuted        Boolean        @default(false)
-  accounts       Account[]
   roles          String         @default("")
   skipPrompt     Boolean        @default(false)
   Media          Media[]
   Serie_EP       Serie_EP[]
   PendingMedia   PendingMedia[]
-}
 
-model Account {
-  id                String  @id @default(uuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  @@fulltext([name, email])
 }
 
 model Media {
@@ -73,6 +55,7 @@ model Media {
   Serie_EP    Serie_EP[]
 
   @@fulltext([title, altTitle, description, genre])
+  @@fulltext([title, altTitle, description, videoUrl, uploadedBy])
   @@fulltext([genre])
 }
 
@@ -92,6 +75,8 @@ model PendingMedia {
   userId      String?
   userName    String?
   Serie_EP    Serie_EP[]
+
+  @@fulltext([title, description, userName])
 }
 
 model Serie_EP {
