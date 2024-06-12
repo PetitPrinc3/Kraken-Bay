@@ -10,13 +10,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == "GET") {
         try {
-            const { searchText } = req.query
+            const { searchText, page } = req.query
 
             if (isUndefined(searchText)) {
                 const pendingAccounts = await prismadb.user.findMany({
                     where: {
                         roles: ""
-                    }
+                    },
+                    take: isUndefined(page) ? undefined : 10,
+                    skip: isUndefined(page) ? 0 : (+page - 1) * 10
                 });
 
                 return res.status(200).json(pendingAccounts);
@@ -35,7 +37,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             {
                                 roles: ""
                             }]
-                    }
+                    },
+                    take: isUndefined(page) ? undefined : 10,
+                    skip: isUndefined(page) ? 0 : (+page - 1) * 10
                 })
 
                 return res.status(200).json(users)

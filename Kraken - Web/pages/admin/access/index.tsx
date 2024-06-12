@@ -6,21 +6,57 @@ import { FaPlus } from "react-icons/fa6";
 import usePendingAccounts from "@/hooks/usePendingAccounts";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { isUndefined } from "lodash";
 
 export default function Access() {
     const router = useRouter();
     const pathname = usePathname();
+    const [page, setPage] = useState(1)
     const searchParams = new URLSearchParams(useSearchParams());
     const q = searchParams.get("q");
-    const { data: pendingAccounts, mutate: mutateAccounts } = usePendingAccounts({ searchText: q } || undefined);
+    const p = searchParams.get("page") || 1
+    const { data: pendingAccounts, mutate: mutateAccounts } = usePendingAccounts({ searchText: q, page: p } || undefined);
+    const { data: userCount, mutate: mutateUserCount } = usePendingAccounts()
 
     const handleSearch = (e: any) => {
         if (e.target.value) {
             searchParams.set("q", e.target.value);
-            router.replace(`${pathname}?${searchParams}`);
         } else {
-            router.replace(`${pathname}`);
+            searchParams.delete("q")
         }
+        if (searchParams.size == 0) {
+            router.replace(`${pathname}`);
+        } else {
+            router.replace(`${pathname}?${searchParams}`);
+        }
+    }
+
+    const nextPage = async () => {
+        setPage(page + 1)
+        if (!searchParams.has("page")) searchParams.set("page", (page + 1).toString())
+        else searchParams.set("page", (page + 1).toString())
+
+        if (searchParams.size == 0) {
+            router.replace(`${pathname}`);
+        } else {
+            router.replace(`${pathname}?${searchParams}`);
+        }
+        await mutateUserCount()
+        await mutateAccounts()
+    }
+
+    const prevPage = async () => {
+        setPage(page - 1)
+        searchParams.set("page", (page - 1).toString())
+        if (page - 1 == 1) searchParams.delete("page")
+        if (searchParams.size == 0) {
+            router.replace(`${pathname}`);
+        } else {
+            router.replace(`${pathname}?${searchParams}`);
+        }
+        await mutateUserCount()
+        await mutateAccounts()
     }
 
     const rejectUser = async (userId: string) => {
@@ -29,7 +65,18 @@ export default function Access() {
         }).then(() => {
             toast.success("User rejected.", { containerId: "AdminContainer" })
         })
-        mutateAccounts()
+        await mutateAccounts()
+        await mutateUserCount()
+        if ((page - 1) * 10 >= userCount?.length - 1) {
+            setPage(page - 1)
+            searchParams.set("page", (page - 1).toString())
+            if (page - 1 == 1) searchParams.delete("page")
+            if (searchParams.size == 0) {
+                router.replace(`${pathname}`);
+            } else {
+                router.replace(`${pathname}?${searchParams}`);
+            }
+        }
     }
     const acceptUser = async (userId: string) => {
         await axios.post('/api/users', { userId: userId, userRoles: "user" }).catch((err) => {
@@ -37,8 +84,21 @@ export default function Access() {
         }).then(() => {
             toast.success("User accepted.", { containerId: "AdminContainer" })
         })
-        mutateAccounts()
+        await mutateAccounts()
+        await mutateUserCount()
+        if ((page - 1) * 10 >= userCount?.length - 1) {
+            setPage(page - 1)
+            searchParams.set("page", (page - 1).toString())
+            if (page - 1 == 1) searchParams.delete("page")
+            if (searchParams.size == 0) {
+                router.replace(`${pathname}`);
+            } else {
+                router.replace(`${pathname}?${searchParams}`);
+            }
+        }
     }
+
+    if (isUndefined(userCount)) return null
 
     return (
         <AdminLayout pageName="Pending Access" >
@@ -49,7 +109,7 @@ export default function Access() {
                         <input onChange={(e) => handleSearch(e)} type="text" className="bg-transparent text-white focus:outline-none w-full" placeholder="Search for user..." />
                     </div>
                     <div className="w-fit flex flex-row items-center gap-2">
-                        <button onClick={() => { mutateAccounts() }} className="p-1 px-6 flex flex-row gap-2 group items-center justify-center rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
+                        <button onClick={() => { mutateAccounts(); mutateUserCount() }} className="p-1 px-6 flex flex-row gap-2 group items-center justify-center rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
                             <MdRefresh className="hidden lg:block group-hover:animate-spin transition-all duration-300" size={18} />
                             Refresh
                         </button>
@@ -94,8 +154,8 @@ export default function Access() {
                     </table>
                 </div>
                 <div className="w-full flex flex-row items-center justify-between">
-                    <button className="p-1 px-2 w-20 rounded-md bg-slate-700 border-[1px] border-slate-400 text-sm hover:bg-slate-600 transition all duration-100">Previous</button>
-                    <button className="p-1 px-2 w-20 rounded-md bg-slate-700 border-[1px] border-slate-400 text-sm hover:bg-slate-600 transition all duration-100">Next</button>
+                    <button onClick={prevPage} disabled={page <= 1} className="p-1 px-2 w-20 rounded-md bg-slate-700 border-[1px] border-slate-400 text-sm disabled:bg-slate-800 disabled:border-slate-500 disabled:hover:bg-slate-800 disabled:text-slate-900 hover:bg-slate-600 transition all duration-100">Previous</button>
+                    <button onClick={nextPage} disabled={page * 10 >= userCount?.length} className="p-1 px-2 w-20 rounded-md bg-slate-700 border-[1px] border-slate-400 text-sm disabled:bg-slate-800 disabled:border-slate-500 disabled:hover:bg-slate-800 disabled:text-slate-900 hover:bg-slate-600 transition all duration-100">Next</button>
                 </div>
             </div>
         </AdminLayout>

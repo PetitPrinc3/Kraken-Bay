@@ -20,7 +20,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ mediaId }) => {
     }
 
     return (
-        <div onClick={handleCopy} className={`relative cursor-pointer group-item right-0 w-10 h-10 transition-all ${clicked ? "text-neutral-700 bg-white" : "text-white border-white hover:border-neutral-300"} transition-all duration-500 border-2 rounded-full flex justify-center items-center transition`}>
+        <div onClick={handleCopy} className={`relative cursor-pointer group-item right-0 w-10 h-10 transition-all ${clicked ? "text-neutral-700 bg-white" : "text-white border-white hover:border-neutral-300"} transition-all duration-500 border-2 rounded-full flex justify-center items-center`}>
             <div>
                 <BiCopy className="w-fit" size={20} />
             </div>
