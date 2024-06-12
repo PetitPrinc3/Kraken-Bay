@@ -34,7 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             if (isUndefined(mediaId)) {
-                const media = await prismadb.media.findMany()
+                const media = await prismadb.media.findMany({
+                    orderBy: {
+                        createdAt: "desc"
+                    }
+                })
                 return res.status(200).json(media)
             } else {
                 if (typeof mediaId != 'string') {

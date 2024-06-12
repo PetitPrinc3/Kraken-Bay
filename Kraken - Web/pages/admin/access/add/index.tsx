@@ -32,7 +32,7 @@ export default function AddUser() {
     }, [email, name, password, role]);
 
     return (
-        <AdminLayout parentName="accounts" pageName="Add User">
+        <AdminLayout parentName="Pending Access" pageName="Add User">
             <div className="h-fit flex flex-col gap-4 p-4 bg-slate-800 rounded-md">
                 <div className="text-xl font-bold text-white">
                     Create new user :

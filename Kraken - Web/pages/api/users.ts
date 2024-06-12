@@ -34,7 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 })
                 return res.status(200).json(users)
             } else {
-                const users = await prismadb.user.findMany()
+                const users = await prismadb.user.findMany({
+                    orderBy: {
+                        updatedAt: "desc"
+                    }
+                })
                 return res.status(200).json(users)
             }
         }
@@ -71,66 +75,65 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         if (req.method == "POST") {
-            const { userData, userId, userRoles } = req.body
-            if (currentUser?.roles != "admin" && userData.id != currentUser.id) return res.status(403).end()
-            if (currentUser?.roles != "admin") userData.roles = "user"
+            try {
+                const { userData } = req.body
+                if (currentUser?.roles != "admin" && userData.roles != currentUser.roles) return res.status(403).end()
 
-            if (!isUndefined(userId) && !isUndefined(userRoles)) {
-                const user = await prismadb.user.update({
-                    where: {
-                        id: userId as string
-                    },
-                    data: {
-                        roles: userRoles as string
-                    }
-                })
-                return res.status(200).json(user)
-            }
-
-            if (!isUndefined(userData.image)) {
-                const imageBuffer = Buffer.from(userData.image.imageBuffer.data)
-                const filePath = `public/Assets/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
-                await fs.writeFile(filePath, imageBuffer)
-                const fileType = await mime(filePath)
-                if (fileType.mime != "Image") {
-                    await fs.rm(filePath)
-                    return res.status(400).json(`Invalid image : ${fileType.header + ":" + fileType.mime}`)
+                if (isUndefined(userData?.id)) {
+                    const user = await prismadb.user.create({
+                        data: userData
+                    })
+                    return res.status(200).json(user)
                 }
-                if (!isUndefined(currentUser.image) && filePath != "public" + currentUser.image) {
-                    try {
-                        await fs.rm("public" + currentUser.image)
-                    } catch {
 
-                    }
-                }
-                userData.image = `/Assets/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
-            }
-
-            if (isUndefined(userData.id)) {
-                const user = await prismadb.user.create({
-                    data: userData
-                })
-                return res.status(200).json(user)
-            }
-
-            else {
                 const user = await prismadb.user.findUnique({
                     where: {
                         id: userData.id as string
                     }
                 })
-                if (!isNull(user)) {
-                    const update = await prismadb.user.update({
-                        where: {
-                            id: userData.id as string
-                        },
+
+                if (isNull(user)) {
+                    const new_user = await prismadb.user.create({
                         data: userData
                     })
-                    return res.status(200).json(update)
-                } else {
-                    return res.status(400).json("User not found")
+                    return res.status(200).json(new_user)
                 }
+
+                if (!isUndefined(userData.image) && typeof userData.image != "string") {
+                    try {
+                        const imageBuffer = Buffer.from(userData.image.imageBuffer.data)
+                        const filePath = `public/Assets/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
+                        await fs.writeFile(filePath, imageBuffer)
+                        const fileType = await mime(filePath)
+                        if (fileType.mime != "Image") {
+                            await fs.rm(filePath)
+                            return res.status(400).json(`Invalid image : ${fileType.header + ":" + fileType.mime}`)
+                        }
+                        if (!isUndefined(currentUser.image) && filePath != "public" + currentUser.image) {
+                            try {
+                                await fs.rm("public" + currentUser.image)
+                            } catch {
+
+                            }
+                        }
+                        userData.image = `/Assets/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
+                    } catch {
+                        return res.status(400).json("Image update impossible.")
+                    }
+                }
+
+                const update = await prismadb.user.update({
+                    where: {
+                        id: userData.id as string
+                    },
+                    data: userData
+                })
+                return res.status(200).json(update)
+            } catch (err) {
+                console.log(err)
+                return res.status(400).end()
             }
+
         }
 
         return res.status(405).end();

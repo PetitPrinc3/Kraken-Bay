@@ -38,19 +38,6 @@ export default function Media() {
         }
     }
 
-    const jsonImport = async (e: any) => {
-        const jsonFile = e.target.files[0] as File
-        const jsonInput = JSON.parse(await jsonFile.text())
-        if (isUndefined(jsonInput?.Titles)) {
-            toast.error("Invalid JSON file.")
-            return
-        } else {
-            setImportData(jsonInput.Titles)
-            setImportAction(true)
-        }
-        if (!isUndefined(jsonImportRef.current?.files)) jsonImportRef.current.value = ""
-    }
-
     const jsonExport = () => {
         const jsonData = JSON.stringify({
             "Titles": media
@@ -93,6 +80,19 @@ export default function Media() {
                 }
             })
         }
+    }
+
+    const jsonImport = async (e: any) => {
+        const jsonFile = e.target.files[0] as File
+        const jsonInput = JSON.parse(await jsonFile.text())
+        if (isUndefined(jsonInput?.Titles)) {
+            toast.error("Invalid JSON file.")
+            return
+        } else {
+            setImportData(jsonInput.Titles)
+            setImportAction(true)
+        }
+        if (!isUndefined(jsonImportRef.current?.files)) jsonImportRef.current.value = ""
     }
 
     const handleMerge = async (tstr: boolean = true) => {

@@ -75,6 +75,7 @@ export default function Edit() {
                 }
                 setResetPassword(false)
             })
+            await mutateUser()
         } else {
             const imageData = imageFile as File
             const buffer = await imageData.arrayBuffer()
@@ -100,8 +101,8 @@ export default function Edit() {
                 }
                 setResetPassword(false)
             })
+            await mutateUser()
         }
-        mutateUser()
         setFirstLoad(true)
     }
 

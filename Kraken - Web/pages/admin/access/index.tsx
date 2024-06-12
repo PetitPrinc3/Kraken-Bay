@@ -17,7 +17,7 @@ export default function Access() {
     const q = searchParams.get("q");
     const p = searchParams.get("page") || 1
     const { data: pendingAccounts, mutate: mutateAccounts } = usePendingAccounts({ searchText: q, page: p } || undefined);
-    const { data: userCount, mutate: mutateUserCount } = usePendingAccounts()
+    const { data: userCount, mutate: mutateUserCount } = usePendingAccounts({ searchText: q })
 
     const handleSearch = (e: any) => {
         if (e.target.value) {
@@ -67,7 +67,7 @@ export default function Access() {
         })
         await mutateAccounts()
         await mutateUserCount()
-        if ((page - 1) * 10 >= userCount?.length - 1) {
+        if ((page - 1) * 10 >= userCount?.length - 1 && page > 1) {
             setPage(page - 1)
             searchParams.set("page", (page - 1).toString())
             if (page - 1 == 1) searchParams.delete("page")
@@ -86,7 +86,7 @@ export default function Access() {
         })
         await mutateAccounts()
         await mutateUserCount()
-        if ((page - 1) * 10 >= userCount?.length - 1) {
+        if ((page - 1) * 10 >= userCount?.length - 1 && page > 1) {
             setPage(page - 1)
             searchParams.set("page", (page - 1).toString())
             if (page - 1 == 1) searchParams.delete("page")
@@ -97,8 +97,6 @@ export default function Access() {
             }
         }
     }
-
-    if (isUndefined(userCount)) return null
 
     return (
         <AdminLayout pageName="Pending Access" >

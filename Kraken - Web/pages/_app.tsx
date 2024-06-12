@@ -5,7 +5,7 @@ import useCurrentUser from "@/hooks/useCurrentUser"
 import { RiDashboardFill, RiUserSettingsFill, RiPassPendingFill } from "react-icons/ri";
 import { BsFillCloudUploadFill, BsDatabaseFillGear } from "react-icons/bs";
 import { BiSolidServer } from "react-icons/bi";
-import { MdMovie, MdNotificationAdd } from "react-icons/md";
+import { MdOutlineVideoSettings, MdNotificationAdd } from "react-icons/md";
 import { ImLifebuoy } from "react-icons/im";
 import { FaTools, FaHome, FaGithub, FaStar } from "react-icons/fa";
 import { RiMailSendLine } from "react-icons/ri";
@@ -86,7 +86,7 @@ export function AdminLayout({
                 Manage DBs
               </li>
               <li onClick={() => { router.push("/admin/databases/media") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "media" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
-                <MdMovie size={dispSize} />
+                <MdOutlineVideoSettings size={dispSize} />
                 Media DB
               </li>
               <li onClick={() => { router.push("/admin/databases/users") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "users" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
