@@ -1,4 +1,4 @@
-import useNewNotifications from "@/hooks/useNewNotifications";
+import useNotifications from "@/hooks/useNotifications";
 import axios from "axios";
 import { isUndefined } from "lodash";
 import { useRouter } from "next/router";
@@ -11,7 +11,7 @@ const NotificationBell = () => {
     const [visible, setVisible] = useState(false)
     const [hasNew, setHasNew] = useState<boolean>()
     const [firstLoad, setFirstLoad] = useState(true)
-    const { data: notifications, mutate: mutateNotifications } = useNewNotifications();
+    const { data: notifications, mutate: mutateNotifications } = useNotifications({ status: "unread" });
     const notificatioPanel = useRef<HTMLDivElement>(null)
     const router = useRouter();
 

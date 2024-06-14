@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const useNotifications = () => {
-    const { data, error, isLoading } = useSWR("/api/notifications", fetcher, {
+const useNotifications = (params?: any) => {
+    const { data, error, isLoading, mutate } = useSWR(["/api/notifications", params], ([url, params]) => fetcher(url, params), {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false
@@ -11,7 +11,8 @@ const useNotifications = () => {
     return {
         data,
         error,
-        isLoading
+        isLoading,
+        mutate
     }
 }
 

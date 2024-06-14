@@ -159,13 +159,8 @@ export function AdminLayout({
         <ToastContainer
           position="bottom-right"
           autoClose={2000}
-          hideProgressBar={false}
           closeOnClick
-          rtl={false}
-          pauseOnFocusLoss={false}
-          newestOnTop={false}
           draggable
-          pauseOnHover
           theme="colored"
           containerId={"AdminContainer"}
         />

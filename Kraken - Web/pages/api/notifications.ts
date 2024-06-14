@@ -6,10 +6,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method == "GET") {
         try {
             const { currentUser }: any = await serverAuth(req, res);
+            const { status } = req.query
 
             const notifications = await prismadb.notification.findMany({
                 where: {
-                    recipient: currentUser?.email
+                    recipient: currentUser?.email,
+                    status: status as string || undefined
                 },
                 orderBy: {
                     date: 'desc'

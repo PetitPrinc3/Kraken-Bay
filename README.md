@@ -37,13 +37,13 @@ Tested on Ubuntu 24.04
 ### Web server
 
 - Enhanced admin panel (ongoing) :
-    - Handle pages for lists
-    - Handle system calls
     - Db management section
+        - Full Backup
+        - Full Setup
+        - Media detection
     - Responsiveness
-- Change useMovieList/useSerieList with useMedia instead
 - Mobile Navbar
-- Search Netflix style
+- Search Netflix style (ongoing)
 - Mobile web player (orientation)
 - Detect soundless media (MKV files)
 - Better account panel

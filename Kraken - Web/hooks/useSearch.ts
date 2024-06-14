@@ -5,7 +5,8 @@ const useSearch = (text?: string) => {
     const { data, error, isLoading } = useSWR(text ? `/api/search/${text}` : null, fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,
-        revalidateOnReconnect: false
+        revalidateOnReconnect: false,
+        keepPreviousData: true,
     })
 
     return {

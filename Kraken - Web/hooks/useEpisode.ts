@@ -1,12 +1,12 @@
 import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 
-const useMedia = (params?: any) => {
-    const { data, error, isLoading, mutate } = useSWR(["/api/media", params], ([url, params]) => fetcher(url, params), {
+const useEpisode = (params?: any) => {
+    const { data, error, isLoading, mutate } = useSWR(["/api/episode", params], ([url, params]) => fetcher(url, params), {
         revalidateIfStale: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
-        keepPreviousData: true,
+        keepPreviousData: true
     })
 
     return {
@@ -17,4 +17,4 @@ const useMedia = (params?: any) => {
     }
 }
 
-export default useMedia;
+export default useEpisode;

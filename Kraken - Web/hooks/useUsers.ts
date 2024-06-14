@@ -5,7 +5,8 @@ const useUsers = (params?: any) => {
     const { data, error, isLoading, mutate } = useSWR(["/api/users/", params], ([url, params]) => fetcher(url, params), {
         revalidateIfStale: true,
         revalidateOnFocus: true,
-        revalidateOnReconnect: true
+        revalidateOnReconnect: true,
+        keepPreviousData: true,
     })
 
     return {

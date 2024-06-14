@@ -14,6 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { currentUser }: any = await serverAuth(req, res);
 
         if (req.method == 'GET') {
+            if (currentUser?.roles != "admin") return res.status(403).end()
+
             const { searchText, userId } = req.query
 
             if (!isUndefined(userId)) {
@@ -36,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             } else {
                 const users = await prismadb.user.findMany({
                     orderBy: {
-                        updatedAt: "desc"
+                        createdAt: "desc"
                     }
                 })
                 return res.status(200).json(users)

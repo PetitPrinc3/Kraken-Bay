@@ -3,12 +3,13 @@ import { getSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import Billboard from "@/components/Billboard";
 import MovieList from "@/components/MovieList";
-import useMovieList from "@/hooks/useMoviesList";
 import useFavorites from "@/hooks/useFavorites";
 import InfoModal from "@/components/InfoModal";
 import useInfoModal from "@/hooks/useInfoModal";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
+import useMedia from "@/hooks/useMedia";
+import { isEmpty } from "lodash";
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
@@ -28,8 +29,8 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 export default function Home() {
-  const { data: movies = [] } = useMovieList("Movies");
-  const { data: series = [] } = useMovieList("Series");
+  const { data: movies = [] } = useMedia({ mediaType: "Movies", mediaLimit: "8" });
+  const { data: series = [] } = useMedia({ mediaType: "Series", mediaLimit: "8" });
   const { data: favorites = [] } = useFavorites();
   const { isOpen, closeModal } = useInfoModal();
 
@@ -40,7 +41,7 @@ export default function Home() {
       <Navbar />
       <Billboard />
       <div className="pb-10">
-        <MovieList title="My List" data={favorites} />
+        {!isEmpty(favorites) && <MovieList title="My List" data={favorites} />}
         <MovieList title="Movies" data={movies} />
         <MovieList title="Series" data={series} />
       </div>

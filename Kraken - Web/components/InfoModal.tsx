@@ -18,7 +18,7 @@ interface InfoModalProps {
 const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
     const [isVisible, setIsVisible] = useState(!!visible);
     const { mediaId } = useInfoModal();
-    const { data = {} } = useMedia({ mediaId: mediaId });
+    const { data } = useMedia({ mediaId: mediaId });
 
     useEffect(() => {
         setIsVisible(!!visible);

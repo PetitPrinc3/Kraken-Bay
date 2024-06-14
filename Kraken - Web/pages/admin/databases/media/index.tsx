@@ -54,13 +54,12 @@ export default function Media() {
 
     const purgeMedia = async (mediaId?: string) => {
         if (purgeAction && purgeValidation == "Kraken/Media") {
+            const loading = toast.loading("Purging database...", { containerId: "AdminContainer" })
             await axios.delete("/api/media").catch((err) => {
-                toast.clearWaitingQueue()
-                toast.error("Something went wrong.", { containerId: "AdminContainer" })
+                toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
             }).then((data) => {
                 if (!isUndefined(data)) {
-                    toast.clearWaitingQueue()
-                    toast.success("DB purged.", { containerId: "AdminContainer" })
+                    toast.update(loading, { render: 'DB purged.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                     setPurgeAction(false)
                     setPurgeValidation("")
                     mutateMedia()
@@ -96,32 +95,31 @@ export default function Media() {
     }
 
     const handleMerge = async (tstr: boolean = true) => {
+        setReplaceAction(false)
+        const loading = tstr ? toast.loading("Merging data...", { containerId: "AdminContainer" }) : undefined
         if (targetDb == "Media") {
-            setReplaceAction(false)
             for (let i = 0; i < importData.length; i++) {
                 await axios.post("/api/media", importData[i]).catch((err) => {
-                    toast.error("Something went wrong.", { containerId: "AdminContainer" })
+                    !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                 })
             }
             mutateMedia()
-            if (tstr) {
-                toast.success("Data merged successfully.", { containerId: "AdminContainer" })
-            }
+            !isUndefined(loading) && toast.update(loading, { render: 'Data merged successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
         }
     }
 
     const handleReplace = async () => {
+        const loading = toast.loading("Replacing data...", { containerId: "AdminContainer" })
         if (targetDb == "Media") {
             await axios.delete("/api/media").catch((err) => {
-                toast.clearWaitingQueue()
-                toast.error("Something went wrong.", { containerId: "AdminContainer" })
+                toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
             }).then((data) => {
                 if (!isUndefined(data)) {
                     toast.clearWaitingQueue()
                 }
             })
             handleMerge(false)
-            toast.success("Data replaced successfully.", { containerId: "AdminContainer" })
+            toast.update(loading, { render: 'Data replaced successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
         }
     }
 

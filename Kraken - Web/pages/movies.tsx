@@ -4,13 +4,14 @@ import Navbar from "@/components/Navbar";
 import MovieList from "@/components/MovieList";
 import { BsSearch } from "react-icons/bs";
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useInfoModal from "@/hooks/useInfoModal";
 import InfoModal from "@/components/InfoModal";
 import useGenresList from "@/hooks/useGenresList";
 import { GoPlus } from "react-icons/go";
 import { isUndefined } from "lodash";
 import Footer from "@/components/Footer";
+import useMedia from "@/hooks/useMedia";
 
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -75,12 +76,14 @@ export class genreList {
 }
 
 const Movies = () => {
-    const [searchText, setSearchText] = useState('')
-    const [searchResult, setSearchResult] = useState([["", ""]]);
-    const [firstLoad, setFirstLoad] = useState(true)
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = new URLSearchParams(useSearchParams());
     const [gDispList, setGDispList] = useState(new genreList())
     const { isOpen, closeModal } = useInfoModal();
     const { data: genresList } = useGenresList();
+    const [genres, setGenres] = useState<string | undefined>(undefined)
+    const { data: media, mutate: mutateMedia } = useMedia({ searchText: searchParams.get("q") || undefined, mediaGenres: genres })
     const searchInput: any = useRef(null)
 
     useEffect(() => { document.title = "Kraken Bay • Movies" }, [])
@@ -99,15 +102,14 @@ const Movies = () => {
     }
 
     const searchMovies = async (st: string = "") => {
-        const { data: movies } = await axios.get('/api/moviesList', {
-            params: {
-                mediaType: "Movies",
-                searchText: st,
-            }
-        })
-
-        setSearchResult((searchResult) => movies)
-        setSearchText(st);
+        searchParams.set("q", st)
+        if (st == "") {
+            searchParams.delete("q")
+            router.replace(pathname as string)
+        } else {
+            router.replace(`${pathname}?${searchParams}`)
+        }
+        await mutateMedia()
     }
 
     const genreMovies = async (genre: genre) => {
@@ -118,23 +120,10 @@ const Movies = () => {
                 gArray.push("+" + g?.genre)
             }
         }
-        const genres = gArray.join(" ")
-        const { data: movies } = await axios.get('/api/moviesList', {
-            params: {
-                mediaType: "Movies",
-                genre: genres,
-            }
-        })
 
-        setSearchResult((searchResult) => movies)
+        setGenres(gArray.join(" "))
+        await mutateMedia()
     }
-
-    useEffect(() => {
-        if (firstLoad) {
-            searchMovies();
-            setFirstLoad((firstLoad) => false)
-        }
-    }, [firstLoad, setFirstLoad])
 
     if (isUndefined(genresList)) {
         return null
@@ -144,7 +133,7 @@ const Movies = () => {
             const iList = gDispList
             if (!iList?.exists(dG)) {
                 iList?.genreList.push(dG)
-                setGDispList((gDispList) => iList)
+                setGDispList(iList)
             }
         })
     }
@@ -157,7 +146,7 @@ const Movies = () => {
                 <div className="flex flex-row items-center gap-4 w-[90%] md:w-[50%] bg-zinc-600 border-2 border-zinc-900 rounded-full m-2 p-2">
                     <BsSearch className="m-1" size={20} />
                     <input
-                        value={searchText}
+                        value={searchParams.get("q") || undefined}
                         onChange={e => {
                             searchMovies(e.currentTarget.value)
                         }}
@@ -183,7 +172,7 @@ const Movies = () => {
                 </div>
             </div>
             <div className="mb-10">
-                <MovieList data={searchResult} title="" />
+                <MovieList data={media} title="" />
             </div>
             <Footer />
         </div >

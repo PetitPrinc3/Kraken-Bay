@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import useMedia from "@/hooks/useMedia";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { BsFillPlayFill } from "react-icons/bs";
 import { MdFileDownload } from "react-icons/md";
 import { isEmpty, isUndefined } from "lodash";
+import useEpisode from "@/hooks/useEpisode";
 
 interface SeasonListProps {
     serieId: string;
@@ -20,32 +21,23 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
 
     const { data: currentMovie } = useMedia({ mediaId: serieId })
     const season_data = dropOptions(currentMovie?.seasons);
-    const [epDispList, setEpDispList] = useState<String[]>([]);
+    const [season, setSeason] = useState<string | undefined>(undefined)
+    const { data: episodeList, mutate: mutatEpisodeList } = useEpisode({ serieId: serieId, season: season })
     const [firstLoad, setFirstLoad] = useState(true)
     const router = useRouter();
 
     useEffect(() => {
-        if (isEmpty(season_data)) return
-        if (!firstLoad) return
-        axios.get('/api/episodeList', {
-            params: {
-                serieId: serieId,
-                season: season_data[0],
-            }
-        }).then((data) => setEpDispList((epDispList) => data?.data))
-        setFirstLoad(false)
-    }, [firstLoad, setFirstLoad, season_data, serieId])
+        if (firstLoad && !isEmpty(season_data)) {
+            setSeason(season_data[0])
+            mutatEpisodeList()
+            setFirstLoad(false)
+        }
+    }, [firstLoad, season_data, mutatEpisodeList])
 
-    if (isUndefined(epDispList)) return null
-
-    const getEpList = async (so: string = season_data[0]) => {
-        await axios.get('/api/episodeList', {
-            params: {
-                serieId: serieId,
-                season: so,
-            }
-        }).then((data) => setEpDispList((epDispList) => data?.data))
-    }
+    const UpdateList = useCallback(async (e: any) => {
+        setSeason(e.currentTarget.value);
+        await mutatEpisodeList()
+    }, [mutatEpisodeList])
 
     return (
         <div
@@ -55,16 +47,14 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                     Episodes
                 </p>
                 <select
-                    onChange={(e) => {
-                        getEpList(e.target.value);
-                    }} className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] m-auto mt-3 mr-0 focus:outline-none">
+                    onChange={UpdateList} className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] m-auto mt-3 mr-0 focus:outline-none">
                     {season_data.map((season) => (
                         <option key={serieId + "SO" + season} value={season}>Season {season}</option>
                     ))}
                 </select>
             </div>
             <div className="mt-4 w-full text-white">
-                {epDispList.map((ep: any) => (
+                {(episodeList || []).map((ep: any) => (
                     <div
                         key={ep.id}
                         className="w-full flex flex-row items-center my-2 border-2 border-white cursor-pointer rounded-md">

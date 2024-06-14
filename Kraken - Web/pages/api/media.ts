@@ -8,70 +8,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         if (req.method == 'GET') {
-            const { mediaId, searchText } = req.query;
-
-            if (!isUndefined(searchText)) {
-                const media = await prismadb.media.findMany({
-                    where: {
-                        title: {
-                            search: searchText as string
-                        },
-                        altTitle: {
-                            search: searchText as string
-                        },
-                        description: {
-                            search: searchText as string
-                        },
-                        videoUrl: {
-                            search: searchText as string
-                        },
-                        uploadedBy: {
-                            search: searchText as string
-                        }
-                    }
-                })
-                return res.status(200).json(media)
-            }
+            const { mediaId, mediaType, mediaLimit, mediaGenres, searchText } = req.query;
 
             if (isUndefined(mediaId)) {
                 const media = await prismadb.media.findMany({
-                    orderBy: {
-                        createdAt: "desc"
-                    }
+                    where: {
+                        AND: [
+                            {
+                                OR: [
+                                    {
+                                        title: {
+                                            search: searchText as string || undefined
+                                        }
+                                    },
+                                    {
+                                        altTitle: {
+                                            search: searchText as string || undefined
+                                        }
+                                    },
+                                    {
+                                        description: {
+                                            search: searchText as string || undefined
+                                        }
+                                    },
+                                    {
+                                        videoUrl: {
+                                            search: searchText as string || undefined
+                                        }
+                                    },
+                                    {
+                                        uploadedBy: {
+                                            search: searchText as string || undefined
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                type: mediaType as string || undefined
+                            },
+                            {
+                                genre: {
+                                    search: mediaGenres as string || undefined
+                                }
+                            }
+                        ]
+                    },
+                    take: parseInt(mediaLimit as string) || undefined,
                 })
                 return res.status(200).json(media)
             } else {
-                if (typeof mediaId != 'string') {
-                    throw new Error('Invalid ID');
-                }
-
-                if (!mediaId) {
-                    throw new Error('Invalid ID');
-                }
-
-                const media = []
-
-                const movie = await prismadb.media.findUnique({
+                const media = await prismadb.media.findUnique({
                     where: {
-                        id: mediaId,
+                        id: mediaId as string
                     }
                 })
 
-                if (!isNull(movie)) media.push(movie)
-
-                const serie = await prismadb.serie_EP.findUnique({
-                    where: {
-                        id: mediaId,
-                    }
-                })
-
-                if (!isNull(serie)) media.push(serie)
-
-                if (isEmpty(media)) {
-                    return res.status(400).json("Invalid ID")
-                } else {
-                    return res.status(200).json(media[0])
-                }
+                return res.status(200).json(media)
             }
 
         }

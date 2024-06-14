@@ -5,12 +5,12 @@ import { IoPower } from "react-icons/io5";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { isUndefined } from "lodash";
 import usePendingAccounts from "@/hooks/usePendingAccounts";
-import useExistingUsers from "@/hooks/useExistingUsers";
-import useExistingMedia from "@/hooks/useExistingMedia";
 import usePendingUploads from "@/hooks/usePendingUploads";
 import useBestUploaders from "@/hooks/useBestUploaders";
 import useStatistics from "@/hooks/useStatistics";
 import useServerProps from "@/hooks/useServerProps";
+import useUsers from "@/hooks/useUsers";
+import useMedia from "@/hooks/useMedia";
 
 const formatUptime = (serverProps: any) => {
     var d = Math.floor(serverProps / (3600 * 24));
@@ -27,9 +27,9 @@ const formatUptime = (serverProps: any) => {
 
 export default function AdminDashboard() {
     const pendingAccounts = usePendingAccounts().data
-    const existingUsers = useExistingUsers().data
+    const existingUsers = useUsers().data
     const pendingUploads = usePendingUploads().data
-    const existingMedia = useExistingMedia().data
+    const existingMedia = useMedia().data
     const bestUploaders = useBestUploaders().data
     const serverProps = useServerProps().data
 

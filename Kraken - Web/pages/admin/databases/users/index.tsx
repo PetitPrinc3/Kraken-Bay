@@ -37,8 +37,8 @@ export default function Users() {
         }
     }
 
-    const blockUser = async (userId: string) => {
-        await axios.post("/api/users", { userData: { id: userId, roles: "" } }).catch((err) => {
+    const blockUser = async (userId: string, userRole: string) => {
+        await axios.post("/api/users", { userData: { id: userId, roles: userRole } }).catch((err) => {
             toast.clearWaitingQueue()
             toast.error("Something went wrong.", { containerId: "AdminContainer" })
         }).then((data) => {
@@ -66,13 +66,12 @@ export default function Users() {
 
     const purgeUser = async (userId?: string) => {
         if (purgeAction && purgeValidation == "Kraken/User") {
+            const loading = toast.loading("Purging database...", { containerId: "AdminContainer" })
             await axios.delete("/api/users").catch((err) => {
-                toast.clearWaitingQueue()
-                toast.error("Something went wrong.", { containerId: "AdminContainer" })
+                toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
             }).then((data) => {
                 if (!isUndefined(data)) {
-                    toast.clearWaitingQueue()
-                    toast.success("DB purged.", { containerId: "AdminContainer" })
+                    toast.update(loading, { render: 'DB purged.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                     setPurgeAction(false)
                     setPurgeValidation("")
                     mutateUsers()
@@ -109,28 +108,27 @@ export default function Users() {
 
     const handleMerge = async (tstr: boolean = true) => {
         setReplaceAction(false)
+        const loading = tstr ? toast.loading("Merging data...", { containerId: "AdminContainer" }) : undefined
         for (let i = 0; i < importData.length; i++) {
             await axios.post("/api/users", { userData: importData[i] }).catch((err) => {
-                toast.error("Something went wrong.", { containerId: "AdminContainer" })
+                !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
             })
         }
         mutateUsers()
-        if (tstr) {
-            toast.success("Data merged successfully.", { containerId: "AdminContainer" })
-        }
+        !isUndefined(loading) && toast.update(loading, { render: 'Data merged successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
     }
 
     const handleReplace = async () => {
+        const loading = toast.loading("Replacing data...", { containerId: "AdminContainer" })
         await axios.delete("/api/users").catch((err) => {
-            toast.clearWaitingQueue()
-            toast.error("Something went wrong.", { containerId: "AdminContainer" })
+            toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
         }).then((data) => {
             if (!isUndefined(data)) {
                 toast.clearWaitingQueue()
             }
         })
         handleMerge(false)
-        toast.success("Data replaced successfully.", { containerId: "AdminContainer" })
+        toast.update(loading, { render: 'Data replaced successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
     }
 
     return (
@@ -188,7 +186,7 @@ export default function Users() {
                                         <div onClick={() => router.push(`./users/edit/${user.id}`)} className="p-1 rounded-lg bg-slate-600 border-[1px] border-slate-400 hover:bg-blue-500 hover:border-blue-600 hover:text-white transition-all duration-300 cursor-pointer">
                                             <MdOutlineEdit />
                                         </div>
-                                        <div onClick={() => { blockUser(user.id) }} className="p-1 rounded-lg bg-slate-600 border-[1px] border-slate-400 hover:bg-orange-500 hover:border-orange-600 hover:text-white transition-all duration-300 cursor-pointer">
+                                        <div onClick={() => { blockUser(user.id, user.roles == "" ? "user" : "") }} className={`p-1 rounded-lg border-[1px] ${user.roles == "" ? "bg-orange-500 border-orange-600" : "bg-slate-600 border-slate-400 hover:bg-orange-500 hover:border-orange-600"} hover:text-white transition-all duration-300 cursor-pointer`}>
                                             <MdBlock />
                                         </div>
                                         <div onClick={() => { purgeUser(user.id) }} className="p-1 rounded-lg bg-slate-600 border-[1px] border-slate-400 hover:bg-red-500 hover:border-red-600 hover:text-white transition-all duration-300 cursor-pointer">

@@ -79,7 +79,7 @@ export default function Access() {
         }
     }
     const acceptUser = async (userId: string) => {
-        await axios.post('/api/users', { userId: userId, userRoles: "user" }).catch((err) => {
+        await axios.post('/api/users', { userData: { id: userId, roles: "user" } }).catch((err) => {
             toast.error(`Something went wrong : ${err.response.data}`, { containerId: "AdminContainer" })
         }).then(() => {
             toast.success("User accepted.", { containerId: "AdminContainer" })

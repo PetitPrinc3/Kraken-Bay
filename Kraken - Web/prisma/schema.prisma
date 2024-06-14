@@ -92,6 +92,8 @@ model Serie_EP {
   mediaId        String?
   PendingMedia   PendingMedia? @relation(fields: [pendingMediaId], references: [id])
   pendingMediaId String?
+
+  @@unique([serieId, season, episode], name: "Episode")
 }
 
 model Genres {
