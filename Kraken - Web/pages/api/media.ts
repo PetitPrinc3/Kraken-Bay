@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prismadb from '@/lib/prismadb';
 import serverAuth from "@/lib/serverAuth";
-import { isEmpty, isNull, isUndefined } from "lodash";
+import { isNull, isUndefined } from "lodash";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { currentUser }: any = await serverAuth(req, res);

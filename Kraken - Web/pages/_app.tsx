@@ -43,36 +43,36 @@ export function AdminLayout({
             <p className="font-light text-red-500 text-sm leading-none">Administrator</p>
           </div>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 text-white">
           <div className="flex flex-col gap-1">
             <p className="mx-2 font-semibold text-sm text-neutral-400">Kraken Bay</p>
             <ul className="cursor-pointer px-2 space-y-1">
-              <li onClick={() => { router.push("/admin") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "admin" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "admin" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <RiDashboardFill size={dispSize} />
                 Dashboard
               </li>
-              <li onClick={() => { router.push("/admin/access") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Access" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/access") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Access" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <RiPassPendingFill size={dispSize} />
                 Access
                 <div className={`${pendingUsers > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
                   <p className="m-auto rounded-full">{pendingUsers}</p>
                 </div>
               </li>
-              <li onClick={() => { router.push("/admin/notify") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "notify" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/notify") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "notify" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <MdNotificationAdd size={dispSize} />
                 Notify
                 <div className={`${pendingUsers > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
                   <p className="m-auto rounded-full">{pendingUsers}</p>
                 </div>
               </li>
-              <li onClick={() => { router.push("/admin/uploads") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Uploads" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/uploads") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Uploads" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <BsFillCloudUploadFill size={dispSize} />
                 Uploads
                 <div className={`${pendingUploads > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
                   <p className="m-auto rounded-full">{pendingUploads}</p>
                 </div>
               </li>
-              <li onClick={() => { router.push("/admin/server") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "server" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/server") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "server" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <BiSolidServer size={dispSize} />
                 Server
               </li>
@@ -81,15 +81,15 @@ export function AdminLayout({
           <div className="flex flex-col gap-1">
             <p className="mx-2 font-semibold text-sm text-neutral-400">Databases</p>
             <ul className="cursor-pointer px-2 space-y-1">
-              <li onClick={() => { router.push("/admin/databases/manage") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "manage" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/databases/manage") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "manage" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <BsDatabaseFillGear size={dispSize} />
                 Manage DBs
               </li>
-              <li onClick={() => { router.push("/admin/databases/media") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "media" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/databases/media") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "media" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <MdOutlineVideoSettings size={dispSize} />
                 Media DB
               </li>
-              <li onClick={() => { router.push("/admin/databases/users") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "users" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/databases/users") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "users" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <RiUserSettingsFill size={dispSize} />
                 User DB
               </li>
@@ -98,15 +98,15 @@ export function AdminLayout({
           <div className="flex flex-col gap-1">
             <p className="mx-2 font-semibold text-sm text-neutral-400">Settings</p>
             <ul className="cursor-pointer px-2 space-y-1">
-              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <FaTools size={dispSize} />
                 Config
               </li>
-              <li onClick={() => { router.push("/admin/help") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Help" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/help") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Help" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <ImLifebuoy size={dispSize} />
                 Help
               </li>
-              <li onClick={() => router.push("/home")} className="w-full rounded-md flex flex-row items-center gap-2 hover:bg-red-500 px-4 py-2 font-semibold transition-all duration-200">
+              <li onClick={() => router.push("/home")} className="w-full rounded-md flex flex-row items-center gap-2 hover:bg-red-500 px-4 py-2 transition-all duration-200">
                 <FaHome size={dispSize} />
                 Go Home
               </li>

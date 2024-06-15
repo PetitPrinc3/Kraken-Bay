@@ -86,6 +86,7 @@ model Serie_EP {
   season         String
   episode        String
   videoUrl       String        @db.LongText
+  createdAt      DateTime      @default(now())
   User           User?         @relation(fields: [userId], references: [id])
   userId         String?
   Media          Media?        @relation(fields: [mediaId], references: [id])

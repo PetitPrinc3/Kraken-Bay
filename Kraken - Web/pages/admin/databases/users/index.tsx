@@ -165,7 +165,7 @@ export default function Users() {
                                 <td className="w-[15%]"></td>
                             </tr>
                         </thead>
-                        <tbody className="w-full text-white overflow-y-scroll">
+                        <tbody className="w-full text-white">
                             {(users || []).map((user: any) => (
                                 <tr key={user?.id}>
                                     <td className="grid grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">

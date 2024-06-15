@@ -1,4 +1,3 @@
-"use client"
 import { AdminLayout } from "@/pages/_app";
 import axios from "axios";
 import { useRef, useState } from "react";
@@ -10,9 +9,10 @@ import { RxCross2 } from "react-icons/rx";
 import { IoWarning, IoGitMerge, IoGitPullRequest } from "react-icons/io5";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { TbDatabaseImport, TbDatabaseExport } from "react-icons/tb";
+import { TbZoomScan, TbArrowMergeLeft } from "react-icons/tb";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { isUndefined } from "lodash";
+import { isEmpty, isUndefined } from "lodash";
 import useMedia from "@/hooks/useMedia";
 
 export default function Media() {
@@ -20,14 +20,55 @@ export default function Media() {
     const router = useRouter();
     const pathname = usePathname();
     const q = searchParams.get("q");
+    const [files, setFiles] = useState<any[] | undefined>(undefined)
     const [targetDb, setTargetDb] = useState("Media")
     const [importData, setImportData] = useState<any>()
     const jsonImportRef = useRef<HTMLInputElement>(null)
     const [purgeAction, setPurgeAction] = useState(false)
     const [importAction, setImportAction] = useState(false)
     const [replaceAction, setReplaceAction] = useState(false)
+    const [openDetection, setOpenDetection] = useState(false)
     const [purgeValidation, setPurgeValidation] = useState("")
     const { data: media, mutate: mutateMedia } = useMedia({ searchText: q })
+
+
+    const toggleDetection = async () => {
+        setFiles(undefined)
+        setOpenDetection(true)
+        const loading = toast.loading("Detecting new files...", { containerId: "AdminContainer" })
+        const data = await axios.get("/api/autoImport").catch((err) => toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })).then((res) => { return res?.data })
+        setFiles(data)
+        toast.update(loading, { render: "Done.", type: "success", isLoading: false, autoClose: 1000, containerId: "AdminContainer" })
+    }
+
+    const setTitle = (key: string, e: any) => {
+        if (isUndefined(files)) return
+        const tempFiles = files.splice(0)
+        tempFiles.forEach((file: any) => {
+            if (file.key == key) {
+                file.title = e.target.value
+            }
+        })
+        setFiles(tempFiles)
+    }
+
+    const removeFile = (key: string) => {
+        if (isUndefined(files)) return
+        const tempFiles: any = new Array()
+        files.splice(0).forEach((file: any) => {
+            if (file.key != key) {
+                tempFiles.push(file)
+            }
+        })
+        setFiles(tempFiles)
+    }
+
+    const fetchMovies = async () => {
+        const loading = toast.loading("Computing new entries...", { containerId: "AdminContainer" })
+        const { data } = await axios.post("/api/autoImport", files).catch((err) => toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })).then((res) => { return res?.data })
+        await mutateMedia()
+        toast.update(loading, { render: "Files added.", type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+    }
 
     const handleSearch = (e: any) => {
         if (e.target.value) {
@@ -84,11 +125,16 @@ export default function Media() {
     const jsonImport = async (e: any) => {
         const jsonFile = e.target.files[0] as File
         const jsonInput = JSON.parse(await jsonFile.text())
-        if (isUndefined(jsonInput?.Titles)) {
+        if (isUndefined(jsonInput?.Titles) && isUndefined(jsonInput?.Episodes)) {
             toast.error("Invalid JSON file.", { containerId: "AdminContainer" })
             return
-        } else {
+        } else if (!isUndefined(jsonInput?.Titles)) {
             setImportData(jsonInput.Titles)
+            setTargetDb("Media")
+            setImportAction(true)
+        } else {
+            setImportData(jsonInput.Episodes)
+            setTargetDb("Serie_EP")
             setImportAction(true)
         }
         if (!isUndefined(jsonImportRef.current?.files)) jsonImportRef.current.value = ""
@@ -100,6 +146,15 @@ export default function Media() {
         if (targetDb == "Media") {
             for (let i = 0; i < importData.length; i++) {
                 await axios.post("/api/media", importData[i]).catch((err) => {
+                    !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+                })
+            }
+            mutateMedia()
+            !isUndefined(loading) && toast.update(loading, { render: 'Data merged successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+        }
+        if (targetDb == "Serie_EP") {
+            for (let i = 0; i < importData.length; i++) {
+                await axios.post("/api/episode", importData[i]).catch((err) => {
                     !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                 })
             }
@@ -118,9 +173,18 @@ export default function Media() {
                     toast.clearWaitingQueue()
                 }
             })
-            handleMerge(false)
-            toast.update(loading, { render: 'Data replaced successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
         }
+        if (targetDb == "Serie_EP") {
+            await axios.delete("/api/episode").catch((err) => {
+                toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+            }).then((data) => {
+                if (!isUndefined(data)) {
+                    toast.clearWaitingQueue()
+                }
+            })
+        }
+        await handleMerge(false)
+        toast.update(loading, { render: 'Data replaced successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
     }
 
     return (
@@ -132,7 +196,7 @@ export default function Media() {
                         <input onChange={(e) => handleSearch(e)} type="text" className="bg-transparent text-white focus:outline-none w-full" placeholder="Search for media..." />
                     </div>
                     <div className="flex flex-row items-center gap-2">
-                        <div className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
+                        <div onClick={toggleDetection} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <MdSync />
                             Detect <span className="hidden lg:block">new media</span>
                         </div>
@@ -309,6 +373,66 @@ export default function Media() {
                             </div>
                             <button onClick={() => { handleReplace() }} className="w-full flex flex-row items-center justify-center gap-2 text-red-500 font-semibold px-8 py-1 border-[1px] border-slate-500 disabled:opacity-50 disabled:hover:bg-slate-800 hover:bg-red-500 hover:border-red-500 hover:text-white rounded-md bg-slate-800 transition-all duration-200">
                                 Confirm my choice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className={`${openDetection ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
+                <div className={`${openDetection ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
+                    <div className="w-[90%] h-[70%] mx-auto flex flex-col gap-4 rounded-md p-4 bg-slate-800">
+                        <div className="w-full flex flex-row items-center justify-between text-2xl font-bold text-white">
+                            Automatic Media detection
+                            <div onClick={() => setOpenDetection(false)} className="p-2 rounded-md hover:bg-slate-700 transition-all duration-300 cursor-pointer">
+                                <RxCross2 ></RxCross2>
+                            </div>
+                        </div>
+                        <hr className="border-slate-400" />
+                        <div className="relative w-full h-full overflow-y-scroll overflow-x-clip">
+                            <table className="w-full h-fit border-separate border-spacing-x-4 border-spacing-y-1 table-fixed">
+                                <thead className="h-[10%]">
+                                    <tr className="text-white font-semibold text-lg">
+                                        <td className="w-[60%]">File</td>
+                                        <td className="w-[40%]">Title</td>
+                                    </tr>
+                                </thead>
+                                <tbody className="max-h-[90%] overflow-hidden">
+                                    {!isUndefined(files) && files.map((file: any) => (
+                                        <tr key={file.key}>
+                                            <td onClick={() => removeFile(file.key)} className="group grid grid-cols-[3%_97%] items-center gap-2 px-2 rounded-full bg-slate-700 border-[1px] border-slate-500 hover:bg-red-500 hover:border-red-500 transition-all duration-300 cursor-pointer">
+                                                <RxCross2 className="text-white group-hover:rotate-90 transition-all duration-500" />
+                                                <p className="truncate text-ellipsis text-white pr-2">{file.name}</p>
+                                            </td>
+                                            <td>
+                                                <input onChange={e => setTitle(file.key, e)} type="text" defaultValue={file.title} placeholder="Title" className="w-full bg-slate-700 text-white focus:outline-none px-2 border-slate-900 border-[1px] rounded-md" />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {isUndefined(files) ?
+                                <div className="flex flex-col gap-2">
+                                    <div className={isUndefined(files) || isEmpty(files) ? "mx-4 h-10 bg-slate-700 rounded-md animate-pulse" : ""} />
+                                    <div className={isUndefined(files) || isEmpty(files) ? "mx-4 h-10 bg-slate-700 rounded-md animate-pulse" : ""} />
+                                    <div className={isUndefined(files) || isEmpty(files) ? "mx-4 h-10 bg-slate-700 rounded-md animate-pulse" : ""} />
+                                    <div className={isUndefined(files) || isEmpty(files) ? "mx-4 h-10 bg-slate-700 rounded-md animate-pulse" : ""} />
+                                    <div className={isUndefined(files) || isEmpty(files) ? "mx-4 h-10 bg-slate-700 rounded-md animate-pulse" : ""} />
+                                    <div className={isUndefined(files) || isEmpty(files) ? "mx-4 h-10 bg-slate-700 rounded-md animate-pulse" : ""} />
+                                </div>
+                                : isEmpty(files) ?
+                                    <div className="w-full pt-10 flex items-center test-center p-auto">
+                                        <p className="w-full text-center text-md text-slate-400 font-semibold">No new files</p>
+                                    </div>
+                                    : null
+                            }
+                        </div>
+                        <hr className="border-slate-400" />
+                        <div className="flex flex-row gap-4">
+                            <button disabled={files?.length == 0} className="flex flex-row items-center w-[20%] m-auto justify-center py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-green-500"
+                                onClick={fetchMovies}
+                            >
+                                <TbArrowMergeLeft size={25} />
+                                Add files
                             </button>
                         </div>
                     </div>
