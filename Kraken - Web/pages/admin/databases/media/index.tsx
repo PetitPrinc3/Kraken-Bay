@@ -85,7 +85,7 @@ export default function Media() {
         const jsonFile = e.target.files[0] as File
         const jsonInput = JSON.parse(await jsonFile.text())
         if (isUndefined(jsonInput?.Titles)) {
-            toast.error("Invalid JSON file.")
+            toast.error("Invalid JSON file.", { containerId: "AdminContainer" })
             return
         } else {
             setImportData(jsonInput.Titles)

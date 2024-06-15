@@ -1,10 +1,12 @@
 import { AdminLayout } from "@/pages/_app";
 import axios from "axios";
+import { isUndefined } from "lodash";
 import { useState, useRef } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+
 import useUsers from "@/hooks/useUsers";
+
 import { MdRefresh, MdSearch, MdOutlineEdit, MdSync, MdBlock } from "react-icons/md";
-import { toast } from "react-toastify";
 import { BsPersonPlusFill, BsDatabaseFillX, BsDatabaseFillAdd } from "react-icons/bs";
 import { BiMovie, BiSolidFileJson } from "react-icons/bi";
 import { RxCross2 } from "react-icons/rx";
@@ -12,8 +14,9 @@ import { FaUserGroup } from "react-icons/fa6";
 import { IoWarning, IoGitMerge, IoGitPullRequest } from "react-icons/io5";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { TbDatabaseImport, TbDatabaseExport } from "react-icons/tb";
+
+import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { isUndefined } from "lodash";
 
 export default function Users() {
     const router = useRouter();
@@ -52,7 +55,7 @@ export default function Users() {
 
     const jsonExport = () => {
         const jsonData = JSON.stringify({
-            "Titles": users
+            "Users": users
         }, null, 4)
         const exportData = new Blob([jsonData])
         const downloader = window.document.createElement("a")
@@ -96,11 +99,11 @@ export default function Users() {
     const jsonImport = async (e: any) => {
         const jsonFile = e.target.files[0] as File
         const jsonInput = JSON.parse(await jsonFile.text())
-        if (isUndefined(jsonInput?.Titles)) {
-            toast.error("Invalid JSON file.")
+        if (isUndefined(jsonInput?.Users)) {
+            toast.error("Invalid JSON file.", { containerId: "AdminContainer" })
             return
         } else {
-            setImportData(jsonInput.Titles)
+            setImportData(jsonInput.Users)
             setImportAction(true)
         }
         if (!isUndefined(jsonImportRef.current?.files)) jsonImportRef.current.value = ""

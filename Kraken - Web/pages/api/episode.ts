@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { serieId, season, episode, } = req.query;
 
             if (!isUndefined(serieId) && !isUndefined(season) && !isUndefined(episode)) {
-                const media = await prismadb.serie_EP.findUnique({
+                const ep = await prismadb.serie_EP.findUnique({
                     where:
                     {
                         Episode: {
@@ -22,9 +22,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 })
 
-                return res.status(200).json(media)
+                return res.status(200).json(ep)
             } else {
-                const media = await prismadb.serie_EP.findMany({
+                const ep = await prismadb.serie_EP.findMany({
                     where: {
                         serieId: serieId as string || undefined,
                         season: season as string || undefined,
@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ]
                 })
 
-                return res.status(200).json(media)
+                return res.status(200).json(ep)
             }
 
         }
@@ -51,40 +51,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method == "POST") {
             if (currentUser?.roles != "admin") return res.status(403).end()
 
-            const mediaData = req.body
+            const episodeData = req.body
 
-            if (isUndefined(mediaData.id)) {
+            if (isUndefined(episodeData.id)) {
                 try {
-                    const media = await prismadb.serie_EP.create({
-                        data: mediaData
+                    const episode = await prismadb.serie_EP.create({
+                        data: episodeData
                     })
-                    return res.status(200).json(media)
+                    return res.status(200).json(episode)
                 } catch {
                     return res.status(400).json("Invalid data")
                 }
             }
 
-            const existingMedia = await prismadb.serie_EP.findUnique({
+            const existingEpisode = await prismadb.serie_EP.findUnique({
                 where: {
-                    id: mediaData.id as string
+                    id: episodeData.id as string
                 }
             })
 
-            if (isNull(existingMedia)) {
+            if (isNull(existingEpisode)) {
                 try {
-                    const media = await prismadb.serie_EP.create({
-                        data: mediaData
+                    const episode = await prismadb.serie_EP.create({
+                        data: episodeData
                     })
-                    return res.status(200).json(media)
+                    return res.status(200).json(episode)
                 } catch {
                     return res.status(400).json("Invalid data")
                 }
             } else {
                 const update = await prismadb.serie_EP.update({
                     where: {
-                        id: mediaData.id as string
+                        id: episodeData.id as string
                     },
-                    data: mediaData
+                    data: episodeData
                 })
                 return res.status(200).json(update)
             }
@@ -92,15 +92,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (req.method == "DELETE") {
             if (currentUser.roles == "admin") {
-                const { mediaId } = req.query
+                const { episodeId } = req.query
 
-                if (isUndefined(mediaId)) {
+                if (isUndefined(episodeId)) {
                     await prismadb.serie_EP.deleteMany({})
                     return res.status(200).json("DB Purged.")
                 } else {
                     const target = await prismadb.serie_EP.findUnique({
                         where: {
-                            id: mediaId as string
+                            id: episodeId as string
                         }
                     })
 

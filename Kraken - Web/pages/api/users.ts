@@ -101,7 +101,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     return res.status(200).json(new_user)
                 }
 
-                if (!isUndefined(userData.image) && typeof userData.image != "string") {
+                if (!isUndefined(userData.image) && !isNull(userData.image) && typeof userData.image != "string") {
                     try {
                         const imageBuffer = Buffer.from(userData.image.imageBuffer.data)
                         const filePath = `public/Assets/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
@@ -133,7 +133,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(200).json(update)
             } catch (err) {
                 console.log(err)
-                return res.status(400).end()
             }
 
         }
