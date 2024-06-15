@@ -73,7 +73,7 @@ const Welcome = () => {
                     </div>
                     <button onClick={async () => {
                         if (neverShow) {
-                            axios.post("/api/skipPrompt", { userId: user.id, skipPrompt: neverShow })
+                            axios.post("/api/users", { userData: { id: user.id, skipPrompt: true } })
                         }
                         router.push('/home')
                     }}

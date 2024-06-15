@@ -10,9 +10,12 @@ import { isUndefined } from "lodash";
 import { useRouter } from "next/router";
 import { BsFillPlayFill } from "react-icons/bs";
 
+interface BillboardProps {
+    mediaType?: string
+}
 
-const Billboard = () => {
-    const { data } = useBillboard();
+const Billboard: React.FC<BillboardProps> = ({ mediaType }) => {
+    const { data } = useBillboard(mediaType);
     const { openModal } = useInfoModal();
     const { data: user } = useCurrentUser();
     const [isMuted, setMuted] = useState(false)

@@ -31,7 +31,7 @@ const NotificationBell = () => {
         if (!visible && notificatioPanel.current) {
             notificatioPanel.current.focus()
             setHasNew(false)
-            axios.delete("/api/newNotifications")
+            axios.delete("/api/notifications")
         }
     }, [notificatioPanel, visible])
 

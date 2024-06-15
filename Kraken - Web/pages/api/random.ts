@@ -10,30 +10,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         await serverAuth(req, res);
+        const { mediaType } = req.query
+
         const movieCount = await prismadb.media.count({
             where: {
-                type: "Movies"
+                type: mediaType as string || undefined
             }
         })
         const randomIndex = Math.floor(Math.random() * movieCount)
         const randomMovies: any = await prismadb.media.findMany({
+            where: {
+                type: mediaType as string || undefined
+            },
             take: 1,
             skip: randomIndex
         });
-
-        if (randomMovies.type == "Series") {
-            const existingEps = await prismadb.serie_EP.findMany({
-                where: {
-                    serieId: randomMovies.id,
-                },
-                orderBy: {
-                    season: 'asc',
-                    episode: 'asc'
-                },
-                take: 1
-            })
-
-        }
 
         return res.status(200).json(randomMovies[0]);
 

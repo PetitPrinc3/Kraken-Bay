@@ -15,7 +15,7 @@ export default function Notify() {
     const [everyone, setEveryone] = useState(false)
 
     const sendNotification = async () => {
-        await axios.post("/api/notify", { recipient: everyone ? "all" : email, content: desc, type: type }).then(() => {
+        await axios.post("/api/notifications", { recipient: everyone ? "all" : email, content: desc, type: type }).then(() => {
         }).then((res) => {
             toast.success("User notified !", { containerId: "AdminContainer" })
             setEmail("")
@@ -42,7 +42,7 @@ export default function Notify() {
                             </div>
                             Or
                             <div onClick={() => { if (everyone) setEveryone(false) }} className={`w-full h-full rounded-md transition-all duration-200 ${everyone ? "bg-slate-700 text-slate-400" : "bg-slate-600 text-white placeholder:text-slate-400"}`}>
-                                <input type="text" className={`${everyone && "placeholder:text-slate-800"} w-full h-ful bg-transparent px-6 py-2 focus:outline-none`} placeholder={everyone ? "Everyone" : "Username"} />
+                                <input onChange={(e) => setEmail(e.currentTarget.value)} value={email} type="text" className={`${everyone && "placeholder:text-slate-800"} w-full h-ful bg-transparent px-6 py-2 focus:outline-none`} placeholder={everyone ? "Everyone" : "Username"} />
                             </div>
                         </div>
                         <div className="capitalize rounded-md px-6 h-full w-full text-white bg-slate-600">

@@ -22,9 +22,9 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ mediaId }) => {
         let response;
 
         if (isFavorite) {
-            response = await axios.delete('/api/favorite', { data: { mediaId } });
+            response = await axios.delete('/api/favorites', { data: { mediaId } });
         } else {
-            response = await axios.post('/api/favorite', { mediaId });
+            response = await axios.post('/api/favorites', { mediaId });
         }
 
         const updatedFavoriteIds = response?.data?.favoriteIds;

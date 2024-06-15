@@ -1,19 +1,21 @@
-import useSWR from "swr";
-import fetcher from "@/lib/fetcher";
+import { create } from 'zustand';
 
-const useSearch = (text?: string) => {
-    const { data, error, isLoading } = useSWR(text ? `/api/search/${text}` : null, fetcher, {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        keepPreviousData: true,
-    })
-
-    return {
-        data,
-        error,
-        isLoading
-    }
+export interface SearchStoreInterface {
+    searchText?: string;
+    isOpen: boolean;
+    origin?: string;
+    openSearch: (origin?: string) => void;
+    setSearch: (searchText?: string) => void;
+    closeSearch: () => void;
 }
 
-export default useSearch;
+const useSearch = create<SearchStoreInterface>((set) => ({
+    searchText: undefined,
+    isOpen: false,
+    origin: undefined,
+    openSearch: (origin?: string) => set({ isOpen: true, origin: origin }),
+    closeSearch: () => set({ isOpen: false, origin: undefined }),
+    setSearch: (searchText?: string) => set({ searchText: searchText }),
+}))
+
+export default useSearch

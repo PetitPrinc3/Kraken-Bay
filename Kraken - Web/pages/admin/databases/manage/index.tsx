@@ -277,8 +277,8 @@ export default function Manage() {
                             Refresh
                         </button>
                     </div>
-                    <div onClick={() => { toggleImport() }} className="flex overflow-x-scroll scrollbar-hide">
-                        <div className="inline-block px-3">
+                    <div className="flex overflow-x-scroll scrollbar-hide">
+                        <div onClick={() => { toggleImport() }} className="inline-block px-3">
                             <div className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-green-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Full DB Setup</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">

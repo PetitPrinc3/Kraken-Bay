@@ -42,10 +42,10 @@ And many more !!
         - Media detection
     - Responsiveness
 - Mobile Navbar
-- Search Netflix style (ongoing)
 - Mobile web player (orientation)
 - Detect soundless media (MKV files)
 - Better account panel
+- Movies / Series sections
 
 ## Collaborate
 

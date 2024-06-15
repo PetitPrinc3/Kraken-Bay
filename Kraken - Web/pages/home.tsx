@@ -41,9 +41,9 @@ export default function Home() {
       <Navbar />
       <Billboard />
       <div className="pb-10">
-        {!isEmpty(favorites) && <MovieList title="My List" data={favorites} />}
-        <MovieList title="Movies" data={movies} />
-        <MovieList title="Series" data={series} />
+        {!isEmpty(favorites) && <MovieList title="Your List" data={favorites} />}
+        <MovieList title="Movies for you" data={movies} />
+        <MovieList title="Series for you" data={series} />
       </div>
       <Footer />
     </>
