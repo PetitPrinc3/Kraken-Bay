@@ -41,7 +41,6 @@ And many more !!
     - Db management section
         - Media detection
     - Responsiveness
-- Mobile Navbar
 - Mobile web player (orientation)
 - Detect soundless media (MKV files)
 - Better account panel

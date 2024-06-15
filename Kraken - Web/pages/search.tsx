@@ -12,7 +12,8 @@ import useSearch from "@/hooks/useSearch";
 import useGenresList from "@/hooks/useGenresList";
 import { isUndefined } from "lodash";
 import { GoPlus } from "react-icons/go";
-export class genre {
+import { FaChevronCircleDown, FaChevronCircleRight } from "react-icons/fa";
+class genre {
     id: string;
     genre: string;
     isClicked: boolean;
@@ -28,7 +29,7 @@ export class genre {
     }
 }
 
-export class genreList {
+class genreList {
     genreList: genre[];
 
     constructor(genreList: genre[] = []) {
@@ -65,6 +66,7 @@ export default function Search() {
     const [gDispList, setGDispList] = useState(new genreList())
     const { data: genresList } = useGenresList();
     const [genres, setGenres] = useState<string | undefined>(undefined)
+    const [dropDown, setDropDown] = useState(false)
     const { data: media, mutate: mutateMedia } = useMedia({ searchText: searchParams.get("q") || undefined, mediaGenres: genres })
 
     const defaultValue = useCallback(() => {
@@ -122,13 +124,12 @@ export default function Search() {
         })
     }
 
-
     return (
         <div>
             <Navbar />
             <InfoModal visible={isOpen} onClose={closeModal} />
-            <div className="text-white w-full flex flex-col items-center pt-[10vh] md:pt-[15vh]">
-                <div className="flex flex-row items-center gap-4 w-[90%] md:w-[50%] bg-zinc-600 border-2 border-zinc-900 rounded-full m-2 p-2">
+            <div className="text-white w-full flex flex-col items-center px-4 md:px-0 pt-[10vh] md:pt-[15vh]">
+                <div className="flex flex-row items-center gap-4 w-full md:w-[50%] bg-zinc-600 border-2 border-zinc-900 rounded-full m-2 p-2">
                     <BsSearch className="m-1" size={20} />
                     <input
                         key={searchText}
@@ -140,8 +141,12 @@ export default function Search() {
                         placeholder="Search Kraken Bay !" />
                 </div>
             </div>
-            <div>
-                <div className="flex flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10">
+            <div className="px-4 md:px-0">
+                <div onClick={() => setDropDown(!dropDown)} className={`flex md:hidden flex-row items-center gap-4 px-4 py-1 rounded-full bg-zinc-600 ${isUndefined(genres) || genres == "" ? "text-neutral-400" : "text-white"}`}>
+                    <FaChevronCircleRight className="transition-all duration-500" style={{ transform: `${dropDown ? "rotate(90deg)" : "rotate(0)"}` }} />
+                    <p>Genres <span className="font-light text-xs text-neutral-400">{genres?.split(" +").join(", ").split("+").join("")}</span></p>
+                </div>
+                <div className={`${window.screen.width > 800 || dropDown ? "flex" : "hidden"} flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10`}>
                     {gDispList?.genreList.map((e) => (
                         <div key={e?.id}>
                             <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
