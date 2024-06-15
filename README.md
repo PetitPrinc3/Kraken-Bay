@@ -17,20 +17,21 @@ Tested on Ubuntu 24.04
 
 ## Features :
 
-### Web server :
+<img src="Images/Home.png"/>
 
-- Random reactive billboard
-- Information modal
-- TV Shows episodes grouped by season
-- Full text search
-- Search by genre
-- Media download
-- Media uploader
-- Account Menu
-- Notifications
-- Admin panel
-- React video Player
-- Vlc streaming tutorial and downloads
+Fully functional web server with Netflix inspired UI, including :
+
+| <img src="Images/InfoModal.png" width="300" /> | <img src="Images/Search.png" width="300" /> | <img src="Images/Player.png" width="300" /> | <img src="Images/Upload.png" width="300" /> | <img src="Images/Tutorials.png" width="300" />  |
+| :-: | :-: | :-: | :-: | :-: |
+| Movie cards & Information modals | Full text search & Genres | Web player | User uploader (with administrator aproval) | Tutorials |
+
+In browser administration tools including :
+
+| <img src="Images/AdminDashboard.png" width="300" /> | <img src="Images/AdminDBManagement.png" width="300" /> | <img src="Images/AdminServer.png" width="300" /> |
+| :-: | :-: | :-: | 
+| Private administration zone | Database Management | Server Management |
+
+And many more !!
 
 ## Todo :
 
@@ -38,8 +39,6 @@ Tested on Ubuntu 24.04
 
 - Enhanced admin panel (ongoing) :
     - Db management section
-        - Full Backup
-        - Full Setup
         - Media detection
     - Responsiveness
 - Mobile Navbar

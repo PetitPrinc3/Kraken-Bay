@@ -143,10 +143,6 @@ export default function Users() {
                         <input onChange={(e) => handleSearch(e)} type="text" className="bg-transparent text-white focus:outline-none w-full" placeholder="Search for user..." />
                     </div>
                     <div className="flex flex-row items-center gap-2">
-                        <div className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
-                            <MdSync />
-                            Detect <span className="hidden lg:block">new media</span>
-                        </div>
                         <div onClick={jsonExport} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <TbDatabaseExport />
                             Export <span className="hidden lg:block">as JSON</span>

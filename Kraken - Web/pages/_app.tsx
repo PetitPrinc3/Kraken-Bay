@@ -102,7 +102,7 @@ export function AdminLayout({
                 <FaTools size={dispSize} />
                 Config
               </li>
-              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/help") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Help" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 font-semibold transition-all duration-200`}>
                 <ImLifebuoy size={dispSize} />
                 Help
               </li>
