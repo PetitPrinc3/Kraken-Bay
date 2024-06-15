@@ -3,11 +3,10 @@ import React, { useState } from "react";
 import useMedia from "@/hooks/useMedia";
 
 interface DownloadButtonProps {
-    mediaId: string;
+    data: Record<string, any>;
 }
 
-const DownloadButton: React.FC<DownloadButtonProps> = ({ mediaId }) => {
-    const { data = {} } = useMedia({ mediaID: mediaId });
+const DownloadButton: React.FC<DownloadButtonProps> = ({ data }) => {
     const [currentDownload, setDownload] = useState(false)
 
     const Download = async () => {

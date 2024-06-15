@@ -93,10 +93,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         </div>
                         <FavoriteButton mediaId={data?.id} />
                         <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
-                            <DownloadButton mediaId={data?.id} />
+                            <DownloadButton data={data} />
                         </div>
                         <div>
-                            <CopyButton mediaId={data?.id} />
+                            <CopyButton data={data?.id} />
                         </div>
                         <div onClick={() => openModal(data?.id)} className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300">
                             <BsChevronDown size={20} className="text-white group-hover/item:text-neutral-300 w-4 font-bold" />

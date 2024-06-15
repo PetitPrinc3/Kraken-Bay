@@ -62,7 +62,6 @@ export default function Search() {
     const { isOpen, closeModal } = useInfoModal();
     const { searchText } = useSearch()
     const searchInput = useRef<HTMLInputElement>(null)
-    const pathname = usePathname();
     const [gDispList, setGDispList] = useState(new genreList())
     const { data: genresList } = useGenresList();
     const [genres, setGenres] = useState<string | undefined>(undefined)
@@ -142,7 +141,7 @@ export default function Search() {
                 </div>
             </div>
             <div>
-                <div className="flex flex-wrap items-center justify-center w-full gap-2 px-[20%] my-10">
+                <div className="flex flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10">
                     {gDispList?.genreList.map((e) => (
                         <div key={e?.id}>
                             <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />

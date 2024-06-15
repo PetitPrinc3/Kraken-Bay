@@ -72,10 +72,10 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                                         <FavoriteButton mediaId={data.id} />
                                     </div>
                                     <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
-                                        <DownloadButton mediaId={data.id} />
+                                        <DownloadButton data={data} />
                                     </div>
                                     <div className="md:ml-auto">
-                                        <CopyButton mediaId={data.id} />
+                                        <CopyButton data={data} />
                                     </div>
                                 </div>
                             </div>

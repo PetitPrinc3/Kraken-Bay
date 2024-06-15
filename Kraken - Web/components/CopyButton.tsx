@@ -3,11 +3,10 @@ import useMedia from "@/hooks/useMedia";
 import { BiCopy } from "react-icons/bi";
 
 interface CopyButtonProps {
-    mediaId: string;
+    data: Record<string, any>;
 }
 
-const CopyButton: React.FC<CopyButtonProps> = ({ mediaId }) => {
-    const { data } = useMedia({ mediaId: mediaId as string });
+const CopyButton: React.FC<CopyButtonProps> = ({ data }) => {
     const [toast, setToast] = useState(false)
     const [clicked, setClicked] = useState(false)
 
