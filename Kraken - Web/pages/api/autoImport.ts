@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         const presentFiles: {
-            key: string, name: string, title: string, type: string, path: string
+            key: string, name: string, title: string, type: string, path: string, seasons?: string
         }[] = []
         fs.readdirSync("public/Assets/Movies", { withFileTypes: true }).forEach((file) => {
             let title: string | null = null
@@ -78,7 +78,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         })
 
+        const existingSeries = await prismadb.media.findMany({
+            where: {
+                type: "Series"
+            }
+        })
+
+        const existingFolders: string[] = []
+
+        for (let i = 0; i < existingSeries.length; i++) {
+            existingFiles.push((existingSeries[i].videoUrl.split("/")).splice(3, 1)[0])
+        }
+
+        fs.readdirSync("public/Assets/Series", { withFileTypes: true }).forEach((file) => {
+            let title: string | null = null
+            const keywords = file.name.split(".").join(" ").split("-").join(" ").split(" ")
+            for (let word of keywords) {
+                if (!(/\d/.test(word) && word.length > 2) && !["multi", "truefrench", "vff", "vfi", "vo", "hdlight", "4k", "webdrip", "mkv", "avi"].includes(word.toLowerCase())) {
+                    title = title ? title + " " + word : word
+                } else {
+                    break
+                }
+            }
+            if (!existingFiles.includes(file.name)) {
+                const seasons: string[] = []
+                fs.readdirSync(`public/Assets/Series/${file.name}`).forEach((season) => {
+                    if (/SO*[0-9]*/.test(season)) {
+                        seasons.push(season.split("SO").join("").split(" ").join(""))
+                    }
+                })
+                presentFiles.push({
+                    key: uuidv4(),
+                    name: file.name,
+                    title: title?.toLowerCase() || "",
+                    type: "TV Show",
+                    path: `/Assets/Series/${file.name}`,
+                    seasons: seasons.sort().join(",")
+                })
+            }
+        })
+
         return res.status(200).json(presentFiles)
+
+
 
     }
 

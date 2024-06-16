@@ -98,7 +98,7 @@ export function AdminLayout({
           <div className="flex flex-col gap-1">
             <p className="mx-2 font-semibold text-sm text-neutral-400">Settings</p>
             <ul className="cursor-pointer px-2 space-y-1">
-              <li onClick={() => { }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
+              <li onClick={() => { router.push("/admin/config") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Config" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                 <FaTools size={dispSize} />
                 Config
               </li>

@@ -7,28 +7,11 @@ import { FaCrown, FaUser } from "react-icons/fa6";
 import { IoIosInformationCircle, IoIosWarning, IoIosCheckmarkCircle } from "react-icons/io";
 import { RiIndeterminateCircleFill } from "react-icons/ri";
 import { MdPending } from "react-icons/md";
-import { NextPageContext } from "next";
-import { getSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { isUndefined } from "lodash";
-
-export async function getServerSideProps(context: NextPageContext) {
-    const session = await getSession(context);
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/auth",
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: {},
-    };
-}
+import { NextPageContext } from "next";
+import { getSession } from "next-auth/react";
 
 const Account = () => {
     const { data: user } = useCurrentUser()

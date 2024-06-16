@@ -65,7 +65,7 @@ export default function Media() {
 
     const fetchMovies = async () => {
         const loading = toast.loading("Computing new entries...", { containerId: "AdminContainer" })
-        const { data } = await axios.post("/api/autoImport", files).catch((err) => toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })).then((res) => { return res?.data })
+        await axios.post("/api/autoImport", files).catch((err) => toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })).then((res) => { return res?.data })
         await mutateMedia()
         toast.update(loading, { render: "Files added.", type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
     }
@@ -402,7 +402,7 @@ export default function Media() {
                                         <tr key={file.key}>
                                             <td onClick={() => removeFile(file.key)} className="group grid grid-cols-[3%_97%] items-center gap-2 px-2 rounded-full bg-slate-700 border-[1px] border-slate-500 hover:bg-red-500 hover:border-red-500 transition-all duration-300 cursor-pointer">
                                                 <RxCross2 className="text-white group-hover:rotate-90 transition-all duration-500" />
-                                                <p className="truncate text-ellipsis text-white pr-2">{file.name}</p>
+                                                <p className="truncate text-ellipsis text-white pr-2">{file.name} <span className={`${file.type == "TV Show" ? "text-sm font-light text-slate-400" : "hidden"}`}>Season{file?.seasons?.split(",").length > 1 ? "s" : ""} : {file?.seasons}</span></p>
                                             </td>
                                             <td>
                                                 <input onChange={e => setTitle(file.key, e)} type="text" defaultValue={file.title} placeholder="Title" className="w-full bg-slate-700 text-white focus:outline-none px-2 border-slate-900 border-[1px] rounded-md" />

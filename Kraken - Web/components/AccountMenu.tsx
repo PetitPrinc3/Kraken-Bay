@@ -1,5 +1,5 @@
 import { signOut } from "next-auth/react";
-import React, { useRef } from "react";
+import React from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useRouter } from "next/router";
 
@@ -34,7 +34,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
 
                 </div>
                 <hr className={`${user?.roles == "admin" ? "" : "my-4"} bg-gray-600 border-0 h-px`} />
-                <div onClick={() => signOut()} className="px-3 text-center text-white text-sm hover:underline">
+                <div onClick={async () => { await signOut({ callbackUrl: "/auth" }) }} className="px-3 text-center text-white text-sm hover:underline">
                     Sign Out
                 </div>
             </div>

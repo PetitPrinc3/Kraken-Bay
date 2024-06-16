@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { isUndefined } from "lodash";
-import { NextPageContext } from "next";
-import { getSession } from "next-auth/react";
 import { toast, ToastContainer, ToastOptions } from "react-toastify";
 import { IoSend } from "react-icons/io5";
 import axios from "axios";
@@ -13,23 +11,6 @@ import GenreModal from "@/components/GenreModal";
 import useUploadModal from "@/hooks/useUploadProps";
 import Footer from "@/components/Footer";
 import 'react-toastify/dist/ReactToastify.css'
-
-export async function getServerSideProps(context: NextPageContext) {
-    const session = await getSession(context);
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/auth",
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: {},
-    };
-}
 
 const ToastProps: ToastOptions = {
     position: "bottom-center",

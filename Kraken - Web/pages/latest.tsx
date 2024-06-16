@@ -4,7 +4,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import useInfoModal from "@/hooks/useInfoModal";
 import InfoModal from "@/components/InfoModal";
-
 import { useEffect } from "react";
 
 const Latest = () => {

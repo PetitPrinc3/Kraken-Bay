@@ -7,7 +7,6 @@ import usePendingAccounts from "@/hooks/usePendingAccounts";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { isUndefined } from "lodash";
 
 export default function Access() {
     const router = useRouter();

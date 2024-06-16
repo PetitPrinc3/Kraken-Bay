@@ -1,5 +1,3 @@
-import { NextPageContext } from "next";
-import { getSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import Billboard from "@/components/Billboard";
 import MovieList from "@/components/MovieList";
@@ -10,23 +8,8 @@ import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import useMedia from "@/hooks/useMedia";
 import { isEmpty } from "lodash";
-
-export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/auth",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-}
+import { NextPageContext } from "next";
+import { getSession } from "next-auth/react";
 
 export default function Home() {
   const { data: movies = [] } = useMedia({ mediaType: "Movies", mediaLimit: "8" });

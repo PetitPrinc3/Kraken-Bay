@@ -3,16 +3,17 @@ import { NextPageContext } from "next";
 import Navbar from "@/components/Navbar";
 import MovieList from "@/components/MovieList";
 import { BsSearch } from "react-icons/bs";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import useInfoModal from "@/hooks/useInfoModal";
 import InfoModal from "@/components/InfoModal";
 import useMedia from "@/hooks/useMedia";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import useSearch from "@/hooks/useSearch";
 import useGenresList from "@/hooks/useGenresList";
 import { isUndefined } from "lodash";
 import { GoPlus } from "react-icons/go";
-import { FaChevronCircleDown, FaChevronCircleRight } from "react-icons/fa";
+import { FaChevronCircleRight } from "react-icons/fa";
+
 class genre {
     id: string;
     genre: string;

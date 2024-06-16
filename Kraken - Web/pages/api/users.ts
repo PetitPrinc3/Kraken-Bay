@@ -79,8 +79,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method == "POST") {
             try {
                 const { userData } = req.body
-                if (currentUser?.roles != "admin" && userData.roles != currentUser.roles) return res.status(403).end()
-                if (currentUser?.roles != "admin") userData.id = currentUser.id
+                if (currentUser?.roles != "admin") {
+                    userData.id = currentUser.id
+                    userData.roles = currentUser.roles
+                }
 
                 if (isUndefined(userData?.id)) {
                     const user = await prismadb.user.create({

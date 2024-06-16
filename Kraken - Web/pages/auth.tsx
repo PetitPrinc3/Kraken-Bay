@@ -9,24 +9,6 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { NextPageContext } from "next";
 
-export async function getServerSideProps(context: NextPageContext) {
-    const session = await getSession(context);
-
-    if (session) {
-        return {
-            redirect: {
-                destination: '/home',
-                permanent: false,
-
-            }
-        }
-    }
-
-    return {
-        props: {}
-    }
-}
-
 const Auth = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');

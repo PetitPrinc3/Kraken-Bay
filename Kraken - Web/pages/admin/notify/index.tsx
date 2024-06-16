@@ -1,12 +1,10 @@
-import Input from "@/components/Input";
 import { AdminLayout } from "@/pages/_app";
 import { useState } from "react";
 import { IoIosInformationCircle, IoIosWarning, IoIosCheckmarkCircle } from "react-icons/io";
 import { RiIndeterminateCircleFill } from "react-icons/ri";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { every, isUndefined } from "lodash";
 
 export default function Notify() {
     const [email, setEmail] = useState("")

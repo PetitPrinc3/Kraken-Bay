@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md"
 import axios from "axios";
 import { toast } from "react-toastify";
-
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Edit() {

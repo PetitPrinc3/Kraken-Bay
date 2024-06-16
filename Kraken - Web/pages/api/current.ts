@@ -7,8 +7,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const { currentUser }: any = await serverAuth(req, res);
-        return res.status(200).json(currentUser);
+        try {
+            const { currentUser }: any = await serverAuth(req, res);
+            return res.status(200).json(currentUser);
+        } catch {
+            return res.status(403).json("Not signed in")
+        }
     } catch (error) {
         console.log(error)
         return res.status(400).end()

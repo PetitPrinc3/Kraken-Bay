@@ -8,18 +8,45 @@ import { PiRabbitFill } from "react-icons/pi";
 import 'reactflow/dist/style.css';
 import useUsers from "@/hooks/useUsers";
 import useMedia from "@/hooks/useMedia";
-import { isNull, isUndefined, List } from "lodash";
+import { isNull, isUndefined } from "lodash";
 import { RxCross2 } from "react-icons/rx";
 import { useCallback, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import useEpisode from "@/hooks/useEpisode";
-import { BsDatabaseFillAdd } from "react-icons/bs";
-import { BiMovie, BiSolidFileJson } from "react-icons/bi";
+import { BiMovie } from "react-icons/bi";
 import { IoWarning, IoGitMerge, IoGitPullRequest } from "react-icons/io5";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { NextPageContext } from "next";
+import { getSession } from "next-auth/react";
+
+export async function getServerSideProps(context: NextPageContext) {
+    const session = await getSession(context);
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/auth",
+                permanent: false,
+            },
+        };
+    }
+
+    if (session.user.roles != "admin") {
+        return {
+            redirect: {
+                destination: "/account",
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+}
 
 export default function Manage() {
     const router = useRouter()
