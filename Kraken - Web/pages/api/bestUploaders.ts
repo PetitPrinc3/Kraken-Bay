@@ -8,6 +8,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method == "GET") {
         try {
             const bestUploaders: object[] = []
+            const uploadersUpdate = await prismadb.user.findMany({})
+
+            for (let i = 0; i < uploadersUpdate.length; i++) {
+                const uploads = await prismadb.media.findMany({
+                    where: {
+                        uploadedBy: uploadersUpdate[i].email
+                    }
+                })
+                await prismadb.user.update({
+                    where: {
+                        id: uploadersUpdate[i].id
+                    },
+                    data: {
+                        uploadCount: uploads.length
+                    }
+                })
+            }
+
             const uploaders = await prismadb.user.findMany({
                 where: {
                     NOT: {

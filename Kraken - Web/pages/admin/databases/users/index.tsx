@@ -170,7 +170,7 @@ export default function Users() {
                                 <tr key={user?.id}>
                                     <td className="grid grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">
                                         <img src={user.image || "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
-                                        {user?.name}
+                                        <p className="truncate text-ellipsis">{user?.name}</p>
                                     </td>
                                     <td className="font-light truncate text-ellipsis">
                                         {user?.email}

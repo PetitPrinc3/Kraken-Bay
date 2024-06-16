@@ -32,7 +32,7 @@ export function AdminLayout({
   const pendingUsers = 0
   const pendingUploads = 0
   return (
-    <main className="min-w-full w-fit max-w-full min-h-full h-fit grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-hidden">
+    <main className="min-w-full w-fit max-w-full min-h-full max-h-full grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-auto">
       <div className="h-full w-full bg-slate-800 flex flex-col gap-4 py-2 z-10">
         <div className="relative grid grid-cols-[25%_75%] p-2 z-50">
           <div className="w-full m-auto p-2">

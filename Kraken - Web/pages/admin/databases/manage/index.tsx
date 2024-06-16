@@ -19,12 +19,14 @@ import { BsDatabaseFillAdd } from "react-icons/bs";
 import { BiMovie, BiSolidFileJson } from "react-icons/bi";
 import { IoWarning, IoGitMerge, IoGitPullRequest } from "react-icons/io5";
 import { v4 as uuidv4 } from 'uuid';
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 export default function Manage() {
     const router = useRouter()
     const { data: users, mutate: mutateUsers } = useUsers()
     const { data: media, mutate: mutateMedia } = useMedia()
     const { data: episodes, mutate: mutateEpisodes } = useEpisode()
+    const { data: currentUser } = useCurrentUser()
 
     const jsonImportRef = useRef<HTMLInputElement>(null)
 
@@ -118,12 +120,18 @@ export default function Manage() {
             for (let i = 0; i < (e.target.files || []).length; i++) {
                 const jsonFile = e.target.files[i] as File
                 const jsonInput = JSON.parse(await jsonFile.text())
-                jsonData.push({
+                const target = jsonInput.hasOwnProperty("Titles") ? "Media" : jsonInput.hasOwnProperty("Users") ? "User" : jsonInput.hasOwnProperty("Episodes") ? "Serie_EP" : "Unknown"
+                const json = {
                     key: uuidv4(),
                     name: jsonFile.name,
-                    target: jsonInput.hasOwnProperty("Titles") ? "Media" : jsonInput.hasOwnProperty("Users") ? "User" : jsonInput.hasOwnProperty("Episodes") ? "Serie_EP" : "Unknown",
+                    target: target,
                     data: jsonInput,
-                })
+                }
+                if (target == "Serie_EP" || target == "Unknown") {
+                    jsonData.push(json)
+                } else {
+                    jsonData.unshift(json)
+                }
             }
             setJsonFiles(jsonData)
             if (!isUndefined(jsonImportRef.current?.files)) jsonImportRef.current.value = ""
@@ -160,6 +168,7 @@ export default function Manage() {
                 try {
                     const mediaData = file.data.Titles
                     for (let i = 0; i < mediaData.length; i++) {
+                        mediaData[i].uploadedBy = currentUser.email
                         await axios.post("/api/media", mediaData[i]).catch((err) => {
                             !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                         })
@@ -171,7 +180,7 @@ export default function Manage() {
                 try {
                     const episodeData = file.data.Episodes
                     for (let i = 0; i < episodeData.length; i++) {
-                        await axios.post("/api/episode", episodeData[i]).catch((err) => {
+                        await axios.post("/api/episode", { episodeData: episodeData[i], serieUrl: file.data?.serieUrl[0] || undefined }).catch((err) => {
                             !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                         })
                     }
@@ -383,82 +392,84 @@ export default function Manage() {
                     </div>
                 </div>
             </div>
-            <div onKeyDown={(e) => { if (e.key == "Escape") toggleImport() }} className={`${importAction ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
-                <div className={`${importAction ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
+            <div onKeyDown={(e) => { if (e.key == "Escape") toggleImport() }} className={`${importAction ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 overflow-auto flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
+                <div className={`${importAction ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 h-auto flex items-center`}>
                     <div onClick={() => toggleImport()} className="fixed top-0 left-0 right-0 bottom-0 z-40"></div>
-                    <div className="w-[50%] h-fit flex flex-col gap-4 py-4 bg-slate-700 border-[1px] border-slate-400 text-slate-300 rounded-md m-auto  z-50">
-                        <div className="w-full flex flex-row items-center justify-between px-4 ">
-                            <div className="flex flex-col">
-                                <p className="font-semibold text-xl">
-                                    Import multiple JSON files
-                                </p>
+                    <div className="w-[50%] max-h-fit m-auto py-10 overflow-y-auto z-50">
+                        <div className="flex flex-col gap-4 py-4 bg-slate-700 border-[1px] border-slate-400 text-slate-300 rounded-md">
+                            <div className="w-full flex flex-row items-center justify-between px-4 ">
+                                <div className="flex flex-col">
+                                    <p className="font-semibold text-xl">
+                                        Import multiple JSON files
+                                    </p>
+                                </div>
+                                <div onClick={() => toggleImport()} className="p-2 cursor-pointer hover:bg-slate-600 rounded-md transition-all duration-300">
+                                    <RxCross2 />
+                                </div>
                             </div>
-                            <div onClick={() => toggleImport()} className="p-2 cursor-pointer hover:bg-slate-600 rounded-md transition-all duration-300">
-                                <RxCross2 />
+                            <hr className="border-[1px] border-slate-400" />
+                            <div className="w-ful flex flex-col gap-4 items-center">
+                                <div className="text-slate-400 h-24">
+                                    <img src="/Assets/Images/kraken.png" className="max-h-full max-w-full" alt="" />
+                                </div>
                             </div>
-                        </div>
-                        <hr className="border-[1px] border-slate-400" />
-                        <div className="w-ful flex flex-col gap-4 items-center">
-                            <div className="text-slate-400 h-24">
-                                <img src="/Assets/Images/kraken.png" className="max-h-full max-w-full" alt="" />
-                            </div>
-                        </div>
-                        {jsonFiles.length > 0 && <hr className="border-[1px] border-slate-400" />}
-                        {jsonFiles.length > 0 &&
-                            <div className="w-full h-fit px-4">
-                                <table className="w-full max-h-[50%] table-fixed relative border-separate border-spacing-y-2 border-spacing-x-2">
-                                    <thead className="top-0 sticky bg-slate-700 w-full">
-                                        <tr>
-                                            <td className="w-[70%]">File</td>
-                                            <td className="w-[20%]">Database</td>
-                                            <td className="w-[10%]">Data</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="w-full overflow-y-scroll">
-                                        {jsonFiles.map((file) => (
-                                            <tr key={file.key} className="">
-                                                <td className="">
-                                                    <div onClick={() => { handleRemove(file.key) }} className={`w-fit pl-2 pr-4 grid grid-cols-[5%_95%] gap-4 items-center p-1 rounded-lg ${file.target == "Unknown" ? "bg-red-500 border-red-600 text-white" : "bg-slate-600 border-slate-400"} border-[1px] hover:bg-red-500 hover:border-red-600 hover:text-white transition-all duration-300 cursor-pointer`}>
-                                                        <RxCross2 />
-                                                        <p className="text-sm font-light truncate text-ellipsis">{file.name}</p>
-                                                    </div>
-                                                </td>
-                                                <td className={`truncate text-ellipsis ${file.target == "Unknown" ? "text-red-500" : ""}`}>{file.target}</td>
-                                                <td className={file.target == "Unknown" ? "text-red-500" : ""}>{file.target == "User" ? file.data.Users.length.toString() : file.target == "Media" ? file.data.Titles.length.toString() : file.target == "Serie_EP" ? file.data.Episodes.length.toString() : "N/A"}</td>
+                            {jsonFiles.length > 0 && <hr className="border-[1px] border-slate-400" />}
+                            {jsonFiles.length > 0 &&
+                                <div className="w-full h-fit px-4">
+                                    <table className="w-full max-h-[50%] table-fixed relative border-separate border-spacing-y-2 border-spacing-x-2">
+                                        <thead className="top-0 sticky bg-slate-700 w-full">
+                                            <tr>
+                                                <td className="w-[70%]">File</td>
+                                                <td className="w-[20%]">Database</td>
+                                                <td className="w-[10%]">Data</td>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>}
-                        <hr className="border-[1px] border-slate-400" />
-                        {jsonFiles.length == 0 ?
-                            <div className="w-full px-4">
-                                <input onChange={handleImport} ref={jsonImportRef} type="file" multiple accept="application/json" className="hidden" />
-                                <button onClick={() => jsonImportRef.current?.click()} className="w-full px-4 py-2 rounded-md bg-slate-800 border-2 border-slate-900 text-md text-slate-400 font-semibold hover:bg-slate-900 hover:border-slate-950 hover:text-slate-300 transition-all duration-300">Select your files</button>
-                            </div>
-                            :
-                            <div className="grid grid-cols-2">
-                                <div className="px-4">
-                                    <button onClick={() => { handleMerge() }} className="w-full flex flex-row items-center justify-center gap-2 text-green-500 font-semibold px-8 py-1 border-[1px] border-slate-500 disabled:opacity-50 disabled:hover:bg-slate-800 hover:bg-green-500 hover:border-green-500 hover:text-white rounded-md bg-slate-800 transition-all duration-200">
-                                        <IoGitMerge />
-                                        Merge
-                                    </button>
+                                        </thead>
+                                        <tbody className="w-full overflow-y-scroll">
+                                            {jsonFiles.map((file) => (
+                                                <tr key={file.key} className="">
+                                                    <td className="">
+                                                        <div onClick={() => { handleRemove(file.key) }} className={`w-fit pl-2 pr-4 grid grid-cols-[5%_95%] gap-4 items-center p-1 rounded-lg ${file.target == "Unknown" ? "bg-red-500 border-red-600 text-white" : "bg-slate-600 border-slate-400"} border-[1px] hover:bg-red-500 hover:border-red-600 hover:text-white transition-all duration-300 cursor-pointer`}>
+                                                            <RxCross2 />
+                                                            <p className="text-sm font-light truncate text-ellipsis">{file.name}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td className={`truncate text-ellipsis ${file.target == "Unknown" ? "text-red-500" : ""}`}>{file.target}</td>
+                                                    <td className={file.target == "Unknown" ? "text-red-500" : ""}>{file.target == "User" ? file.data.Users.length.toString() : file.target == "Media" ? file.data.Titles.length.toString() : file.target == "Serie_EP" ? file.data.Episodes.length.toString() : "N/A"}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>}
+                            <hr className="border-[1px] border-slate-400" />
+                            {jsonFiles.length == 0 ?
+                                <div className="w-full px-4">
+                                    <input onChange={handleImport} ref={jsonImportRef} type="file" multiple accept="application/json" className="hidden" />
+                                    <button onClick={() => jsonImportRef.current?.click()} className="w-full px-4 py-2 rounded-md bg-slate-800 border-2 border-slate-900 text-md text-slate-400 font-semibold hover:bg-slate-900 hover:border-slate-950 hover:text-slate-300 transition-all duration-300">Select your files</button>
                                 </div>
-                                <div className="px-4">
-                                    <button onClick={() => { setReplaceAction(!replaceAction) }} className={`w-full flex flex-row items-center justify-center gap-2 font-semibold px-8 py-1 border-[1px] ${replaceAction ? "bg-red-500 border-red-500 text-white" : "bg-slate-800 border-slate-500 text-red-500"} hover:bg-red-500 hover:border-red-500 hover:text-white rounded-md transition-all duration-200`}>
-                                        <IoGitPullRequest />
-                                        Replace
-                                    </button>
+                                :
+                                <div className="grid grid-cols-2">
+                                    <div className="px-4">
+                                        <button onClick={() => { handleMerge() }} className="w-full flex flex-row items-center justify-center gap-2 text-green-500 font-semibold px-8 py-1 border-[1px] border-slate-500 disabled:opacity-50 disabled:hover:bg-slate-800 hover:bg-green-500 hover:border-green-500 hover:text-white rounded-md bg-slate-800 transition-all duration-200">
+                                            <IoGitMerge />
+                                            Merge
+                                        </button>
+                                    </div>
+                                    <div className="px-4">
+                                        <button onClick={() => { setReplaceAction(!replaceAction) }} className={`w-full flex flex-row items-center justify-center gap-2 font-semibold px-8 py-1 border-[1px] ${replaceAction ? "bg-red-500 border-red-500 text-white" : "bg-slate-800 border-slate-500 text-red-500"} hover:bg-red-500 hover:border-red-500 hover:text-white rounded-md transition-all duration-200`}>
+                                            <IoGitPullRequest />
+                                            Replace
+                                        </button>
+                                    </div>
+                                </div>}
+                            <div className={replaceAction ? "w-full px-4 flex flex-col gap-2 transition-all duration-200" : "hidden"}>
+                                <div className="flex flex-row items-center gap-2 text-sm font-light leading-none">
+                                    <IoWarning className="text-orange-400" />
+                                    This will purge databases. Use with caution !
                                 </div>
-                            </div>}
-                        <div className={replaceAction ? "w-full px-4 flex flex-col gap-2 transition-all duration-200" : "hidden"}>
-                            <div className="flex flex-row items-center gap-2 text-sm font-light leading-none">
-                                <IoWarning className="text-orange-400" />
-                                This will purge databases. Use with caution !
+                                <button onClick={() => { handleReplace() }} className="w-full flex flex-row items-center justify-center gap-2 text-red-500 font-semibold px-8 py-1 border-[1px] border-slate-500 disabled:opacity-50 disabled:hover:bg-slate-800 hover:bg-red-500 hover:border-red-500 hover:text-white rounded-md bg-slate-800 transition-all duration-200">
+                                    Confirm my choice
+                                </button>
                             </div>
-                            <button onClick={() => { handleReplace() }} className="w-full flex flex-row items-center justify-center gap-2 text-red-500 font-semibold px-8 py-1 border-[1px] border-slate-500 disabled:opacity-50 disabled:hover:bg-slate-800 hover:bg-red-500 hover:border-red-500 hover:text-white rounded-md bg-slate-800 transition-all duration-200">
-                                Confirm my choice
-                            </button>
                         </div>
                     </div>
                 </div>

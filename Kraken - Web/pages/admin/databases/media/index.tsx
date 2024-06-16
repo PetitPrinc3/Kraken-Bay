@@ -132,7 +132,7 @@ export default function Media() {
             setImportData(jsonInput.Titles)
             setTargetDb("Media")
             setImportAction(true)
-        } else {
+        } else if (!isUndefined(jsonInput?.Episodes)) {
             setImportData(jsonInput.Episodes)
             setTargetDb("Serie_EP")
             setImportAction(true)
@@ -154,7 +154,7 @@ export default function Media() {
         }
         if (targetDb == "Serie_EP") {
             for (let i = 0; i < importData.length; i++) {
-                await axios.post("/api/episode", importData[i]).catch((err) => {
+                await axios.post("/api/episode", { importData: importData[i] }).catch((err) => {
                     !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                 })
             }
@@ -228,7 +228,7 @@ export default function Media() {
                                 <tr key={media?.id}>
                                     <td className="grid grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">
                                         <img src={media?.posterUrl || "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
-                                        {media?.title}
+                                        <p className="truncate text-ellipsis">{media?.title}</p>
                                     </td>
                                     <td className="font-light truncate text-ellipsis">
                                         <a href={media?.videoUrl}>{media?.videoUrl}</a>
@@ -392,8 +392,9 @@ export default function Media() {
                             <table className="w-full h-fit border-separate border-spacing-x-4 border-spacing-y-1 table-fixed">
                                 <thead className="h-[10%]">
                                     <tr className="text-white font-semibold text-lg">
-                                        <td className="w-[60%]">File</td>
+                                        <td className="w-[50%]">File</td>
                                         <td className="w-[40%]">Title</td>
+                                        <td className="w-[10%] text-center">Type</td>
                                     </tr>
                                 </thead>
                                 <tbody className="max-h-[90%] overflow-hidden">
@@ -405,6 +406,9 @@ export default function Media() {
                                             </td>
                                             <td>
                                                 <input onChange={e => setTitle(file.key, e)} type="text" defaultValue={file.title} placeholder="Title" className="w-full bg-slate-700 text-white focus:outline-none px-2 border-slate-900 border-[1px] rounded-md" />
+                                            </td>
+                                            <td className="truncate text-ellipsis text-slate-400 text-center">
+                                                {file.type}
                                             </td>
                                         </tr>
                                     ))}

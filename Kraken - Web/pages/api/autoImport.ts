@@ -36,8 +36,6 @@ const genreIds: { [key: string]: string } = {
     "10770": "TV Movie",
 }
 
-const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-()"
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { currentUser }: any = await serverAuth(req, res);
 
@@ -56,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         const presentFiles: {
-            key: string, name: string, title: string, path: string
+            key: string, name: string, title: string, type: string, path: string
         }[] = []
         fs.readdirSync("public/Assets/Movies", { withFileTypes: true }).forEach((file) => {
             let title: string | null = null
@@ -73,6 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     key: uuidv4(),
                     name: file.name,
                     title: title?.toLowerCase() || "",
+                    type: "Movie",
                     path: `/Assets/Movies/${file.name}`,
 
                 })
@@ -80,6 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
 
         return res.status(200).json(presentFiles)
+
     }
 
     if (req.method == "POST") {

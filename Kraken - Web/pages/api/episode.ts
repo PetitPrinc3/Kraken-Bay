@@ -51,8 +51,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method == "POST") {
             if (currentUser?.roles != "admin") return res.status(403).end()
 
-            const episodeData = req.body
-
+            const { episodeData, serieUrl } = req.body
+            if (!isUndefined(serieUrl)) {
+                const serieId = await prismadb.media.findFirst({
+                    where: {
+                        videoUrl: serieUrl
+                    }
+                })
+                episodeData.serieId = serieId?.id
+            }
             if (isUndefined(episodeData.id)) {
                 try {
                     const episode = await prismadb.serie_EP.create({
