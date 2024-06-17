@@ -7,19 +7,22 @@ import { RiIndeterminateCircleFill } from "react-icons/ri";
 import { MdPending } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { isUndefined } from "lodash";
+import { isEmpty, isUndefined } from "lodash";
 import { FaPencilAlt } from "react-icons/fa";
 import { IoNotifications, IoCloudUploadSharp, IoSave } from "react-icons/io5";
 import { FaStar, FaHome } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import useFavorites from "@/hooks/useFavorites";
+import FavoriteButton from "@/components/FavoriteButton";
 
 const Account = () => {
     const router = useRouter()
     const { data: user, mutate: mutateUser } = useCurrentUser()
     const { data: uploads } = useUserUploads();
     const { data: notifications } = useNotifications()
+    const { data: favorites } = useFavorites()
     const [activeTab, setActiveTab] = useState("Notifications")
     const [muted, setMuted] = useState<boolean | undefined>(user?.isMuted)
     const [image, setImage] = useState("")
@@ -102,6 +105,8 @@ const Account = () => {
     }
 
     const Icon = user?.roles == "admin" ? FaCrown : FaUser
+
+    console.log(favorites)
 
     return (
         <div className="w-full h-full bg-slate-950 p-4 md:p-20 flex">
@@ -210,7 +215,7 @@ const Account = () => {
                                     <p className="truncate text-ellipsis hidden md:block">Uploads</p>
                                 </div>
                             </div>
-                            <div onClick={() => setActiveTab("History")} className="w-full relative flex items-center gap-2 cursor-pointer text-slate-800 font-semibold px-4 py-2 rounded-md text-sm">
+                            <div onClick={() => setActiveTab("Favorites")} className="w-full relative flex items-center gap-2 cursor-pointer text-slate-800 font-semibold px-4 py-2 rounded-md text-sm">
                                 <div className="flex flex-row gap-2 items-center justify-center w-full z-30">
                                     <FaStar className="md:max-w-[20%] min-w-[20%]" size={15} />
                                     <p className="truncate text-ellipsis hidden md:block">Favorites</p>
@@ -221,32 +226,52 @@ const Account = () => {
                             </div>
                         </div>
                         <div className="w-full h-full overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col gap-2 p-2 rounded-md">
-                            {activeTab == "Notifications" && notifications && notifications.map((notification: any) => (
-                                <div key={notification.id} className="flex flex-row gap-4 items-center justify-start w-full rounded-md border-[1px] border-white shadow-md">
-                                    <div className="w-auto">
-                                        <IoIosCheckmarkCircle className={`${notification.type === "success" ? "inline-block" : "hidden"} m-2 text-green-500`} size={30} />
-                                        <IoIosInformationCircle className={`${notification.type === "info" ? "inline-block" : "hidden"} m-2 text-blue-500`} size={30} />
-                                        <IoIosWarning className={`${notification.type === "warning" ? "inline-block" : "hidden"} m-2 text-orange-500`} size={30} />
-                                        <RiIndeterminateCircleFill className={`${notification.type === "error" ? "inline-block" : "hidden"} m-2 text-red-500`} size={30} />
+                            {(activeTab == "Notifications" && notifications) && (isEmpty(notifications) ?
+                                <div className="w-full text-slate-600 font-bold text-center">No notification</div>
+                                :
+                                notifications.map((notification: any) => (
+                                    <div key={notification.id} className="flex flex-row gap-4 items-center justify-start w-full rounded-md border-[1px] border-white shadow-md">
+                                        <div className="w-auto">
+                                            <IoIosCheckmarkCircle className={`${notification.type === "success" ? "inline-block" : "hidden"} m-2 text-green-500`} size={30} />
+                                            <IoIosInformationCircle className={`${notification.type === "info" ? "inline-block" : "hidden"} m-2 text-blue-500`} size={30} />
+                                            <IoIosWarning className={`${notification.type === "warning" ? "inline-block" : "hidden"} m-2 text-orange-500`} size={30} />
+                                            <RiIndeterminateCircleFill className={`${notification.type === "error" ? "inline-block" : "hidden"} m-2 text-red-500`} size={30} />
+                                        </div>
+                                        <div className="w-[80%]">
+                                            <p className="text-slate-900 font-semibold text-sm max-w-[95%] row-span-2 truncate text-ellipsis">{notification.content}</p>
+                                            <p className="text-xs">{new Date(notification.date).toLocaleString()}</p>
+                                        </div>
                                     </div>
-                                    <div className="w-[80%]">
-                                        <p className="text-slate-900 font-semibold text-sm max-w-[95%] row-span-2 truncate text-ellipsis">{notification.content}</p>
-                                        <p className="text-xs">{new Date(notification.date).toLocaleString()}</p>
+                                )))}
+                            {(activeTab == "Uploads" && uploads) && (isEmpty(uploads) ?
+                                <div className="w-full text-slate-600 font-bold text-center">No upload</div>
+                                :
+                                uploads.map((upload: any) => (
+                                    <div key={upload.id} className="flex flex-row gap-4 items-center justify-start w-full rounded-md border-[1px] border-white shadow-md">
+                                        <div className="w-auto">
+                                            <IoIosCheckmarkCircle className={`${upload?.uploadedBy ? "inline-block" : "hidden"} m-2 text-green-500`} size={30} />
+                                            <MdPending className={`${upload?.userName ? "inline-block" : "hidden"} m-2 text-blue-500`} size={30} />
+                                        </div>
+                                        <div className="w-[80%]">
+                                            <p className="text-slate-900 font-semibold text-sm max-w-[95%] row-span-2 truncate text-ellipsis">{upload.title}</p>
+                                            <p className="text-xs">{new Date(upload.createdAt).toLocaleString()}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                            {activeTab == "Uploads" && uploads && uploads.map((upload: any) => (
-                                <div key={upload.id} className="flex flex-row gap-4 items-center justify-start w-full rounded-md border-[1px] border-white shadow-md">
-                                    <div className="w-auto">
-                                        <IoIosCheckmarkCircle className={`${upload?.uploadedBy ? "inline-block" : "hidden"} m-2 text-green-500`} size={30} />
-                                        <MdPending className={`${upload?.userName ? "inline-block" : "hidden"} m-2 text-blue-500`} size={30} />
+                                )))}
+                            {(activeTab == "Favorites" && favorites) && (isEmpty(favorites) ?
+                                <div className="w-full text-slate-600 font-bold text-center">No favorites</div>
+                                :
+                                favorites.map((favorite: any) => (
+                                    <div key={favorite.id} className="flex flex-row gap-4 items-center justify-between px-4 w-full rounded-md border-[1px] border-white shadow-md">
+                                        <div className="w-[80%] flex flex-row items-center gap-4 py-1">
+                                            <img src={favorite?.thumbUrl} className="rounded-md h-14" alt="" />
+                                            <div className="w-full flex flex-col">
+                                                <p className="text-slate-900 font-semibold text-sm max-w-[95%] row-span-2 truncate text-ellipsis">{favorite.title}</p>
+                                                <p className="leading-none text-sm font-light">{favorite?.type} - {favorite?.type == "Movies" ? favorite?.duration : `${favorite?.seasons.split(",").length} Season${favorite?.seasons.split(",").length > 1 ? "s" : ""}`}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="w-[80%]">
-                                        <p className="text-slate-900 font-semibold text-sm max-w-[95%] row-span-2 truncate text-ellipsis">{upload.title}</p>
-                                        <p className="text-xs">{new Date(upload.createdAt).toLocaleString()}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                )))}
                         </div>
                     </div>
                 </div>

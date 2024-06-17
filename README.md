@@ -25,6 +25,12 @@ Fully functional web server with Netflix inspired UI, including :
 | :-: | :-: | :-: | :-: | :-: |
 | Movie cards & Information modals | Full text search & Genres | Web player | User uploader (with administrator aproval) | Tutorials |
 
+Responsive user account management :
+
+|<img src="Images/AccountLG.png" width="300" />|<img src="Images/AccountMobile.png" height="200" />|
+|:-:|:-:|
+|Landscape layout|Vertical layout|
+
 In browser administration tools including :
 
 | <img src="Images/AdminDashboard.png" width="300" /> | <img src="Images/AdminDBManagement.png" width="300" /> | <img src="Images/AdminServer.png" width="300" /> |
