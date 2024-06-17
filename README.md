@@ -46,13 +46,8 @@ And many more !!
         - Toggle Hotspot
         - Restart process
         - Reboot server
-- Role based security :
-    - No role : "" : no access
-    - User : "user" : web access
-    - Administrator : "admin" : admin panel access
 - Mobile web player (orientation)
 - Detect soundless media (MKV files)
-- Better account panel
 - Movies / Series sections
 
 ## Collaborate

@@ -5,11 +5,11 @@ export default withAuth(
     function middleware(request: NextRequestWithAuth) {
 
         if (request.nextUrl.pathname.startsWith('/admin') && request.nextauth.token?.roles !== 'admin') {
-            return NextResponse.rewrite(new URL("/denied", request.url))
+            return NextResponse.rewrite(new URL("/account", request.url))
         }
 
         if (request.nextauth.token?.roles == "") {
-            return NextResponse.rewrite(new URL("/denied", request.url))
+            return NextResponse.rewrite(new URL("/auth", request.url))
         }
 
 

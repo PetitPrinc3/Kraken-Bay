@@ -58,7 +58,7 @@ export default function Edit() {
                 userData: {
                     id: userId,
                     name: name,
-                    hashedPassword: resetPassword ? "$2b$12$a4fguKTbMn5s6LVJm/.lJefncAiuX8nBOXfN3qPN/BBfcnSjthNM6" : undefined,
+                    hashedPassword: resetPassword ? "kraken" : undefined,
                     email: email,
                     roles: roles,
                     videoUrl: user.videoUrl,
@@ -84,7 +84,7 @@ export default function Edit() {
                     id: userId,
                     name: name,
                     image: { imageBuffer: imageBuffer, fileName: imageData.name },
-                    hashedPassword: resetPassword ? "$2b$12$a4fguKTbMn5s6LVJm/.lJefncAiuX8nBOXfN3qPN/BBfcnSjthNM6" : undefined,
+                    hashedPassword: resetPassword ? "kraken" : undefined,
                     email: email,
                     roles: roles,
                     videoUrl: user.videoUrl,

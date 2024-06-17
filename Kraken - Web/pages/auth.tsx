@@ -6,8 +6,6 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { isNull } from "lodash";
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
-import { NextPageContext } from "next";
 
 const Auth = () => {
     const [email, setEmail] = useState('');
@@ -128,10 +126,9 @@ const Auth = () => {
                 </div>
             </div>
             <ToastContainer
-                limit={2}
-                position="bottom-center"
-                newestOnTop
-                closeOnClick={true}
+                position="bottom-right"
+                autoClose={2000}
+                closeOnClick
                 draggable
                 theme="colored"
             />

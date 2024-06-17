@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import bcrypt from "bcrypt";
 import prismadb from '@/lib/prismadb';
 import serverAuth from "@/lib/serverAuth";
 import { isNull, isUndefined } from "lodash";
@@ -84,6 +85,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     userData.roles = currentUser.roles
                 }
 
+                if (!isUndefined(userData.hashedPassword)) {
+                    userData.hashedPassword = await bcrypt.hash(userData.hashedPassword, 12)
+                }
+
                 if (isUndefined(userData?.id)) {
                     const user = await prismadb.user.create({
                         data: userData
@@ -122,7 +127,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         }
                         userData.image = `/Assets/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
-                    } catch {
+                    } catch (err) {
+                        console.log(err)
                         return res.status(400).json("Image update impossible.")
                     }
                 }
