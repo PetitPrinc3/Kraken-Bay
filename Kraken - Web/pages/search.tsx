@@ -1,5 +1,3 @@
-import { getSession } from "next-auth/react";
-import { NextPageContext } from "next";
 import Navbar from "@/components/Navbar";
 import MovieList from "@/components/MovieList";
 import { BsSearch } from "react-icons/bs";
@@ -13,50 +11,7 @@ import useGenresList from "@/hooks/useGenresList";
 import { isUndefined } from "lodash";
 import { GoPlus } from "react-icons/go";
 import { FaChevronCircleRight } from "react-icons/fa";
-
-class genre {
-    id: string;
-    genre: string;
-    isClicked: boolean;
-
-    constructor(id: string, genre: string, isClicked: boolean = false) {
-        this.id = id
-        this.genre = genre
-        this.isClicked = isClicked
-    }
-    public updateState(isClicked: boolean) {
-        this.isClicked = isClicked
-        return this
-    }
-}
-
-class genreList {
-    genreList: genre[];
-
-    constructor(genreList: genre[] = []) {
-        this.genreList = genreList;
-    }
-    public push(g: genre) {
-        this.genreList.push(g);
-    }
-    public exists(g: genre) {
-        for (let exGenre of this?.genreList) {
-            if (exGenre?.genre == g.genre) {
-                return true
-            }
-        }
-        return false
-    }
-
-    public index(g: genre) {
-        for (let exGenre of this?.genreList) {
-            if (exGenre?.id == g.id) {
-                return this?.genreList.indexOf(exGenre)
-            }
-        }
-        return 0
-    }
-}
+import { Genre, GenreList } from "@/lib/genres"
 
 export default function Search() {
     const router = useRouter();
@@ -64,7 +19,7 @@ export default function Search() {
     const { isOpen, closeModal } = useInfoModal();
     const { searchText } = useSearch()
     const searchInput = useRef<HTMLInputElement>(null)
-    const [gDispList, setGDispList] = useState(new genreList())
+    const [gDispList, setGDispList] = useState(new GenreList())
     const { data: genresList } = useGenresList();
     const [genres, setGenres] = useState<string | undefined>(undefined)
     const [dropDown, setDropDown] = useState(false)
@@ -86,23 +41,23 @@ export default function Search() {
     }
 
     const getList = () => {
-        return gDispList?.genreList
+        return gDispList?.list
     }
 
-    const updateList = (genre: genre) => {
-        const gList = gDispList.genreList
+    const updateList = (genre: Genre) => {
+        const gList = gDispList.list
         if (gList.includes(genre)) {
             const index = gList.indexOf(genre)
             gList[index] = gList[index].updateState(!genre?.isClicked)
         }
-        setGDispList((gDispList) => new genreList(gList))
+        setGDispList((gDispList) => new GenreList(gList))
     }
 
 
-    const genreMovies = async (genre: genre) => {
+    const genreMovies = async (genre: Genre) => {
         updateList(genre)
         let gArray: string[] = []
-        for (let g of gDispList?.genreList) {
+        for (let g of gDispList?.list) {
             if (g?.isClicked) {
                 gArray.push("+" + g?.genre)
             }
@@ -115,11 +70,11 @@ export default function Search() {
     if (isUndefined(genresList)) {
         return null
     } else {
-        genresList.map((g: genre) => {
-            const dG = new genre(g?.id, g?.genre, false)
+        genresList.map((g: Genre) => {
+            const dG = new Genre(g?.id, g?.genre, false)
             const iList = gDispList
             if (!iList?.exists(dG)) {
-                iList?.genreList.push(dG)
+                iList?.list.push(dG)
                 setGDispList(iList)
             }
         })
@@ -148,7 +103,7 @@ export default function Search() {
                     <p>Genres <span className="font-light text-xs text-neutral-400">{genres?.split(" +").join(", ").split("+").join("")}</span></p>
                 </div>
                 <div className={`${window.screen.width > 800 || dropDown ? "flex" : "hidden"} flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10`}>
-                    {gDispList?.genreList.map((e) => (
+                    {gDispList?.list.map((e) => (
                         <div key={e?.id}>
                             <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
                             <label htmlFor={e?.id} className={`${getList()[gDispList.index(e)].isClicked ? "bg-white border-white" : "bordrer-zing-400"} flex flex-row items-center gap-2 cursor-pointer text-zinc-400 py-1 px-2 rounded-full border-2 transition duration-300`}>

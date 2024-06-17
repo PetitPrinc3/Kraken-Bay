@@ -16,6 +16,7 @@ export class Genre {
 
 
 export class GenreList {
+
     list: Genre[];
 
     constructor(genreList: Genre[] = []) {
@@ -31,6 +32,14 @@ export class GenreList {
             }
         }
         return 0
+    }
+    public exists(g: Genre) {
+        for (let exGenre of this?.list) {
+            if (exGenre?.genre == g.genre) {
+                return true
+            }
+        }
+        return false
     }
     public updateState(g: Genre) {
         this.list[this.index(g)] = g.updateState(!g.isClicked)
