@@ -47,7 +47,6 @@ And many more !!
     - Db management section
         - Media detection
         - Edit media images
-    - Responsiveness
     - Server :
         - Restart SMB
         - Toggle Hotspot
