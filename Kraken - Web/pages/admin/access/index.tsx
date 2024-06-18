@@ -7,6 +7,8 @@ import usePendingAccounts from "@/hooks/usePendingAccounts";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { FaCheck } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
 export default function Access() {
     const router = useRouter();
@@ -116,7 +118,7 @@ export default function Access() {
                         </button>
                     </div>
                 </div>
-                <div className="w-full h-[60vh] px-4">
+                <div className="w-full h-fit md:h-[60vh] px-4">
                     <table className="w-full border-separate border-spacing-y-2">
                         <thead>
                             <tr className="text-white font-semibold">
@@ -129,20 +131,26 @@ export default function Access() {
                         <tbody className="w-full h-full rounded-md">
                             {(pendingAccounts || []).map((account: any) => (
                                 <tr key={account?.id} className="text-white">
-                                    <td className="grid grid-cols-[20%_80%] items-center">
+                                    <td className="grid grid-cols-[20%_80%] items-center truncate text-ellipsis">
                                         <img src={account?.image || "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
                                         {account?.name}
                                     </td>
-                                    <td>
+                                    <td className="truncate text-ellipsis">
                                         {account?.email}
                                     </td>
-                                    <td className="text-center">
+                                    <td className="text-center truncate text-ellipsis">
                                         {new Date(account?.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                     </td>
                                     <td className="">
                                         <div className="relative flex flex-row items-center gap-2 text-black font-semibold text-sm">
-                                            <button onClick={() => { acceptUser(account?.id) }} className="w-[40%] py-1 px-2 rounded-md ml-auto bg-green-500 hover:bg-green-400 transition-all duration-200">Accept</button>
-                                            <button onClick={() => { rejectUser(account?.id) }} className="w-[40%] py-1 px-2 rounded-md mr-auto bg-red-700 hover:bg-red-600 transition-all duration-200">Reject</button>
+                                            <button onClick={() => { acceptUser(account?.id) }} className="w-[40%] py-1 px-2 flex items-center justify-center rounded-md ml-auto bg-green-500 hover:bg-green-400 transition-all duration-200">
+                                                <p className="hidden md:block">Accept</p>
+                                                <FaCheck className="block md:hidden" />
+                                            </button>
+                                            <button onClick={() => { rejectUser(account?.id) }} className="w-[40%] py-1 px-2 flex items-center justify-center rounded-md mr-auto bg-red-700 hover:bg-red-600 transition-all duration-200">
+                                                <p className="hidden md:block">Reject</p>
+                                                <FaPlus className="rotate-45 block md:hidden" />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

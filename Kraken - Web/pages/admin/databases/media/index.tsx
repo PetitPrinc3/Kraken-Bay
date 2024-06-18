@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { isEmpty, isUndefined } from "lodash";
 import useMedia from "@/hooks/useMedia";
+import useEpisode from "@/hooks/useEpisode";
 
 export default function Media() {
     const searchParams = new URLSearchParams(useSearchParams());
@@ -29,6 +30,7 @@ export default function Media() {
     const [replaceAction, setReplaceAction] = useState(false)
     const [openDetection, setOpenDetection] = useState(false)
     const [purgeValidation, setPurgeValidation] = useState("")
+    const { data: episodes, mutate: mutateEpisodes } = useEpisode()
     const { data: media, mutate: mutateMedia } = useMedia({ searchText: q })
 
 
@@ -154,7 +156,7 @@ export default function Media() {
         }
         if (targetDb == "Serie_EP") {
             for (let i = 0; i < importData.length; i++) {
-                await axios.post("/api/episode", { importData: importData[i] }).catch((err) => {
+                await axios.post("/api/episode", { episodeData: importData[i] }).catch((err) => {
                     !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                 })
             }
@@ -191,23 +193,29 @@ export default function Media() {
         <AdminLayout pageName="media" >
             <div className="w-full h-fit max-h-full flex flex-col p-4 gap-4 rounded-md bg-slate-800">
                 <div className="w-full flex flex-row items-center justify-between">
-                    <div className="w-[30%] flex flex-row items-center gap-2 bg-slate-700 text-neutral-400 text-sm rounded-md p-1 px-2">
+                    <div className="w-[50%] md:w-[30%] flex flex-row items-center gap-2 bg-slate-700 text-neutral-400 text-sm rounded-md p-1 px-2">
                         <MdSearch />
                         <input onChange={(e) => handleSearch(e)} type="text" className="bg-transparent text-white focus:outline-none w-full" placeholder="Search for media..." />
                     </div>
                     <div className="flex flex-row items-center gap-2">
                         <div onClick={toggleDetection} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <MdSync />
-                            Detect <span className="hidden lg:block">new media</span>
+                            <p className="hidden md:block">
+                                Detect <span className="hidden lg:block">new media</span>
+                            </p>
                         </div>
                         <div onClick={jsonExport} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <TbDatabaseExport />
-                            Export <span className="hidden lg:block">as JSON</span>
+                            <p className="hidden md:block">
+                                Export <span className="hidden lg:block">as JSON</span>
+                            </p>
                         </div>
                         <div onClick={() => { jsonImportRef.current?.click() }} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <input onChange={jsonImport} ref={jsonImportRef} type="file" accept=".json" className="hidden" />
                             <TbDatabaseImport />
-                            Import <span className="hidden lg:block">from JSON</span>
+                            <p className="hidden md:block">
+                                Import <span className="hidden lg:block">from JSON</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -216,9 +224,9 @@ export default function Media() {
                         <thead className="top-0 sticky bg-slate-800 w-full">
                             <tr className="text-white font-semibold ">
                                 <td className="w-[30%]">Title</td>
-                                <td className="w-[30%] lg:w-[25%]">Video</td>
+                                <td className="hidden md:block w-[30%] lg:w-[25%]">Video</td>
                                 <td className="w-[15%] text-center">Created At</td>
-                                <td className="w-[25%] lg:w-[10%] text-center">Uploader</td>
+                                <td className="hidden md:block w-[25%] lg:w-[10%] text-center">Uploader</td>
                                 <td className="w-[10%] text-center">Type</td>
                                 <td className="w-[15%]"></td>
                             </tr>
@@ -226,14 +234,14 @@ export default function Media() {
                         <tbody className="w-full h-full rounded-md text-white">
                             {(media || []).map((media: any) => (
                                 <tr key={media?.id}>
-                                    <td className="grid grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">
-                                        <img src={media?.posterUrl || "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
+                                    <td className="grid md:grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">
+                                        <img src={media?.posterUrl || "/Assets/Images/default_profile.png"} className="hidden md:block max-h-6" alt="" />
                                         <p className="truncate text-ellipsis">{media?.title}</p>
                                     </td>
-                                    <td className="font-light truncate text-ellipsis">
+                                    <td className="hidden md:block font-light truncate text-ellipsis">
                                         <a href={media?.videoUrl}>{media?.videoUrl}</a>
                                     </td>
-                                    <td className="text-center text-slate-400 truncate text-ellipsis">
+                                    <td className="hidden md:block text-center text-slate-400 truncate text-ellipsis">
                                         {new Date(media?.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                     </td>
                                     <td className="text-center text-slate-400 truncate text-ellipsis">
@@ -256,11 +264,11 @@ export default function Media() {
                     </table>
                 </div>
                 <div className="w-full h-fit flex flex-row items-center justify-between px-4">
-                    <button onClick={() => { mutateMedia() }} className="w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
+                    <button onClick={() => { mutateMedia() }} className="w-[30%] lg:w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
                         <MdRefresh className="hidden lg:block group-hover:animate-spin transition-all duration-300" size={18} />
                         Refresh
                     </button>
-                    <button onClick={() => { setPurgeAction(true) }} className="w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-red-500 border-2 border-red-600 text-sm hover:bg-red-400 transition-all duration-100">
+                    <button onClick={() => { setPurgeAction(true) }} className="w-[30%] lg:w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-red-500 border-2 border-red-600 text-sm hover:bg-red-400 transition-all duration-100">
                         Purge <span className="hidden lg:block">database</span>
                     </button>
                 </div>
@@ -268,7 +276,7 @@ export default function Media() {
             <div onKeyDown={(e) => { if (e.key == "Escape") setPurgeAction(false) }} className={`${purgeAction ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
                 <div className={`${purgeAction ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
                     <div onClick={() => setPurgeAction(false)} className="fixed top-0 left-0 right-0 bottom-0 z-40"></div>
-                    <div className="w-[35%] h-fit flex flex-col gap-4 py-4 bg-slate-700 border-[1px] border-slate-400 text-slate-300 rounded-md m-auto  z-50">
+                    <div className="w-[80%] md:w-[35%] h-fit flex flex-col gap-4 py-4 bg-slate-700 border-[1px] border-slate-400 text-slate-300 rounded-md m-auto  z-50">
                         <div className="w-full flex flex-row items-center justify-between px-4 ">
                             <div className="flex flex-col">
                                 <p className="font-semibold text-xl">
@@ -293,7 +301,7 @@ export default function Media() {
                             </div>
                             <div className="flex flex-row gap-2 items-center text-md font-light">
                                 <BiMovie className="text-slate-400" size={20} />
-                                {media?.length} entries
+                                {media?.length + episodes?.length} entries
                             </div>
                         </div>
                         <hr className="border-[1px] border-slate-400" />
@@ -312,7 +320,7 @@ export default function Media() {
             <div onKeyDown={(e) => { if (e.key == "Escape") setImportAction(false) }} className={`${importAction ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
                 <div className={`${importAction ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
                     <div onClick={() => setImportAction(false)} className="fixed top-0 left-0 right-0 bottom-0 z-40"></div>
-                    <div className="w-[35%] h-fit flex flex-col gap-4 py-4 bg-slate-700 border-[1px] border-slate-400 text-slate-300 rounded-md m-auto  z-50">
+                    <div className="w-[80%] md:w-[35%] h-fit flex flex-col gap-4 py-4 bg-slate-700 border-[1px] border-slate-400 text-slate-300 rounded-md m-auto  z-50">
                         <div className="w-full flex flex-row items-center justify-between px-4 ">
                             <div className="flex flex-col">
                                 <p className="font-semibold text-xl">
@@ -343,7 +351,7 @@ export default function Media() {
                             <div className="flex flex-row gap-8">
                                 <div className="flex flex-row gap-2 items-center text-md font-light">
                                     <BiMovie className="text-slate-400" size={20} />
-                                    {media?.length} entries
+                                    {targetDb == "Media" ? media?.length : episodes?.length} entries
                                 </div>
                                 <div className="flex flex-row gap-2 items-center text-md font-light">
                                     <BiSolidFileJson className="text-slate-400" size={20} />
@@ -432,7 +440,7 @@ export default function Media() {
                         </div>
                         <hr className="border-slate-400" />
                         <div className="flex flex-row gap-4">
-                            <button disabled={files?.length == 0} className="flex flex-row items-center w-[20%] m-auto justify-center py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-green-500"
+                            <button disabled={files?.length == 0} className="flex flex-row items-center w-full md:w-[20%] m-auto justify-center py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-green-500"
                                 onClick={fetchMovies}
                             >
                                 <TbArrowMergeLeft size={25} />

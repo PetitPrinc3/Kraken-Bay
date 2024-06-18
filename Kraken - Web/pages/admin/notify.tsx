@@ -34,9 +34,10 @@ export default function Notify() {
                 </div>
                 <div className="w-full flex flex-col gap-2">
                     <div className="w-full grid grid-cols-2 gap-4">
-                        <div className="h-full w-full text-white flex flex-row gap-4 items-center">
-                            <div onClick={() => { setEveryone(true); setEmail("") }} className={`flex flex-row w-fit h-full items-center gap-2 rounded-md ${everyone ? "text-white bg-slate-600" : "text-slate-800 bg-slate-700"} px-6 py-2 cursor-pointer`}>
-                                Everyone
+                        <div className="h-full w-full text-white flex flex-row gap-2 md:gap-4 items-center">
+                            <div onClick={() => { setEveryone(true); setEmail("") }} className={`flex flex-row w-fit h-full items-center gap-2 rounded-md ${everyone ? "text-white bg-slate-600" : "text-slate-800 bg-slate-700"} px-2 md:px-6 py-2 cursor-pointer`}>
+                                <p className="hidden md:block">Everyone</p>
+                                <p className="block md:hidden">All</p>
                             </div>
                             Or
                             <div onClick={() => { if (everyone) setEveryone(false) }} className={`w-full h-full rounded-md transition-all duration-200 ${everyone ? "bg-slate-700 text-slate-400" : "bg-slate-600 text-white placeholder:text-slate-400"}`}>

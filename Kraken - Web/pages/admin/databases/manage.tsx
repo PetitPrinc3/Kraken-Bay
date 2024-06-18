@@ -19,34 +19,6 @@ import { BiMovie } from "react-icons/bi";
 import { IoWarning, IoGitMerge, IoGitPullRequest } from "react-icons/io5";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { NextPageContext } from "next";
-import { getSession } from "next-auth/react";
-
-export async function getServerSideProps(context: NextPageContext) {
-    const session = await getSession(context);
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/auth",
-                permanent: false,
-            },
-        };
-    }
-
-    if (session.user.roles != "admin") {
-        return {
-            redirect: {
-                destination: "/account",
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: {},
-    };
-}
 
 export default function Manage() {
     const router = useRouter()
@@ -207,7 +179,7 @@ export default function Manage() {
                 try {
                     const episodeData = file.data.Episodes
                     for (let i = 0; i < episodeData.length; i++) {
-                        await axios.post("/api/episode", { episodeData: episodeData[i], serieUrl: file.data?.serieUrl[0] || undefined }).catch((err) => {
+                        await axios.post("/api/episode", { episodeData: episodeData[i], serieUrl: file.data?.serieUrl ? file.data?.serieUrl[0] : undefined }).catch((err) => {
                             !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                         })
                     }
@@ -271,7 +243,7 @@ export default function Manage() {
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <FaUserGroup size={20} />
-                            User :
+                            User <span className="hidden md:block">:</span>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {users?.length} entrie{users?.length > 0 ? "s" : ""}
@@ -283,19 +255,21 @@ export default function Manage() {
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <BiMovie size={20} />
-                            Media :
+                            Media <span className="hidden md:block">:</span>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {media?.length} entrie{media?.length > 0 ? "s" : ""}
                         </div>
-                        <div className="text-sm text-center text-white truncate text-ellipsis">
-                            Latest entry : <span className="font-bold text-cyan-400">{!isUndefined(media) ? media[0]?.title : "N/A"}</span>
+                        <div className="text-sm text-center text-white line-clamp-2">
+                            <p className="line-clamp-2">
+                                Latest entry : <span className="font-bold text-cyan-400">{!isUndefined(media) ? media[media.length - 1]?.title : "N/A"}</span>
+                            </p>
                         </div>
                     </div>
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <BiMovie size={20} />
-                            Serie_EP :
+                            Serie_EP <span className="hidden md:block">:</span>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {episodes?.length} entrie{episodes?.length > 0 ? "s" : ""}
@@ -315,57 +289,57 @@ export default function Manage() {
                     </div>
                     <div className="flex overflow-x-scroll scrollbar-hide">
                         <div onClick={() => { toggleImport() }} className="inline-block px-3">
-                            <div className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-green-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-green-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Full DB Setup</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <BsDatabaseFillUp size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Import multiple JSON files.
                                 </div>
                             </div>
                         </div>
                         <div onClick={fullBackup} className="inline-block px-3">
-                            <div className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-green-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-green-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Full DB Backup</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <BsDatabaseFillDown size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Export DBs to JSON files.
                                 </div>
                             </div>
                         </div>
                         <div onClick={() => { router.push("users") }} className="inline-block px-3">
-                            <div className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Manage Users</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <RiUserSettingsFill size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Edit, remove, create users.
                                 </div>
                             </div>
                         </div>
                         <div onClick={() => { router.push("media") }} className="inline-block px-3">
-                            <div className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Manage Media</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <MdOutlineVideoSettings size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Edit, remove, create media.
                                 </div>
                             </div>
                         </div>
                         <div onClick={() => setDummyDemo(true)} className="inline-block px-3">
-                            <div className="w-60 h-64 max-w-xs p-[2px] bg-gradient-to-tr from-purple-500 to-cyan-400 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs p-[2px] bg-gradient-to-tr from-purple-500 to-cyan-400 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className={`w-full h-full flex flex-col justify-between items-center overflow-hidden rounded-md bg-slate-600`}>
                                     <div className="w-full text-white text-lg text-center my-2 font-semibold">Set up dummy demo</div>
                                     <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                         <PiRabbitFill size={35} />
                                     </div>
-                                    <div className="p-2 text-white text-sm font-light">
+                                    <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                         Demo with &quot;Big bug Bunny&quot; videos
                                     </div>
                                 </div>
@@ -377,7 +351,7 @@ export default function Manage() {
             <div className={`${dummyDemo ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
                 <div className={`${dummyDemo ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
                     <div onClick={() => { setDummyDemo(false) }} className="fixed top-0 left-0 right-0 bottom-0 z-40"></div>
-                    <div className="w-[35%] h-fit flex flex-col gap-4 py-4 p-[2px] bg-gradient-to-tr from-purple-500 to-cyan-400 text-black rounded-md m-auto z-50">
+                    <div className="w-[80%] md:w-[35%] h-fit flex flex-col gap-4 py-4 p-[2px] bg-gradient-to-tr from-purple-500 to-cyan-400 text-black rounded-md m-auto z-50">
                         <div className="w-full flex flex-row items-center justify-between px-4 ">
                             <div className="flex flex-col">
                                 <p className="font-semibold text-xl">
@@ -422,7 +396,7 @@ export default function Manage() {
             <div onKeyDown={(e) => { if (e.key == "Escape") toggleImport() }} className={`${importAction ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 overflow-auto flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
                 <div className={`${importAction ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 h-auto flex items-center`}>
                     <div onClick={() => toggleImport()} className="fixed top-0 left-0 right-0 bottom-0 z-40"></div>
-                    <div className="w-[50%] max-h-fit m-auto py-10 overflow-y-auto z-50">
+                    <div className="w-[80%] md:w-[50%] max-h-fit m-auto py-10 overflow-y-auto z-50">
                         <div className="flex flex-col gap-4 py-4 bg-slate-700 border-[1px] border-slate-400 text-slate-300 rounded-md">
                             <div className="w-full flex flex-row items-center justify-between px-4 ">
                                 <div className="flex flex-col">

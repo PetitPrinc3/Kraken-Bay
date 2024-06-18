@@ -46,6 +46,7 @@ And many more !!
 - Enhanced admin panel (ongoing) :
     - Db management section
         - Media detection
+        - Edit media images
     - Responsiveness
     - Server :
         - Restart SMB

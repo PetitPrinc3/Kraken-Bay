@@ -106,8 +106,6 @@ const Account = () => {
 
     const Icon = user?.roles == "admin" ? FaCrown : FaUser
 
-    console.log(favorites)
-
     return (
         <div className="w-full h-full bg-slate-950 p-4 md:p-20 flex">
             <div className="w-full">

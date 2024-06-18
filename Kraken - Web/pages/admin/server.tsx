@@ -37,17 +37,18 @@ export default function Accounts() {
                             <FaServer />
                             Host :
                         </div>
-                        <div className="text-2xl font-semibold text-center">
+                        <div className="text-xl md:text-2xl font-semibold text-center">
                             {serverProps.osHostName}
                         </div>
-                        <div className="text-sm text-center text-white">
+                        <div className="hidden md:block text-sm text-center text-white">
                             Last reboot was <span className="text-green-500 font-bold">{formatUptime(serverProps.osUptime)}</span> ago.
                         </div>
                     </div>
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <OsIcon />
-                            Platform :
+                            <p className="hidden md:block">Platform :</p>
+                            <p className="block md:hidden">OS :</p>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {serverProps.osPlatform}
@@ -59,12 +60,13 @@ export default function Accounts() {
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <IoPower />
-                            Server Uptime :
+                            <p className="hidden md:block">Server Uptime :</p>
+                            <p className="block md:hidden">Up :</p>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {formatUptime(serverProps.serverUptime)}
                         </div>
-                        <div className="text-sm text-center">
+                        <div className="hidden md:block text-sm text-center">
                             Last reboot on <span className="text-green-500 font-bold">{new Date(new Date().getTime() - serverProps.serverUptime * 1000).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>.
                         </div>
                     </div>
@@ -79,56 +81,56 @@ export default function Accounts() {
                     </div>
                     <div className="flex overflow-x-scroll scrollbar-hide">
                         <div className="inline-block px-3">
-                            <div className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Reboot server</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <MdOutlineRestartAlt size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Perform reboot at os level.
                                 </div>
                             </div>
                         </div>
                         <div className="inline-block px-3">
-                            <div className={`w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${serverProps.hotSpot ? "border-green-500" : "border-orange-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
+                            <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${serverProps.hotSpot ? "border-green-500" : "border-orange-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Toggle Hostspot</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <FaWifi size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Hotspot is currently <span className={serverProps.hotSpot ? "text-green-500 font-semibold" : "text-orange-500 font-semibold"}>{serverProps.hotSpot ? "on" : "off"}</span>.
                                 </div>
                             </div>
                         </div>
                         <div className="inline-block px-3">
-                            <div className={`w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${serverProps.smbStatus ? "border-green-500" : "border-red-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Samba Service</div>
+                            <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${serverProps.smbStatus ? "border-green-500" : "border-red-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Samba <span className="hidden md:block">Service</span></div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <MdFolderShared size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Samba is currently <span className={serverProps.smbStatus ? "text-green-500 font-semibold" : "text-red-500 font-semibold"}>{serverProps.smbStatus ? "up" : "down"}</span>.
                                 </div>
                             </div>
                         </div>
                         <div className="inline-block px-3">
-                            <div className={`w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 border-green-500 bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Web Service</div>
+                            <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 border-green-500 bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Web <span className="hidden md:block">Service</span></div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <TbWorld size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Restart web server with systemctl.
                                 </div>
                             </div>
                         </div>
                         <div className="inline-block px-3">
-                            <div onClick={() => router.push("/admin/databases/manage")} className="w-60 h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div onClick={() => router.push("/admin/databases/manage")} className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">DB Management</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <BsDatabaseFillGear size={35} />
                                 </div>
-                                <div className="p-2 text-white text-sm font-light">
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Manage databases.
                                 </div>
                             </div>

@@ -43,7 +43,8 @@ export default function AdminDashboard() {
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 hover:bg-red-500 duration-300 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <FaUsers />
-                            Total users :
+                            <p className="hidden md:block">Total users :</p>
+                            <p className="block md:hidden">Users :</p>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {existingUsers.length}
@@ -55,7 +56,8 @@ export default function AdminDashboard() {
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 hover:bg-red-500 duration-300 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <MdMovie />
-                            Total media :
+                            <p className="hidden md:block">Total media :</p>
+                            <p className="block md:hidden">Media :</p>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {existingMedia.length}
@@ -67,37 +69,38 @@ export default function AdminDashboard() {
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 hover:bg-red-500 duration-300 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <IoPower />
-                            Uptime :
+                            <p className="hidden md:block">Uptime :</p>
+                            <p className="block md:hidden">Up :</p>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {formatUptime(serverProps.serverUptime)}
                         </div>
-                        <div className="text-sm text-center">
+                        <div className="hidden md:block text-sm text-center">
                             Last reboot on <span className="text-green-500 font-bold">{new Date(new Date().getTime() - (serverProps.serverUptime * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>.
                         </div>
                     </div>
                 </div>
                 <div className="w-full h-fit bg-slate-800 rounded-md p-4 flex flex-col">
                     <p className="text-white text-xl mb-4">Best Uploaders :</p>
-                    <table className="border-separate border-spacing-y-2">
+                    <table className="w-full table-fixed border-separate border-spacing-2">
                         <thead className="w-full">
                             <tr className="w-full text-white">
                                 <td className="w-[60%]">Name</td>
-                                <td className="w-[10%] text-center">Uploads</td>
-                                <td className="w-[30%]">Latest</td>
+                                <td className="w-[10%] text-center"><span className="hidden md:block">Uploads</span></td>
+                                <td className="w-[20%]">Latest</td>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="w-full overflow-hidden">
                             {bestUploaders.map((uploader: any) => (
                                 <tr key={uploader?.email} className="text-white">
-                                    <td className="flex flex-row gap-4 items-center h-10">
+                                    <td className="flex flex-row gap-4 items-center h-10 truncate text-ellipsis">
                                         <img src={uploader.image || "/Assets/Images/kraken.png"} className="h-8 w-8 rounded-full" alt="" />
                                         {uploader.email}
                                     </td>
-                                    <td className="text-red-500 font-bold text-center">
+                                    <td className="text-red-500 font-bold text-center truncate text-ellipsis">
                                         {uploader?.uploads}
                                     </td>
-                                    <td>
+                                    <td className="truncate text-ellipsis">
                                         {uploader?.latestUpload}
                                     </td>
                                 </tr>

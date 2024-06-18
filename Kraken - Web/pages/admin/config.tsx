@@ -65,7 +65,7 @@ export default function Config() {
                             <FaImdb />
                             <p className="font-semibold text-xl">Imdb API :</p>
                         </div>
-                        <div className="w-full grid grid-cols-[5%_95%] items-center gap-2 px-2">
+                        <div className="w-full grid grid-cols-[10%_90%] md:grid-cols-[5%_95%] items-center gap-2 px-2">
                             <p>Key : </p>
                             <textarea onChange={(e) => setImdbKey(e.currentTarget.value)} placeholder={serverProps?.imdbAPIKey} className="placeholder:overflow-auto focus:outline-none text-red-500 min-w-full h-full resize-none bg-transparent rounded-md border-[1px] border-slate-900 px-2"></textarea>
                         </div>
@@ -82,7 +82,7 @@ export default function Config() {
                                 Changing these values will log you out.
                             </div>
                         </div>
-                        <div className="grid grid-cols-[15%_85%] gap-2 items-center">
+                        <div className="grid grid-cols-[25%_75%] md:grid-cols-[15%_85%] gap-2 items-center">
                             <p>Next-Auth URL :</p>
                             <p className="text-red-500 font-semibold">{serverProps?.nextAuthUrl}</p>
                             <p>Next-Auth Secret : </p>

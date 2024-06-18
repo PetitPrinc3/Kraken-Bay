@@ -108,8 +108,8 @@ export default function Edit() {
                     <table className="w-full table-fixed border-separate border-spacing-y-2">
                         <thead className="font-semibold">
                             <tr className="">
-                                <td className="w-[20%]">Field</td>
-                                <td className="w-[80%]">Value</td>
+                                <td className="w-[30%] md:w-[20%]">Field</td>
+                                <td className="w-[70%] md:w-[80%]">Value</td>
                             </tr>
                         </thead>
                         <tbody className="font-light">
@@ -204,7 +204,7 @@ export default function Edit() {
                     <div className="">
                         Video
                     </div>
-                    <a className="font-light" href={media?.videoUrl}>
+                    <a className="font-light truncate text-ellipsis" href={media?.videoUrl}>
                         {media?.videoUrl}
                     </a>
                 </div>

@@ -123,13 +123,13 @@ export default function Accounts() {
                     </button>
                 </div>
                 <div className="w-full h-[60vh] px-4">
-                    <table className="w-full border-separate table-fixed border-spacing-y-2">
+                    <table className="w-full border-separate table-fixed border-spacing-2">
                         <thead className="text-md">
                             <tr className="text-white font-semibold">
                                 <td className="w-[30%] lg:w-[25%]">Title</td>
                                 <td className="w-[30%]">Upload Folder</td>
-                                <td className="w-[20%] text-center">Created By</td>
-                                <td className="w-[20%] lg:w-[25%]"></td>
+                                <td className="hidden md:block text-center">Created By</td>
+                                <td className="w-[30%] md:w-[20%]"></td>
                             </tr>
                         </thead>
                         <tbody className="w-full h-full rounded-md text-sm">
@@ -142,7 +142,7 @@ export default function Accounts() {
                                     <td className="truncate text-ellipsis">
                                         <a href={`/Assets/PendingUploads/${upload.id}`}>{upload.id}</a>
                                     </td>
-                                    <td className="text-center truncate text-ellipsis">
+                                    <td className="hidden md:block text-center truncate text-ellipsis">
                                         {upload.userName}
                                     </td>
                                     <td className="">

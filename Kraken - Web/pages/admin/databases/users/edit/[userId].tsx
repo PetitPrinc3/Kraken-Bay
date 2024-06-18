@@ -137,8 +137,8 @@ export default function Edit() {
                     <table className="w-full table-fixed border-separate border-spacing-y-2">
                         <thead className="font-semibold">
                             <tr className="">
-                                <td className="w-[20%]">Field</td>
-                                <td className="w-[80%]">Value</td>
+                                <td className="w-[35%] md:w-[20%]">Field</td>
+                                <td className="w-[65%] md:w-[80%]">Value</td>
                             </tr>
                         </thead>
                         <tbody className="font-light">

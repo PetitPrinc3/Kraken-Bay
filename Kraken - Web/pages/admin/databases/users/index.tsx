@@ -135,31 +135,35 @@ export default function Users() {
         <AdminLayout pageName="users" >
             <div className="w-full h-fit max-h-full flex flex-col p-4 gap-4 rounded-md bg-slate-800">
                 <div className="w-full flex flex-row items-center justify-between">
-                    <div className="w-[30%] flex flex-row items-center gap-2 bg-slate-700 text-neutral-400 text-sm rounded-md p-1 px-2">
+                    <div className="w-[50%] md:w-[30%] flex flex-row items-center gap-2 bg-slate-700 text-neutral-400 text-sm rounded-md p-1 px-2">
                         <MdSearch />
                         <input onChange={(e) => handleSearch(e)} type="text" className="bg-transparent text-white focus:outline-none w-full" placeholder="Search for user..." />
                     </div>
                     <div className="flex flex-row items-center gap-2">
                         <div onClick={jsonExport} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <TbDatabaseExport />
-                            Export <span className="hidden lg:block">as JSON</span>
+                            <p className="hidden md:block">
+                                Export <span className="hidden lg:block">as JSON</span>
+                            </p>
                         </div>
                         <div onClick={() => { jsonImportRef.current?.click() }} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <input onChange={jsonImport} ref={jsonImportRef} type="file" accept=".json" className="hidden" />
                             <TbDatabaseImport />
-                            Import <span className="hidden lg:block">from JSON</span>
+                            <p className="hidden md:block">
+                                Import <span className="hidden lg:block">from JSON</span>
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div className="w-full h-[55vh] overflow-y-scroll overflow-x-clip">
+                <div className="w-full max-h-[70vh] md:h-[55vh] overflow-y-scroll overflow-x-clip">
                     <table className="w-full max-h-full table-fixed relative border-separate border-spacing-y-4">
                         <thead className="top-0 sticky bg-slate-800 w-full">
                             <tr className="text-white font-semibold ">
                                 <td className="w-[35%]">Name</td>
                                 <td className="w-[25%]">Email</td>
-                                <td className="w-[15%] text-center">Created At</td>
-                                <td className="w-[10%] text-center">Roles</td>
-                                <td className="w-[15%]"></td>
+                                <td className="hidden md:block w-[15%] text-center">Created At</td>
+                                <td className="w-[15%] md:w-[10%] text-center">Roles</td>
+                                <td className="w-[25%] md:w-[15%]"></td>
                             </tr>
                         </thead>
                         <tbody className="w-full text-white">
@@ -172,7 +176,7 @@ export default function Users() {
                                     <td className="font-light truncate text-ellipsis">
                                         {user?.email}
                                     </td>
-                                    <td className="text-center text-slate-400 truncate text-ellipsis">
+                                    <td className="hidden md:block text-center text-slate-400 truncate text-ellipsis">
                                         {new Date(user?.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                     </td>
                                     <td className={`${user?.roles == "admin" ? "text-red-500" : user?.roles == "user" ? "text-green-500" : "text-blue-500"} text-center truncate text-ellipsis`}>
@@ -195,15 +199,15 @@ export default function Users() {
                     </table>
                 </div>
                 <div className="w-full h-fit flex flex-row items-center justify-between px-4">
-                    <button onClick={() => { mutateUsers() }} className="w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
+                    <button onClick={() => { mutateUsers() }} className="w-[25%] md:w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-purple-600 border-2 border-purple-700 text-sm hover:bg-purple-500 transition-all duration-100">
                         <MdRefresh className="hidden lg:block group-hover:animate-spin transition-all duration-300" size={18} />
                         Refresh
                     </button>
-                    <button onClick={() => { router.push("/admin/access/add") }} className="w-[15%] flex flex-row gap-2 items-center justify-center p-1 px-2 rounded-md bg-green-500 border-2 border-green-600 text-sm hover:bg-green-400 transition-all duration-100">
+                    <button onClick={() => { router.push("/admin/access/add") }} className="w-[25%] md:w-[15%] flex flex-row gap-2 items-center justify-center p-1 px-2 rounded-md bg-green-500 border-2 border-green-600 text-sm hover:bg-green-400 transition-all duration-100">
                         <BsPersonPlusFill className="hidden lg:block transition-all duration-300" size={18} />
                         Add New
                     </button>
-                    <button onClick={() => { setPurgeAction(true) }} className="w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-red-500 border-2 border-red-600 text-sm hover:bg-red-400 transition-all duration-100">
+                    <button onClick={() => { setPurgeAction(true) }} className="w-[25%] md:w-[15%] flex flex-row gap-2 group items-center justify-center p-1 px-2 rounded-md bg-red-500 border-2 border-red-600 text-sm hover:bg-red-400 transition-all duration-100">
                         Purge <span className="hidden lg:block">database</span>
                     </button>
                 </div>
