@@ -32,8 +32,8 @@ export function AdminLayout({
   const [dispSize, setDispSize] = useState(15)
   const [sidePanel, setSidePanel] = useState(false)
   const router = useRouter();
-  const pendingUsers = 0
-  const pendingUploads = 0
+
+  useEffect(() => { document.title = "Kraken Bay • Admin" }, [])
 
   return (
     <main className="min-w-full w-fit max-w-full min-h-full max-h-full flex flex-row md:grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-auto">
@@ -64,23 +64,14 @@ export function AdminLayout({
                 <li onClick={() => { router.push("/admin/access") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Access" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                   <RiPassPendingFill size={dispSize} />
                   Access
-                  <div className={`${pendingUsers > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
-                    <p className="m-auto rounded-full">{pendingUsers}</p>
-                  </div>
                 </li>
                 <li onClick={() => { router.push("/admin/notify") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "notify" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                   <MdNotificationAdd size={dispSize} />
                   Notify
-                  <div className={`${pendingUsers > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
-                    <p className="m-auto rounded-full">{pendingUsers}</p>
-                  </div>
                 </li>
                 <li onClick={() => { router.push("/admin/uploads") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "Pending Uploads" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                   <BsFillCloudUploadFill size={dispSize} />
                   Uploads
-                  <div className={`${pendingUploads > 0 ? "flex" : "hidden"} h-5 w-5 rounded-full bg-cyan-500 items-center text-xs text-white mr-0 ml-auto`}>
-                    <p className="m-auto rounded-full">{pendingUploads}</p>
-                  </div>
                 </li>
                 <li onClick={() => { router.push("/admin/server") }} className={`w-full rounded-md flex flex-row items-center gap-2 ${parentName == "server" ? "bg-gradient-to-l from-red-500 from-5% to-transparent to-100%" : "hover:bg-red-500"} px-4 py-2 transition-all duration-200`}>
                   <BiSolidServer size={dispSize} />
