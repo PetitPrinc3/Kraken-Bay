@@ -54,7 +54,6 @@ And many more !!
         - Reboot server
 - Mobile web player (orientation)
 - Detect soundless media (MKV files)
-- Movies / Series sections
 
 ## Collaborate
 

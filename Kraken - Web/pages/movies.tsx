@@ -6,9 +6,25 @@ import InfoModal from "@/components/InfoModal";
 import Footer from "@/components/Footer";
 import useMedia from "@/hooks/useMedia";
 import Billboard from "@/components/Billboard";
+import useGenresList from "@/hooks/useGenresList";
+import { isEmpty, isUndefined } from "lodash";
 
 const Movies = () => {
     const { isOpen, closeModal } = useInfoModal();
+    const { data: genres } = useGenresList();
+
+    useEffect(() => {
+        if (!isUndefined(genres)) {
+            while (genres.length > 5) {
+                genres.splice(Math.floor(Math.random() * genres.length), 1)
+
+            }
+        }
+    })
+
+    const { data: genre1 } = useMedia({ mediaType: "Movies", mediaGenres: !isUndefined(genres) ? genres[0].genre : undefined, mediaLimit: 4 })
+    const { data: genre2 } = useMedia({ mediaType: "Movies", mediaGenres: !isUndefined(genres) ? genres[1].genre : undefined, mediaLimit: 4 })
+    const { data: genre3 } = useMedia({ mediaType: "Movies", mediaGenres: !isUndefined(genres) ? genres[2].genre : undefined, mediaLimit: 4 })
     const { data: media } = useMedia({ mediaType: "Movies" })
 
     useEffect(() => { document.title = "Kraken Bay • Movies" }, [])
@@ -19,7 +35,10 @@ const Movies = () => {
             <Billboard mediaType="Movies" />
             <InfoModal visible={isOpen} onClose={closeModal} />
             <div className="mb-10">
-                <MovieList data={media} title="Movies" />
+                {!isEmpty(genre1) && <MovieList data={genre1} title={!isUndefined(genres) ? genres[0].genre : ""} />}
+                {!isEmpty(genre2) && <MovieList data={genre2} title={!isUndefined(genres) ? genres[1].genre : ""} />}
+                {!isEmpty(genre3) && <MovieList data={genre3} title={!isUndefined(genres) ? genres[2].genre : ""} />}
+                <MovieList data={media} title="All Movies" />
             </div>
             <Footer />
         </div >
