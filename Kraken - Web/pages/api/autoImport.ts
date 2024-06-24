@@ -130,7 +130,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const movies: any[] = []
 
         for (let i = 0; i < files.length; i++) {
-            const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(files[i].title)}&include_adult=true&language=en-US&page=1`;
+            const url = files.type == "Movie" ? `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(files[i].title)}&include_adult=true&language=en-US&page=1` : `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(files[i].title)}&include_adult=true&language=en-US&page=1`;
             const options = {
                 headers: {
                     accept: 'application/json',
