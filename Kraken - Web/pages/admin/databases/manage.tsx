@@ -293,8 +293,8 @@ export default function Manage() {
                             Refresh
                         </button>
                     </div>
-                    <div className="flex overflow-x-scroll scrollbar-hide">
-                        <div onClick={() => { toggleImport() }} className="inline-block px-3">
+                    <div className="flex gap-4 overflow-x-scroll scrollbar-hide">
+                        <div onClick={() => { toggleImport() }} className="inline-block">
                             <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-green-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Full DB Setup</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
@@ -305,7 +305,7 @@ export default function Manage() {
                                 </div>
                             </div>
                         </div>
-                        <div onClick={fullBackup} className="inline-block px-3">
+                        <div onClick={fullBackup} className="inline-block">
                             <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-green-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Full DB Backup</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
@@ -316,7 +316,7 @@ export default function Manage() {
                                 </div>
                             </div>
                         </div>
-                        <div onClick={() => { router.push("users") }} className="inline-block px-3">
+                        <div onClick={() => { router.push("users") }} className="inline-block">
                             <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Manage Users</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
@@ -327,7 +327,7 @@ export default function Manage() {
                                 </div>
                             </div>
                         </div>
-                        <div onClick={() => { router.push("media") }} className="inline-block px-3">
+                        <div onClick={() => { router.push("media") }} className="inline-block">
                             <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Manage Media</div>
                                 <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
@@ -338,21 +338,21 @@ export default function Manage() {
                                 </div>
                             </div>
                         </div>
-                        <div onClick={() => { syncGenres() }} className="inline-block px-3">
+                        <div onClick={() => { syncGenres() }} className="inline-block">
                             <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">ReSync Genres</div>
-                                <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
-                                    <IoSyncCircleOutline className="hover:animate-spin" size={35} />
+                                <div className="p-4 group rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                    <IoSyncCircleOutline className="group-hover:animate-spin" size={35} />
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Synchronize genres with Media DB.
                                 </div>
                             </div>
                         </div>
-                        <div onClick={() => setDummyDemo(true)} className="inline-block px-3">
+                        <div onClick={() => setDummyDemo(true)} className="inline-block">
                             <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs p-[2px] bg-gradient-to-tr from-purple-500 to-cyan-400 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className={`w-full h-full flex flex-col justify-between items-center overflow-hidden rounded-md bg-slate-600`}>
-                                    <div className="w-full text-white text-lg text-center my-2 font-semibold">Set up dummy demo</div>
+                                    <div className="w-full text-white text-lg text-center my-2 font-semibold">Set up <span className="hidden md:inline-block">dummy</span> demo</div>
                                     <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                         <PiRabbitFill size={35} />
                                     </div>

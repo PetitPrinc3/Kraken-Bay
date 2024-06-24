@@ -143,14 +143,14 @@ export default function Users() {
                         <div onClick={jsonExport} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <TbDatabaseExport />
                             <p className="hidden md:block">
-                                Export <span className="hidden lg:block">as JSON</span>
+                                Export <span className="hidden lg:inline-block">as JSON</span>
                             </p>
                         </div>
                         <div onClick={() => { jsonImportRef.current?.click() }} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <input onChange={jsonImport} ref={jsonImportRef} type="file" accept=".json" className="hidden" />
                             <TbDatabaseImport />
                             <p className="hidden md:block">
-                                Import <span className="hidden lg:block">from JSON</span>
+                                Import <span className="hidden lg:inline-block">from JSON</span>
                             </p>
                         </div>
                     </div>
@@ -161,7 +161,7 @@ export default function Users() {
                             <tr className="text-white font-semibold ">
                                 <td className="w-[35%]">Name</td>
                                 <td className="w-[25%]">Email</td>
-                                <td className="hidden md:block w-[15%] text-center">Created At</td>
+                                <td className="max-md:hidden w-[15%] text-center">Created At</td>
                                 <td className="w-[15%] md:w-[10%] text-center">Roles</td>
                                 <td className="w-[25%] md:w-[15%]"></td>
                             </tr>
@@ -176,7 +176,7 @@ export default function Users() {
                                     <td className="font-light truncate text-ellipsis">
                                         {user?.email}
                                     </td>
-                                    <td className="hidden md:block text-center text-slate-400 truncate text-ellipsis">
+                                    <td className="max-md:hidden text-center text-slate-400 truncate text-ellipsis">
                                         {new Date(user?.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                     </td>
                                     <td className={`${user?.roles == "admin" ? "text-red-500" : user?.roles == "user" ? "text-green-500" : "text-blue-500"} text-center truncate text-ellipsis`}>

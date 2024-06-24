@@ -201,20 +201,20 @@ export default function Media() {
                         <div onClick={toggleDetection} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <MdSync />
                             <p className="hidden md:block">
-                                Detect <span className="hidden lg:block">new media</span>
+                                Detect <span className="hidden lg:inline-block">new media</span>
                             </p>
                         </div>
                         <div onClick={jsonExport} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <TbDatabaseExport />
                             <p className="hidden md:block">
-                                Export <span className="hidden lg:block">as JSON</span>
+                                Export <span className="hidden lg:inline-block">as JSON</span>
                             </p>
                         </div>
                         <div onClick={() => { jsonImportRef.current?.click() }} className="flex flex-row items-center gap-2 px-2 py-1 rounded-md bg-slate-600 border-2 border-slate-500 cursor-pointer hover:bg-slate-500 hover:border-slate-400 transition-all duration-300">
                             <input onChange={jsonImport} ref={jsonImportRef} type="file" accept=".json" className="hidden" />
                             <TbDatabaseImport />
                             <p className="hidden md:block">
-                                Import <span className="hidden lg:block">from JSON</span>
+                                Import <span className="hidden lg:inline-block">from JSON</span>
                             </p>
                         </div>
                     </div>
@@ -224,9 +224,9 @@ export default function Media() {
                         <thead className="top-0 sticky bg-slate-800 w-full">
                             <tr className="text-white font-semibold ">
                                 <td className="w-[30%]">Title</td>
-                                <td className="hidden md:block w-[30%] lg:w-[25%]">Video</td>
+                                <td className="max-md:hidden w-[30%] lg:w-[25%]">Video</td>
                                 <td className="w-[15%] text-center">Created At</td>
-                                <td className="hidden md:block w-[25%] lg:w-[10%] text-center">Uploader</td>
+                                <td className="max-md:hidden w-[25%] lg:w-[10%] text-center">Uploader</td>
                                 <td className="w-[10%] text-center">Type</td>
                                 <td className="w-[15%]"></td>
                             </tr>
@@ -238,13 +238,13 @@ export default function Media() {
                                         <img src={media?.posterUrl || "/Assets/Images/default_profile.png"} className="hidden md:block max-h-6" alt="" />
                                         <p className="truncate text-ellipsis">{media?.title}</p>
                                     </td>
-                                    <td className="hidden md:block font-light truncate text-ellipsis">
+                                    <td className="max-md:hidden font-light truncate text-ellipsis">
                                         <a href={media?.videoUrl}>{media?.videoUrl}</a>
                                     </td>
-                                    <td className="hidden md:block text-center text-slate-400 truncate text-ellipsis">
+                                    <td className="text-center text-slate-400 truncate text-ellipsis">
                                         {new Date(media?.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                     </td>
-                                    <td className="text-center text-slate-400 truncate text-ellipsis">
+                                    <td className="max-md:hidden text-center text-slate-400 truncate text-ellipsis">
                                         {media?.uploadedBy}
                                     </td>
                                     <td className="text-center text-slate-400 truncate text-ellipsis">
@@ -440,7 +440,7 @@ export default function Media() {
                         </div>
                         <hr className="border-slate-400" />
                         <div className="flex flex-row gap-4">
-                            <button disabled={files?.length == 0} className="flex flex-row items-center w-full md:w-[20%] m-auto justify-center py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-green-500"
+                            <button disabled={files?.length == 0} className="flex flex-row items-center w-[20%] m-auto justify-center py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-green-500"
                                 onClick={fetchMovies}
                             >
                                 <TbArrowMergeLeft size={25} />

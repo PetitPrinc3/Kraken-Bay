@@ -107,7 +107,7 @@ const Account = () => {
     const Icon = user?.roles == "admin" ? FaCrown : FaUser
 
     return (
-        <div className="w-full h-full bg-slate-950 p-4 md:p-20 flex">
+        <div className="w-full h-full bg-white md:bg-slate-950 p-4 md:p-20 flex">
             <div className="w-full">
                 <div className="w-full h-full overflow-y-scroll scrollbar-hide md:overflow-hidden flex flex-col md:grid md:grid-cols-[30%_70%] lg:grid-cols-[60%_40%] items-start gap-16 md:gap-4 p-4 rounded-md bg-white">
                     <div className="w-full h-full flex flex-col gap-12">
@@ -199,7 +199,7 @@ const Account = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="relative w-full h-full flex flex-col gap-4 overflow-hidden md:px-16">
+                    <div className="relative w-full h-full flex flex-col gap-4 md:overflow-hidden md:px-16">
                         <div className="relative w-full grid grid-cols-3 items-center rounded-lg bg-slate-200 p-1 mx-auto">
                             <div onClick={() => setActiveTab("Notifications")} className="w-full relative flex items-center gap-2 cursor-pointer text-slate-800 font-semibold px-4 py-2 rounded-md text-sm">
                                 <div className="flex flex-row gap-2 items-center justify-center w-full z-30">
