@@ -1,21 +1,21 @@
 import useServerProps from "@/hooks/useServerProps";
 import { AdminLayout } from "@/pages/_app";
 import axios from "axios";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsDatabaseFillGear } from "react-icons/bs";
-import { FaImdb, FaShieldAlt } from "react-icons/fa";
+import { FaShieldAlt } from "react-icons/fa";
 import { IoMdSave } from "react-icons/io";
 import { MdWarning } from "react-icons/md";
+import { SiThemoviedatabase } from "react-icons/si";
 
 export default function Config() {
     const { data: serverProps } = useServerProps()
-    const [imdbKey, setImdbKey] = useState<string | undefined>(undefined)
+    const [tmdbKey, setTmdbKey] = useState<string | undefined>(undefined)
     const [naSecret, setNaSecret] = useState<string | undefined>(undefined)
     const [jwtSecret, setJwtSecret] = useState<string | undefined>(undefined)
 
     const saveConfig = async () => {
-        await axios.post("/api/serverProps", { imdbKey: imdbKey, naSecret: naSecret, jwtSecret: jwtSecret })
+        await axios.post("/api/serverProps", { tmdbKey: tmdbKey, naSecret: naSecret, jwtSecret: jwtSecret })
     }
 
     return (
@@ -23,7 +23,7 @@ export default function Config() {
             <div className="w-full h-fit flex flex-col gap-4 p-4 bg-slate-800 rounded-md">
                 <div className="w-full flex flex-row items-center justify-between text-white">
                     <p className="text-2xl font-semibold">Kraken Configuration</p>
-                    <div onClick={saveConfig} className={imdbKey || naSecret || jwtSecret ? "ml-auto flex flex-row items-center gap-2 cursor-cointer px-2 py-1 rounded-md bg-blue-500 border-blue-600 cursor-pointer hover:bg-blue-400 hover:border-blue-500 border-2 transition-all duration-300" : "hidden"}>
+                    <div onClick={saveConfig} className={tmdbKey || naSecret || jwtSecret ? "ml-auto flex flex-row items-center gap-2 cursor-cointer px-2 py-1 rounded-md bg-blue-500 border-blue-600 cursor-pointer hover:bg-blue-400 hover:border-blue-500 border-2 transition-all duration-300" : "hidden"}>
                         <IoMdSave />
                         Save config
                     </div>
@@ -62,12 +62,12 @@ export default function Config() {
                     <hr className="border-slate-400" />
                     <div className="w-full flex flex-col gap-2 text-white">
                         <div className="flex flex-row items-center gap-2">
-                            <FaImdb />
-                            <p className="font-semibold text-xl">Imdb API :</p>
+                            <SiThemoviedatabase />
+                            <p className="font-semibold text-xl">Tmdb API :</p>
                         </div>
                         <div className="w-full grid grid-cols-[10%_90%] md:grid-cols-[5%_95%] items-center gap-2 px-2">
                             <p>Key : </p>
-                            <textarea onChange={(e) => setImdbKey(e.currentTarget.value)} placeholder={serverProps?.imdbAPIKey} className="placeholder:overflow-auto focus:outline-none text-red-500 min-w-full h-full resize-none bg-transparent rounded-md border-[1px] border-slate-900 px-2"></textarea>
+                            <textarea onChange={(e) => setTmdbKey(e.currentTarget.value)} placeholder={serverProps?.tmdbAPIKey} className="placeholder:overflow-auto focus:outline-none text-red-500 min-w-full h-full resize-none bg-transparent rounded-md border-[1px] border-slate-900 px-2"></textarea>
                         </div>
                     </div>
                     <hr className="border-slate-400" />

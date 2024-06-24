@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 hotSpot: false,
                 smbStatus: false,
                 databaseConfig: process.env.DATABASE_URL,
-                imdbAPIKey: process.env.IMDB_API_SECRET,
+                tmdbAPIKey: process.env.TMDB_API_SECRET,
                 nextAuthUrl: process.env.NEXTAUTH_URL,
             }
 
@@ -55,11 +55,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == "POST") {
 
-        const { imdbKey, naSecret, jwtSecret } = req.body
+        const { tmdbKey, naSecret, jwtSecret } = req.body
 
         try {
-            if (!isUndefined(imdbKey)) {
-                setEnvValue("IMDB_API_SECRET", imdbKey)
+            if (!isUndefined(tmdbKey)) {
+                setEnvValue("IMDB_API_SECRET", tmdbKey)
             }
             if (!isUndefined(naSecret)) {
                 setEnvValue("NEXTAUTH_SECRET", naSecret)
