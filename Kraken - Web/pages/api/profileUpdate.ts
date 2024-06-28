@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { isNull } from 'lodash';
-import { isUndefined } from 'lodash';
 import formidable from 'formidable';
 import fs from 'fs'
 import path from 'path';

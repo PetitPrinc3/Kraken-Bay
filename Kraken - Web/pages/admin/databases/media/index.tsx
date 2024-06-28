@@ -2,14 +2,13 @@ import { AdminLayout } from "@/pages/_app";
 import axios from "axios";
 import { useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { MdRefresh, MdSearch, MdOutlineEdit, MdSync } from "react-icons/md";
+import { MdRefresh, MdAutoAwesome, MdOutlineSelectAll, MdSearch, MdOutlineEdit, MdSync } from "react-icons/md";
 import { BsDatabaseFillX, BsDatabaseFillAdd } from "react-icons/bs";
 import { BiMovie, BiSolidFileJson } from "react-icons/bi";
 import { RxCross2 } from "react-icons/rx";
 import { IoWarning, IoGitMerge, IoGitPullRequest } from "react-icons/io5";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { TbDatabaseImport, TbDatabaseExport } from "react-icons/tb";
-import { TbZoomScan, TbArrowMergeLeft } from "react-icons/tb";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { isEmpty, isUndefined } from "lodash";
@@ -38,9 +37,15 @@ export default function Media() {
         setFiles(undefined)
         setOpenDetection(true)
         const loading = toast.loading("Detecting new files...", { containerId: "AdminContainer" })
-        const data = await axios.get("/api/autoImport").catch((err) => toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })).then((res) => { return res?.data })
+        const data = await axios.get("/api/autoImport")
+            .catch((err) =>
+                toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+            )
+            .then((res) => {
+                toast.update(loading, { render: "Done", type: "success", isLoading: false, autoClose: 200, containerId: "AdminContainer" })
+                return res?.data
+            })
         setFiles(data)
-        toast.update(loading, { render: "Done.", type: "success", isLoading: false, autoClose: 1000, containerId: "AdminContainer" })
     }
 
     const setTitle = (key: string, e: any) => {
@@ -67,9 +72,18 @@ export default function Media() {
 
     const fetchMovies = async () => {
         const loading = toast.loading("Computing new entries...", { containerId: "AdminContainer" })
-        await axios.post("/api/autoImport", files).catch((err) => toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })).then((res) => { return res?.data })
+        const data = await axios.post("/api/autoImport", files)
+            .catch((err) => {
+                toast.update(loading, { render: `Oops, something went wrong : ${err.response.data}`, type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+            })
+            .then((res) => {
+                if (res?.data) {
+                    toast.update(loading, { render: "Files added.", type: "success", isLoading: false, autoClose: 1000, containerId: "AdminContainer" })
+                }
+                return res?.data
+            })
         await mutateMedia()
-        toast.update(loading, { render: "Files added.", type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+        toggleDetection()
     }
 
     const handleSearch = (e: any) => {
@@ -439,12 +453,18 @@ export default function Media() {
                             }
                         </div>
                         <hr className="border-slate-400" />
-                        <div className="flex flex-row gap-4">
-                            <button disabled={files?.length == 0} className="flex flex-row items-center w-[20%] m-auto justify-center py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-green-500"
-                                onClick={fetchMovies}
-                            >
-                                <TbArrowMergeLeft size={25} />
-                                Add files
+                        <div className="w-full flex flex-row items-center justify-end gap-4">
+                            <button disabled={files?.length == 0} onClick={fetchMovies} className="flex flex-row gap-2 items-center w-fit min-w-[15%] justify-center px-2 py-2 sm:py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-blue-500 hover:border-blue-400">
+                                <MdAutoAwesome />
+                                <p className="hidden sm:inline-block">
+                                    Automatic selection
+                                </p>
+                            </button>
+                            <button disabled={files?.length == 0} className="flex flex-row gap-2 items-center w-fit min-w-[15%] justify-center px-2 py-2 sm:py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-blue-500 hover:border-blue-400">
+                                <MdOutlineSelectAll />
+                                <p className="hidden sm:inline-block">
+                                    Manual selection
+                                </p>
                             </button>
                         </div>
                     </div>

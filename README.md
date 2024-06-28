@@ -45,7 +45,7 @@ And many more !!
 
 - Enhanced admin panel (ongoing) :
     - Db management section
-        - Media detection
+        - Media detection add subtitles, langauges and durations
         - Edit media images
     - Server :
         - Restart SMB
@@ -53,7 +53,6 @@ And many more !!
         - Restart process
         - Reboot server
 - Mobile web player (orientation)
-- Detect soundless media (MKV files)
 
 ## Collaborate
 

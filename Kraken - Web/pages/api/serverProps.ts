@@ -3,6 +3,7 @@ import fs from 'fs'
 
 import serverAuth from "@/lib/serverAuth";
 import { isUndefined } from "lodash";
+import path from "path";
 
 function setEnvValue(key: string, value: string) {
     const os = require("os")
@@ -26,6 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (currentUser?.roles != "admin") return res.status(403).end()
 
     if (req.method == 'GET') {
+        const { action } = req.query
+
+        if (action === "stop") {
+            process.exit()
+            return res.status(200).end()
+        }
+
         try {
             const os = require("os")
             const execSync = require('child_process').execSync
