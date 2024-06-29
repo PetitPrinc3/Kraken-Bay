@@ -72,7 +72,7 @@ export default function Media() {
 
     const fetchMovies = async () => {
         const loading = toast.loading("Computing new entries...", { containerId: "AdminContainer" })
-        const data = await axios.post("/api/autoImport", files)
+        const data = await axios.post("/api/autoImport", { files: files, action: "auto" })
             .catch((err) => {
                 toast.update(loading, { render: `Oops, something went wrong : ${err.response.data}`, type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
             })
@@ -422,12 +422,18 @@ export default function Media() {
                                 <tbody className="max-h-[90%] overflow-hidden">
                                     {!isUndefined(files) && files.map((file: any) => (
                                         <tr key={file.key}>
-                                            <td onClick={() => removeFile(file.key)} className="group grid grid-cols-[3%_97%] items-center gap-2 px-2 rounded-full bg-slate-700 border-[1px] border-slate-500 hover:bg-red-500 hover:border-red-500 transition-all duration-300 cursor-pointer">
-                                                <RxCross2 className="text-white group-hover:rotate-90 transition-all duration-500" />
-                                                <p className="truncate text-ellipsis text-white pr-2">{file.name} <span className={`${file.type == "TV Show" ? "text-sm font-light text-slate-400" : "hidden"}`}>Season{file?.seasons?.split(",").length > 1 ? "s" : ""} : {file?.seasons}</span></p>
+                                            <td onClick={() => removeFile(file.key)} className="w-full h-full">
+                                                <button className="w-full group grid grid-cols-[3%_97%] items-center gap-2 px-2 rounded-full bg-slate-700 border-[1px] border-slate-500 hover:bg-red-500 hover:border-red-500 transition-all duration-300 cursor-pointer">
+                                                    <RxCross2 className="text-white group-hover:rotate-90 transition-all duration-500" />
+                                                    <p className="truncate text-left text-ellipsis text-white pr-2">{file.name} <span className={`${file.type == "TV Show" ? "text-sm font-light text-slate-400" : "hidden"}`}>Season{file?.seasons?.split(",").length > 1 ? "s" : ""} : {file?.seasons}</span></p>
+                                                </button>
                                             </td>
-                                            <td>
-                                                <input onChange={e => setTitle(file.key, e)} type="text" defaultValue={file.title} placeholder="Title" className="w-full bg-slate-700 text-white focus:outline-none px-2 border-slate-900 border-[1px] rounded-md" />
+                                            <td className="">
+                                                <select className="w-full h-full cursor-pointer px-2 rounded-full bg-slate-700 border-[1px] border-slate-500 text-white focus:outline-none appearance-none" onChange={e => setTitle(file.key, e)} name="" id="">
+                                                    {file.apiResult.map((option: any) => (
+                                                        <option key={option.id} value={option.id}>{option.original_title || option.original_name}</option>
+                                                    ))}
+                                                </select>
                                             </td>
                                             <td className="truncate text-ellipsis text-slate-400 text-center">
                                                 {file.type}
@@ -457,13 +463,7 @@ export default function Media() {
                             <button disabled={files?.length == 0} onClick={fetchMovies} className="flex flex-row gap-2 items-center w-fit min-w-[15%] justify-center px-2 py-2 sm:py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-blue-500 hover:border-blue-400">
                                 <MdAutoAwesome />
                                 <p className="hidden sm:inline-block">
-                                    Automatic selection
-                                </p>
-                            </button>
-                            <button disabled={files?.length == 0} className="flex flex-row gap-2 items-center w-fit min-w-[15%] justify-center px-2 py-2 sm:py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-blue-500 hover:border-blue-400">
-                                <MdOutlineSelectAll />
-                                <p className="hidden sm:inline-block">
-                                    Manual selection
+                                    Import files
                                 </p>
                             </button>
                         </div>

@@ -2,7 +2,7 @@ import useMedia from "@/hooks/useMedia";
 import { AdminLayout } from "@/pages/_app";
 import { isUndefined } from "lodash";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MdOutlineEdit } from "react-icons/md"
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -13,8 +13,10 @@ export default function Edit() {
     const { mediaId } = router.query
     const { data: media, mutate: mutateMedia } = useMedia({ mediaId: mediaId })
     const [title, setTitle] = useState("")
-    const [thumbUrl, setThumbUrl] = useState("")
     const [poster, setPoster] = useState("")
+    const [posterFile, setPosterFile] = useState<File>()
+    const [thumb, setThumb] = useState("")
+    const [thumbFile, setThumbFile] = useState<File>()
     const [altTitle, setAltTitle] = useState("")
     const [type, setType] = useState("")
     const [desc, setDesc] = useState("")
@@ -25,6 +27,8 @@ export default function Edit() {
     const [languages, setLanguages] = useState("")
     const [subs, setSubs] = useState("")
     const [firstLoad, setFirstLoad] = useState(true)
+    const posterRef = useRef<any>()
+    const thumbRef = useRef<any>()
 
     useEffect(() => {
         if (!isUndefined(media?.title) && firstLoad) {
@@ -39,8 +43,8 @@ export default function Edit() {
             setUpBy(media.uploadedBy)
             setLanguages(media.languages)
             setSubs(media.subtitles)
-            setThumbUrl(media.thumbUrl)
             setPoster(media.posterUrl)
+            setThumb(media.thumbUrl)
         }
     }, [title, altTitle, desc, genre, duration, seasons, upBy, languages, subs, firstLoad, media])
 
@@ -59,12 +63,26 @@ export default function Edit() {
     }
 
     const handleUpdate = async () => {
-        await axios.post("/api/media", {
-            id: mediaId,
+
+        const mediaData: {
+            id: string,
+            title: string,
+            altTitle: string,
+            posterUrl?: any,
+            thumbUrl?: any,
+            type: string,
+            videoUrl: string,
+            description: string,
+            genre: string,
+            duration: string,
+            seasons: string,
+            uploadedBy: string,
+            languages: string,
+            subtitles: string
+        } = {
+            id: mediaId as string,
             title: title,
             altTitle: altTitle,
-            posterUrl: poster,
-            thumbUrl: thumbUrl,
             type: type,
             videoUrl: media.videoUrl,
             description: desc,
@@ -74,16 +92,56 @@ export default function Edit() {
             uploadedBy: upBy,
             languages: languages,
             subtitles: subs
-        }).catch((err) => {
-            toast.clearWaitingQueue()
-            toast.error("Something went wrong.", { containerId: "AdminContainer" })
+        }
+
+        if (posterFile != undefined) {
+            const posterData = posterFile as File
+            const postBuffer = await posterData.arrayBuffer()
+            const posterBuffer = Buffer.from(postBuffer)
+            mediaData.posterUrl = { imageBuffer: posterBuffer, fileName: posterData.name }
+        }
+
+        if (thumbFile != undefined) {
+            const thumbData = posterFile as File
+            const thumbBuffer = await thumbData.arrayBuffer()
+            const thumbnailBuffer = Buffer.from(thumbBuffer)
+            mediaData.thumbUrl = { imageBuffer: thumbnailBuffer, fileName: thumbData.name }
+        }
+
+        await axios.post("/api/media", mediaData).catch((err) => {
+            toast.error("Oops something went wrong...", { containerId: "AdminContainer" })
         }).then((data) => {
             if (!isUndefined(data)) {
-                toast.clearWaitingQueue()
-                toast.success("Entry updated.", { containerId: "AdminContainer" })
+                toast.success("Entry updated !", { containerId: "AdminContainer" })
             }
         })
         mutateMedia()
+    }
+
+    const changePoster = async (e: any) => {
+        const image = posterRef.current?.files
+        if (image.length != 1) {
+            toast.error("What did you do ?!")
+            posterRef.current.files = []
+            setPoster("")
+            return
+        } else {
+            setPoster(URL.createObjectURL(image[0]))
+            setPosterFile(e.target.files[0])
+        }
+    }
+
+    const changeThumb = async (e: any) => {
+        const image = posterRef.current?.files
+        if (image.length != 1) {
+            toast.error("What did you do ?!")
+            posterRef.current.files = []
+            setThumb("")
+            return
+        } else {
+            setThumb(URL.createObjectURL(image[0]))
+            setThumbFile(e.target.files[0])
+        }
     }
 
     return (
@@ -94,12 +152,14 @@ export default function Edit() {
                 </div>
                 <div className="flex flex-row items-center gap-4 p-2 border-[1px] rounded-md justify-start h-fit text-white">
                     <p className="[writing-mode:vertical-lr] rotate-180">Images</p>
-                    <div className="flex flex-col p-2 bg-slate-600 rounded-md">
-                        <img src={media?.posterUrl} className="h-20 object-contain" alt="No Poster" />
+                    <div onClick={() => { posterRef.current.click() }} className="flex flex-col p-2 bg-slate-600 rounded-md cursor-pointer">
+                        <input onChange={changePoster} ref={posterRef} type="file" className="hidden" accept="image/*" />
+                        <img src={poster} className="h-20 object-contain" alt="No Poster" />
                         <p className="w-full text-center text-sm font-light underline">{media?.type} poster</p>
                     </div>
-                    <div className="flex flex-col p-2 bg-slate-600 rounded-md">
-                        <img src={media?.thumbUrl} className="h-20 object-contain" alt="No Poster" />
+                    <div onClick={() => { thumbRef.current.click() }} className="flex flex-col p-2 bg-slate-600 rounded-md cursor-pointer">
+                        <input onChange={changeThumb} ref={thumbRef} type="file" className="hidden" accept="image/*" />
+                        <img src={thumb} className="h-20 object-contain" alt="No Poster" />
                         <p className="w-full text-center text-sm font-light underline">{media?.type} thumbnail</p>
                     </div>
                 </div>

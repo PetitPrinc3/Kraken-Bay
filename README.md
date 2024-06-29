@@ -45,7 +45,8 @@ And many more !!
 
 - Enhanced admin panel (ongoing) :
     - Db management section
-        - Media detection add subtitles, langauges and durations
+        - Media detection :
+            - Serie épisodes
         - Edit media images
     - Server :
         - Restart SMB

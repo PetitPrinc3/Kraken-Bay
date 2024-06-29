@@ -142,7 +142,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == "GET") {
 
-        const presentFiles: { key: string, name: string, title: string, type: string, languages?: string, subtitles?: string, path: string, seasons?: string }[] = []
+        const presentFiles: { key: string, name: string, title: any, altTitle: string, type: string, languages?: string, subtitles?: string, path: string, seasons?: string, apiResult?: any[] }[] = []
 
         const existingMovies = await prismadb.media.findMany({
             where: {
@@ -170,13 +170,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }
             if (!existingFiles.includes(`/Assets/Movies/${filesList[i].name}`)) {
+                const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_SECRET}&query=${title?.toLowerCase() || ""}&include_adult=true&language=en-US&page=1`
+                const { data: apiResult } = await axios.get(url)
                 presentFiles.push({
                     key: uuidv4(),
                     name: filesList[i].name,
-                    title: title?.toLowerCase() || "",
+                    title: apiResult?.results[0].id,
+                    altTitle: title?.toLowerCase() || "",
                     type: "Movies",
                     path: `/Assets/Movies/${filesList[i].name}`,
-
+                    apiResult: apiResult?.results
                 })
             }
         }
@@ -193,7 +196,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             existingFiles.push((existingSeries[i].videoUrl.split("/")).splice(3, 1)[0])
         }
 
-        fs.readdirSync("public/Assets/Series", { withFileTypes: true }).forEach((file) => {
+        fs.readdirSync("public/Assets/Series", { withFileTypes: true }).forEach(async (file) => {
             let title: string | null = null
             const keywords = file.name.split(".").join(" ").split("-").join(" ").split(" ")
             for (let word of keywords) {
@@ -204,6 +207,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }
             if (!existingFiles.includes(file.name)) {
+                const url = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_API_SECRET}&query=${title?.toLowerCase() || ""}&include_adult=true&language=en-US&page=1`
+                const { data: apiResult } = await axios.get(url)
                 const seasons: string[] = []
                 fs.readdirSync(`public/Assets/Series/${file.name}`).forEach((season) => {
                     if (/SO*[0-9]*/.test(season)) {
@@ -213,10 +218,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 presentFiles.push({
                     key: uuidv4(),
                     name: file.name,
-                    title: title?.toLowerCase() || "",
+                    title: apiResult?.results[0].id,
+                    altTitle: title?.toLowerCase() || "",
                     type: "TV Show",
                     path: `/Assets/Series/${file.name}`,
-                    seasons: seasons.sort().join(",")
+                    seasons: seasons.sort().join(","),
+                    apiResult: apiResult?.results
                 })
             }
         })
@@ -229,70 +236,81 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == "POST") {
 
-        const files = req.body
-        const movies: any[] = []
+        const { files, action } = req.body
 
-        for (let i = 0; i < files.length; i++) {
-            const url = files[i].type == "Movies" ? `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_SECRET}&query=${files[i].title}&include_adult=true&language=en-US&page=1` : `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_API_SECRET}&query=${files[i].title}&include_adult=true&language=en-US&page=1`;
-            const { data: apiResult } = await axios.get(url)
+        if (action == "manual") {
 
-            if (!isUndefined(apiResult?.results[0])) {
-                const posterUrl = `http://image.tmdb.org/t/p/w500${apiResult.results[0]?.backdrop_path}`
-                const thumbUrl = `http://image.tmdb.org/t/p/w500${apiResult.results[0]?.poster_path}`
-                const movieGenres: any[] = []
-                apiResult.results[0]?.genre_ids.forEach((genre: string) => {
-                    if (genreIds.hasOwnProperty(genre)) {
-                        movieGenres.push(genreIds[genre])
+        } else if (action == "auto") {
+
+            const movies: any[] = []
+
+            for (let i = 0; i < files.length; i++) {
+
+                if (!isUndefined(files[i].title)) {
+
+                    var mediaData
+                    for (let j = 0; j < files[i].apiResult.length; j++) {
+                        if (files[i].apiResult[j].id == files[i].title) {
+                            mediaData = files[i].apiResult[j]
+                        }
                     }
-                });
-
-                const movieInfo = getInfo(`public${files[i].path}`)
-
-                const initMovie = await prismadb.media.create({
-                    data: {
-                        title: files[i].type == "Movies" ? apiResult.results[0].original_title : apiResult.results[0].original_name,
-                        altTitle: files[i].title,
-                        type: files[i].type,
-                        description: apiResult.results[0].overview,
-                        videoUrl: files[i].path,
-                        thumbUrl: thumbUrl,
-                        posterUrl: posterUrl,
-                        genre: movieGenres.join(", "),
-                        uploadedBy: currentUser.email,
-                        languages: movieInfo.languages,
-                        subtitles: movieInfo.subtitles,
-                        duration: movieInfo.duration
+                    const posterUrl = `http://image.tmdb.org/t/p/w500${mediaData?.backdrop_path}`
+                    const thumbUrl = `http://image.tmdb.org/t/p/w500${mediaData?.poster_path}`
+                    const movieGenres: any[] = []
+                    if (!isUndefined(mediaData?.genre_ids)) {
+                        mediaData?.genre_ids.forEach((genre: string) => {
+                            if (genreIds.hasOwnProperty(genre)) {
+                                movieGenres.push(genreIds[genre])
+                            }
+                        });
                     }
-                })
+                    const movieInfo = getInfo(`public${files[i].path}`)
 
-                fs.mkdir(`public/Assets/Images/${initMovie.id}`, (err) => { })
+                    const initMovie = await prismadb.media.create({
+                        data: {
+                            title: files[i].type == "Movies" ? mediaData.original_title : mediaData.original_name,
+                            altTitle: files[i].altTitle,
+                            type: files[i].type,
+                            description: mediaData.overview,
+                            videoUrl: files[i].path,
+                            thumbUrl: thumbUrl,
+                            posterUrl: posterUrl,
+                            genre: movieGenres.join(", "),
+                            uploadedBy: currentUser.email,
+                            languages: movieInfo.languages,
+                            subtitles: movieInfo.subtitles,
+                            duration: movieInfo.duration
+                        }
+                    })
 
-                const poster = await (await fetch(posterUrl)).blob()
-                fs.writeFile(`public/Assets/Images/${initMovie.id}${apiResult.results[0]?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
+                    fs.mkdir(`public/Assets/Images/${initMovie.id}`, (err) => { })
 
-                const thumb = await (await fetch(thumbUrl)).blob()
-                fs.writeFile(`public/Assets/Images/${initMovie.id}${apiResult.results[0]?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
+                    const poster = await (await fetch(posterUrl)).blob()
+                    fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
 
-                const finalMovie = await prismadb.media.update({
-                    where: {
-                        id: initMovie.id
-                    },
-                    data: {
-                        thumbUrl: `/Assets/Images/${initMovie.id}${apiResult.results[0]?.poster_path}`,
-                        posterUrl: `/Assets/Images/${initMovie.id}${apiResult.results[0]?.backdrop_path}`,
-                    }
-                })
+                    const thumb = await (await fetch(thumbUrl)).blob()
+                    fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
 
-                movies.push(finalMovie)
-            } else {
-                return res.status(400).json("Title not found")
+                    const finalMovie = await prismadb.media.update({
+                        where: {
+                            id: initMovie.id
+                        },
+                        data: {
+                            thumbUrl: `/Assets/Images/${initMovie.id}${mediaData?.poster_path}`,
+                            posterUrl: `/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`,
+                        }
+                    })
+
+                    movies.push(finalMovie)
+                } else {
+                    return res.status(400).json("Title not found")
+                }
+
+
             }
 
-
+            return res.status(200).json(movies)
         }
-
-        return res.status(200).json(movies)
     }
-
 
 }

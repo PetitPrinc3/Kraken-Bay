@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prismadb from '@/lib/prismadb';
 import serverAuth from "@/lib/serverAuth";
 import { isNull, isUndefined } from "lodash";
+import fs from 'fs/promises'
+import mime from '@/lib/mime';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { currentUser }: any = await serverAuth(req, res);
@@ -69,45 +71,99 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         if (req.method == "POST") {
-            if (currentUser?.roles != "admin") return res.status(403).end()
 
-            const mediaData = req.body
+            try {
+                if (currentUser?.roles != "admin") return res.status(403).end()
 
-            if (isUndefined(mediaData.id)) {
-                try {
-                    const media = await prismadb.media.create({
-                        data: mediaData
-                    })
-                    return res.status(200).json(media)
-                } catch {
-                    return res.status(400).json("Invalid data")
+                const mediaData = req.body
+
+                if (isUndefined(mediaData?.id)) {
+                    try {
+                        const media = await prismadb.media.create({
+                            data: mediaData
+                        })
+                        return res.status(200).json(media)
+                    } catch {
+                        return res.status(400).json("Invalid data")
+                    }
                 }
-            }
 
-            const existingMedia = await prismadb.media.findUnique({
-                where: {
-                    id: mediaData.id as string
-                }
-            })
-
-            if (isNull(existingMedia)) {
-                try {
-                    const media = await prismadb.media.create({
-                        data: mediaData
-                    })
-                    return res.status(200).json(media)
-                } catch {
-                    return res.status(400).json("Invalid data")
-                }
-            } else {
-                const update = await prismadb.media.update({
+                const existingMedia = await prismadb.media.findUnique({
                     where: {
                         id: mediaData.id as string
+                    }
+                })
+
+                if (isNull(existingMedia)) {
+                    try {
+                        const media = await prismadb.media.create({
+                            data: mediaData
+                        })
+                        return res.status(200).json(media)
+                    } catch {
+                        return res.status(400).json("Invalid data")
+                    }
+                }
+
+                if (!isUndefined(mediaData.posterUrl) && !isNull(mediaData.posterUrl) && typeof mediaData.posterUrl != "string") {
+                    try {
+                        const posterBuffer = Buffer.from(mediaData.posterUrl.posterBuffer.data)
+                        const filePath = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
+                        await fs.writeFile(filePath, posterBuffer)
+                        const fileType = await mime(filePath)
+                        if (fileType.mime != "Image") {
+                            await fs.rm(filePath)
+                            return res.status(400).json(`Invalid poster : ${fileType.header + ":" + fileType.mime}`)
+                        }
+                        if (!isUndefined(currentUser.poster) && filePath != "public" + currentUser.poster) {
+                            try {
+                                await fs.rm("public" + existingMedia.posterUrl)
+                            } catch {
+
+                            }
+                        }
+                        mediaData.posterUrl = `/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
+                    } catch (err) {
+                        console.log(err)
+                        return res.status(400).json("Poster update impossible.")
+                    }
+                }
+
+                if (!isUndefined(mediaData.thumbUrl) && !isNull(mediaData.thumbUrl) && typeof mediaData.thumbUrl != "string") {
+                    try {
+                        const thumbBuffer = Buffer.from(mediaData.thumbUrl.thumbBuffer.data)
+                        const filePath = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
+                        await fs.writeFile(filePath, thumbBuffer)
+                        const fileType = await mime(filePath)
+                        if (fileType.mime != "Image") {
+                            await fs.rm(filePath)
+                            return res.status(400).json(`Invalid thumb : ${fileType.header + ":" + fileType.mime}`)
+                        }
+                        if (!isUndefined(currentUser.thumb) && filePath != "public" + currentUser.thumb) {
+                            try {
+                                await fs.rm("public" + currentUser.thumb)
+                            } catch {
+
+                            }
+                        }
+                        mediaData.thumbUrl = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
+                    } catch (err) {
+                        console.log(err)
+                        return res.status(400).json("Thumbnail update impossible.")
+                    }
+                }
+
+                const update = await prismadb.media.update({
+                    where: {
+                        id: existingMedia.id as string
                     },
                     data: mediaData
                 })
                 return res.status(200).json(update)
+            } catch (err) {
+                console.log(err)
             }
+
         }
 
         if (req.method == "DELETE") {

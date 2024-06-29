@@ -3,12 +3,8 @@ import bcrypt from "bcrypt";
 import prismadb from '@/lib/prismadb';
 import serverAuth from "@/lib/serverAuth";
 import { isNull, isUndefined } from "lodash";
-import formidable from 'formidable';
 import fs from 'fs/promises'
-import path from 'path';
 import mime from '@/lib/mime';
-import IncomingForm from "formidable/Formidable";
-import { IncomingMessage } from "http";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -90,10 +86,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
 
                 if (isUndefined(userData?.id)) {
-                    const user = await prismadb.user.create({
-                        data: userData
-                    })
-                    return res.status(200).json(user)
+                    try {
+                        const user = await prismadb.user.create({
+                            data: userData
+                        })
+                        return res.status(200).json(user)
+                    } catch {
+                        return res.status(400).json("Invalid data")
+                    }
                 }
 
                 const user = await prismadb.user.findUnique({
@@ -103,10 +103,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 })
 
                 if (isNull(user)) {
-                    const new_user = await prismadb.user.create({
-                        data: userData
-                    })
-                    return res.status(200).json(new_user)
+                    try {
+                        const new_user = await prismadb.user.create({
+                            data: userData
+                        })
+                        return res.status(200).json(new_user)
+                    } catch {
+                        return res.status(400).json("Invalid data")
+                    }
                 }
 
                 if (!isUndefined(userData.image) && !isNull(userData.image) && typeof userData.image != "string") {
