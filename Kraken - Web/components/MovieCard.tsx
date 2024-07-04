@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import useInfoModal from "@/hooks/useInfoModal";
 import DownloadButton from "./DownloadButton";
 import CopyButton from "./CopyButton";
-import { BiCopy } from "react-icons/bi";
 import { AiOutlineInfoCircle } from "react-icons/ai"
 interface MovieCardProps {
     data: Record<string, any>;
@@ -32,8 +31,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
                         <img onClick={() => openModal(data?.id)} className="w-full h-full rounded-md border-2 border-neutral-800" src={data.thumbUrl} alt="Thumbnail" />
                     </div>
                     <div className="absolute bottom-0 left-0 w-full h-[30%] grid grid-cols-2 place-items-center bg-neutral-800 bg-opacity-90 rounded-b-md">
-                        <div onClick={() => navigator.clipboard.writeText(`smb://kraken.local${data?.videoUrl}`)} className="w-full h-full text-white flex items-center justify-center">
-                            <BiCopy size={25} />
+                        <div onClick={() => { router.push(`/watch/${data?.id}`) }} className="w-full h-full text-white flex items-center justify-center">
+                            <BsFillPlayFill size={30} />
                         </div>
                         <div onClick={() => openModal(data?.id)} className="w-full h-full text-white flex items-center justify-center">
                             <AiOutlineInfoCircle size={25} />

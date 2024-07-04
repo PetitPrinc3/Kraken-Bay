@@ -53,7 +53,10 @@ And many more !!
         - Toggle Hotspot
         - Restart process
         - Reboot server
+- Re-think file management (s3 w Minio ?, API routes ?, custom server ?, secondary server ?)
+- Mobile menu "active title"
 - Mobile web player (orientation)
+- Reduce text padding on small devices in infomodal
 
 ## Collaborate
 

@@ -56,8 +56,8 @@ const Welcome = () => {
                         </p>
                         <ul className="list-disc pl-5">
                             <li>
-                                Because of the format of certain files, you will find that some do not render correctly in the web player. <br />
-                                I recommend you download the file and watch it locally on your own device.
+                                Because of the format of certain files, you will find that some do not render correctly in the web player. <span className="font-bold">(eg. No sound)</span> <br />
+                                I recommend you download the file and watch it locally on your own device or stream it using VLC. This way, you will have full support for multiple audio tracks and subtitles.
                             </li>
                             <li>
                                 Some functionalities are not yet implemented and may not work or crash. Please feel free to me send your feedback.
