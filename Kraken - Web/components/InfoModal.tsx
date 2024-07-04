@@ -80,7 +80,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="px-12 py-8">
+                        <div className="px-8 md:px-12 py-8">
                             <p className="text-green-400 font-semibold text-lg">
                                 {isNew ? "New" : ""}
                             </p>
@@ -91,7 +91,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                             <p className="text-white text-s">
                                 Genres : {data?.genre}
                             </p>
-                            <p className="text-white text-sm md:text-lg my-4">
+                            <p className="text-white text-justify text-sm md:text-lg my-4">
                                 {data?.description}
                             </p>
                             {data?.languages != "" && (<p className="text-zinc-400 text-xs mb-2">

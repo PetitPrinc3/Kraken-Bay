@@ -5,6 +5,14 @@ import { isNull, isUndefined } from "lodash";
 import fs from 'fs/promises'
 import mime from '@/lib/mime';
 
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '10mb'
+        }
+    }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { currentUser }: any = await serverAuth(req, res);
 
@@ -105,9 +113,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 }
 
-                if (!isUndefined(mediaData.posterUrl) && !isNull(mediaData.posterUrl) && typeof mediaData.posterUrl != "string") {
+                if (!isUndefined(mediaData?.posterUrl) && !isNull(mediaData?.posterUrl) && typeof mediaData?.posterUrl != "string") {
                     try {
-                        const posterBuffer = Buffer.from(mediaData.posterUrl.posterBuffer.data)
+                        const posterBuffer = Buffer.from(mediaData.posterUrl.imageBuffer.data)
+                        try {
+                            fs.mkdir(`public/Assets/Images/${existingMedia.id}`, { recursive: true })
+                        } catch (err: any) {
+                            if (err?.code != 'EEXIST') {
+                                console.log(err)
+                            }
+                        }
                         const filePath = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
                         await fs.writeFile(filePath, posterBuffer)
                         const fileType = await mime(filePath)
@@ -129,10 +144,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 }
 
-                if (!isUndefined(mediaData.thumbUrl) && !isNull(mediaData.thumbUrl) && typeof mediaData.thumbUrl != "string") {
+                if (!isUndefined(mediaData?.thumbUrl) && !isNull(mediaData?.thumbUrl) && typeof mediaData?.thumbUrl != "string") {
                     try {
-                        const thumbBuffer = Buffer.from(mediaData.thumbUrl.thumbBuffer.data)
-                        const filePath = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
+                        const thumbBuffer = Buffer.from(mediaData.thumbUrl.imageBuffer.data)
+                        try {
+                            fs.mkdir(`public/Assets/Images/${existingMedia.id}`, { recursive: true })
+                        } catch (err: any) {
+                            if (err?.code != 'EEXIST') {
+                                console.log(err)
+                            }
+                        }
+                        const filePath = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`
                         await fs.writeFile(filePath, thumbBuffer)
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
@@ -146,7 +168,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                             }
                         }
-                        mediaData.thumbUrl = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
+                        mediaData.thumbUrl = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`
                     } catch (err) {
                         console.log(err)
                         return res.status(400).json("Thumbnail update impossible.")

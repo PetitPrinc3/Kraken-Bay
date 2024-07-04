@@ -102,11 +102,13 @@ export default function Edit() {
         }
 
         if (thumbFile != undefined) {
-            const thumbData = posterFile as File
+            const thumbData = thumbFile as File
             const thumbBuffer = await thumbData.arrayBuffer()
             const thumbnailBuffer = Buffer.from(thumbBuffer)
             mediaData.thumbUrl = { imageBuffer: thumbnailBuffer, fileName: thumbData.name }
         }
+
+        console.log(mediaData)
 
         await axios.post("/api/media", mediaData).catch((err) => {
             toast.error("Oops something went wrong...", { containerId: "AdminContainer" })
@@ -132,10 +134,11 @@ export default function Edit() {
     }
 
     const changeThumb = async (e: any) => {
-        const image = posterRef.current?.files
+        const image = thumbRef.current?.files
         if (image.length != 1) {
+            console.log(thumbRef.current?.files)
             toast.error("What did you do ?!")
-            posterRef.current.files = []
+            thumbRef.current.files = []
             setThumb("")
             return
         } else {
@@ -159,7 +162,7 @@ export default function Edit() {
                     </div>
                     <div onClick={() => { thumbRef.current.click() }} className="flex flex-col p-2 bg-slate-600 rounded-md cursor-pointer">
                         <input onChange={changeThumb} ref={thumbRef} type="file" className="hidden" accept="image/*" />
-                        <img src={thumb} className="h-20 object-contain" alt="No Poster" />
+                        <img src={thumb} className="h-20 object-contain" alt="No Thumb" />
                         <p className="w-full text-center text-sm font-light underline">{media?.type} thumbnail</p>
                     </div>
                 </div>

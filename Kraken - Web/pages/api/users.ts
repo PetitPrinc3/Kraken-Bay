@@ -6,6 +6,14 @@ import { isNull, isUndefined } from "lodash";
 import fs from 'fs/promises'
 import mime from '@/lib/mime';
 
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '10mb'
+        }
+    }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         const { currentUser }: any = await serverAuth(req, res);
