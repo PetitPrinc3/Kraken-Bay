@@ -1,14 +1,16 @@
 import useServerProps from "@/hooks/useServerProps";
 import { AdminLayout } from "@/pages/_app";
-import { isUndefined } from "lodash";
+import { delay, isUndefined } from "lodash";
 import { IoPower } from "react-icons/io5";
-import { BiWifi, BiWifi0, BiWifi1, BiWifi2, BiWifiOff } from "react-icons/bi";
+import { BiWifi } from "react-icons/bi";
 import { FaWindows, FaLinux, FaServer } from "react-icons/fa";
-import { MdOutlineRestartAlt, MdFolderShared, MdRefresh } from "react-icons/md";
+import { MdFolderShared, MdRefresh } from "react-icons/md";
+import { IoSyncCircleOutline } from "react-icons/io5"
 import { TbWorld } from "react-icons/tb";
 import { BsDatabaseFillGear } from "react-icons/bs";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { useCallback, useState } from "react";
 
 const formatUptime = (serverUptime: any) => {
     var d = Math.floor(serverUptime / (3600 * 24));
@@ -18,7 +20,7 @@ const formatUptime = (serverUptime: any) => {
 
     var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
     var hDisplay = h > 0 ? h + "h " : "";
-    var mDisplay = m > 0 ? m + "m " : "";
+    var mDisplay = m >= 0 ? m + "m " : "";
 
     return dDisplay + hDisplay + mDisplay;
 }
@@ -26,6 +28,24 @@ const formatUptime = (serverUptime: any) => {
 export default function Accounts() {
     const { data: serverProps, mutate: mutateProps } = useServerProps()
     const router = useRouter()
+    const [reboot, setReboot] = useState(false)
+
+    const rebootServer = async () => {
+        await axios.get("/api/serverProps", { params: { action: "reboot" } })
+        setReboot(true)
+        while (true) {
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            try {
+                const test = await fetch(`http://${document.location.hostname}`)
+                if (test.status == 200) {
+                    setReboot(false)
+                    break
+                }
+            } catch { }
+        }
+
+
+    }
 
     if (isUndefined(serverProps)) return null
 
@@ -103,10 +123,10 @@ export default function Accounts() {
                     </div>
                     <div className="flex gap-4 overflow-x-scroll scrollbar-hide">
                         <div className="inline-block">
-                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                            <div className={`w-40 h-44 md:w-60 md:h-64 ${reboot ? "animate-pulse bg-red-500 border-red-500" : "bg-slate-600 border-slate-500"} max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Reboot server</div>
-                                <div onClick={() => axios.get("/api/serverProps", { params: { action: "reboot" } })} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
-                                    <MdOutlineRestartAlt size={35} />
+                                <div onClick={rebootServer} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                    <IoSyncCircleOutline className={reboot ? "animate-spin" : ""} size={35} />
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Perform reboot at os level.

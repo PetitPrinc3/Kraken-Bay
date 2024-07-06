@@ -20,7 +20,7 @@ const formatUptime = (serverProps: any) => {
 
     var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
     var hDisplay = h > 0 ? h + "h " : "";
-    var mDisplay = m > 0 ? m + "m " : "";
+    var mDisplay = m >= 0 ? m + "m " : "";
 
     return dDisplay + hDisplay + mDisplay;
 }

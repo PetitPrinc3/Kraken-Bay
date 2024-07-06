@@ -47,6 +47,10 @@ And many more !!
     - Db management section
         - Media detection :
             - Serie episodes
+    - Server
+        - reboot
+            - animate while rebooting
+    - Help section
 - Re-think file management (s3 w Minio ?, API routes ?, custom server ?, secondary server ?)
 - Mobile web player (orientation)
 
