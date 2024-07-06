@@ -36,7 +36,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         try {
             const os = require("os")
-            const execSync = require('child_process').execSync
+            const spawn = require('child_process').spawnSync
+
+            const netCmd = () => {
+                if (process.platform.startsWith("win")) {
+                    const { stdout: brief } = spawn('netsh', ['wlan', 'show', 'interfaces'], { encoding: "utf8" })
+                    for (let line of brief.split("\n")) {
+                        if (line.trim().startsWith("Signal")) {
+                            return parseInt(line.split(":")[1].trim())
+                        }
+                    }
+                    return null
+                } else {
+                    const interfaces = os.networkInterfaces()
+                    for (let iface in interfaces) {
+                        if (iface.startsWith("wl")) {
+                            const { stdout: brief } = spawn("iwconfig", [iface], { encoding: "utf8" })
+                            for (let line of brief.split("\n")) {
+                                if (line.trim().startsWith('Link Quality')) {
+                                    const strength = line.trim().split("=")[1].split(" ")[0]
+                                    return Math.round(eval(strength) * 100)
+                                }
+                            }
+                        }
+                    }
+                    return null
+                }
+            }
 
             const serverProps = {
                 osUptime: os.uptime(),
@@ -49,6 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 databaseConfig: process.env.DATABASE_URL,
                 tmdbAPIKey: process.env.TMDB_API_SECRET,
                 nextAuthUrl: process.env.NEXTAUTH_URL,
+                connectivity: netCmd()
             }
 
             return res.status(200).json(serverProps);

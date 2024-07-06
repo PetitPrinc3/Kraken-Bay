@@ -113,7 +113,7 @@ const Player = () => {
                 <div className={`absolute top-0 lef-0 w-full h-full flex flex-col justify-between z-20 transition-all duration-500 bg-gradient-to-t from-zinc-900 from-2% to-transparent to-70% opacity-${opacity}`}>
                     <div className="w-full flex flex-row items-center justify-between top-0 pt-8 pb-4 px-10">
                         <div className="text-3xl flex flex-row items-center gap-4">
-                            <AiOutlineArrowLeft onClick={() => router.push('/home')} className="text-white cursor-pointer hover:opacity-70 hover:scale-110 transition-all duration-300" size={40} />
+                            <AiOutlineArrowLeft onClick={() => router.back()} className="text-white cursor-pointer hover:opacity-70 hover:scale-110 transition-all duration-300" size={40} />
                             <p className="text-white test-1xl md:hidden font-bold">
                                 <span className="font-light">You are watching : </span>
                                 {data?.title}

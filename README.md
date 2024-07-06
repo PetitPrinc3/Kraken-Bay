@@ -54,7 +54,6 @@ And many more !!
         - Reboot server
 - Re-think file management (s3 w Minio ?, API routes ?, custom server ?, secondary server ?)
 - Mobile web player (orientation)
-- Goback arrow in player to go back not go home
 
 ## Collaborate
 
