@@ -84,6 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const netCmd = () => {
                 if (process.platform.startsWith("win")) {
                     const { stdout: brief } = spawn('netsh', ['wlan', 'show', 'interfaces'], { encoding: "utf8" })
+                    if (brief === null) return null
                     for (let line of brief.split("\n")) {
                         if (line.trim().startsWith("Signal")) {
                             return parseInt(line.split(":")[1].trim())
@@ -95,10 +96,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     for (let iface in interfaces) {
                         if (iface.startsWith("wl")) {
                             const { stdout: brief } = spawn("iwconfig", [iface], { encoding: "utf8" })
+                            if (brief === null) return null
                             for (let line of brief.split("\n")) {
                                 if (line.trim().startsWith('Link Quality')) {
                                     const strength = line.trim().split("=")[1].split(" ")[0]
-                                    return Math.round(eval(strength) * 100)
+                                    if (Math.round(eval(strength) * 100) > 0) return Math.round(eval(strength) * 100)
                                 }
                             }
                         }
@@ -110,6 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const krakenWebService = () => {
                 if (process.platform.startsWith("win")) return undefined
                 const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                if (status === null) return null
                 for (let line of status.split("\n")) {
                     if (line.trim().startsWith("Active")) {
                         return line.split(":")[1].trim().split(" ")[0].trim() == "active" ? true : false
@@ -120,6 +123,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const krakenSmbService = () => {
                 if (process.platform.startsWith("win")) return undefined
                 const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                if (status === null) return null
                 for (let line of status.split("\n")) {
                     if (line.trim().startsWith("Active")) {
                         return line.split(":")[1].trim().split(" ")[0].trim() == "active" ? true : false
@@ -130,6 +134,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const krakenApService = () => {
                 if (process.platform.startsWith("win")) return undefined
                 const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                if (status === null) return null
                 for (let line of status.split("\n")) {
                     if (line.trim().startsWith("Active")) {
                         return line.split(":")[1].trim().split(" ")[0].trim() == "active" ? true : false
