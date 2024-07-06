@@ -123,7 +123,7 @@ export default function Accounts() {
                     </div>
                     <div className="flex gap-4 overflow-x-scroll scrollbar-hide">
                         <div className="inline-block">
-                            <div className={`w-40 h-44 md:w-60 md:h-64 ${reboot ? "animate-pulse bg-red-500 border-red-500" : "bg-slate-600 border-slate-500"} max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
+                            <div className={`w-40 h-44 md:w-60 md:h-64 ${reboot ? "animate-pulse" : ""} max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-slate-500 border-2 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Reboot server</div>
                                 <div onClick={rebootServer} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <IoSyncCircleOutline className={reboot ? "animate-spin" : ""} size={35} />
