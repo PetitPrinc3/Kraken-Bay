@@ -47,11 +47,6 @@ And many more !!
     - Db management section
         - Media detection :
             - Serie episodes
-    - Server :
-        - Restart SMB
-        - Toggle Hotspot
-        - Restart process
-        - Reboot server
 - Re-think file management (s3 w Minio ?, API routes ?, custom server ?, secondary server ?)
 - Mobile web player (orientation)
 

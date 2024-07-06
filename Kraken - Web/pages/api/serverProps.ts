@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import fs from 'fs'
+import fs, { stat } from 'fs'
 
 import serverAuth from "@/lib/serverAuth";
 import { isUndefined } from "lodash";
@@ -28,15 +28,58 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method == 'GET') {
         const { action } = req.query
+        const os = require("os")
+        const spawn = require('child_process').spawnSync
 
-        if (action === "stop") {
-            process.exit()
-            return res.status(200).end()
+        if (action === "restartWEB") {
+            if (process.platform.startsWith("win")) process.exit()
+            try {
+                spawn("systemctl", ["restart", "krakenWeb"], { encoding: "utf8" })
+                return res.status(200).end()
+            } catch (err) {
+                return res.status(400).end()
+            }
+        }
+
+        if (action === "restartSMB") {
+            if (process.platform.startsWith("win")) return res.status(400).json("OS platform incompatible.")
+            try {
+                spawn("systemctl", ["restart", "smbd"], { encoding: "utf8" })
+                return res.status(200).end()
+            } catch (err) {
+                return res.status(400).end()
+            }
+        }
+
+        if (action === "restartAP") {
+            if (process.platform.startsWith("win")) return res.status(400).json("OS platform incompatible.")
+            try {
+                spawn("systemctl", ["restart", "create_ap"], { encoding: "utf8" })
+                return res.status(200).end()
+            } catch (err) {
+                return res.status(400).end()
+            }
+        }
+
+        if (action === "reboot") {
+            if (process.platform.startsWith("win")) {
+                try {
+                    spawn("shutdown", ["/r", "/t", "00"], { encoding: "utf8" })
+                    return res.status(200).end()
+                } catch (err) {
+                    return res.status(400).json(err)
+                }
+            } else {
+                try {
+                    spawn("reboot", { encoding: "utf8" })
+                    return res.status(200).end()
+                } catch (err) {
+                    return res.status(400).json(err)
+                }
+            }
         }
 
         try {
-            const os = require("os")
-            const spawn = require('child_process').spawnSync
 
             const netCmd = () => {
                 if (process.platform.startsWith("win")) {
@@ -64,14 +107,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }
 
+            const krakenWebService = () => {
+                if (process.platform.startsWith("win")) return undefined
+                const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                for (let line of status.split("\n")) {
+                    if (line.trim().startsWith("Active")) {
+                        return line.split(":")[1].trim().split(" ")[0].trim() == "active" ? true : false
+                    }
+                }
+            }
+
+            const krakenSmbService = () => {
+                if (process.platform.startsWith("win")) return undefined
+                const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                for (let line of status.split("\n")) {
+                    if (line.trim().startsWith("Active")) {
+                        return line.split(":")[1].trim().split(" ")[0].trim() == "active" ? true : false
+                    }
+                }
+            }
+
+            const krakenApService = () => {
+                if (process.platform.startsWith("win")) return undefined
+                const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                for (let line of status.split("\n")) {
+                    if (line.trim().startsWith("Active")) {
+                        return line.split(":")[1].trim().split(" ")[0].trim() == "active" ? true : false
+                    }
+                }
+            }
+
             const serverProps = {
                 osUptime: os.uptime(),
                 osPlatform: process.platform,
                 osBuild: os.release(),
                 osHostName: os.hostname(),
                 serverUptime: process.uptime(),
-                hotSpot: false,
-                smbStatus: false,
+                hotSpot: krakenApService(),
+                smbStatus: krakenSmbService(),
+                webService: krakenWebService(),
                 databaseConfig: process.env.DATABASE_URL,
                 tmdbAPIKey: process.env.TMDB_API_SECRET,
                 nextAuthUrl: process.env.NEXTAUTH_URL,
