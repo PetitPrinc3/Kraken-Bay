@@ -59,14 +59,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (line.trim().startsWith("Active")) {
                     if (line.split(":")[1].trim().split(" ")[0].trim() == "active") {
                         try {
-                            spawn("systemctl", ["start", "create_ap"], { encoding: "utf8" })
+                            spawn("systemctl", ["stop", "create_ap"], { encoding: "utf8" })
                             return res.status(200).end()
                         } catch (err) {
                             return res.status(400).end()
                         }
                     } else {
                         try {
-                            spawn("systemctl", ["stop", "create_ap"], { encoding: "utf8" })
+                            spawn("systemctl", ["start", "create_ap"], { encoding: "utf8" })
                             return res.status(200).end()
                         } catch (err) {
                             return res.status(400).end()
@@ -137,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const krakenSmbService = () => {
                 if (process.platform.startsWith("win")) return undefined
-                const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                const { stdout: status } = spawn("systemctl", ["status", "smbd"], { encoding: "utf8" })
                 if (status === null) return null
                 for (let line of status.split("\n")) {
                     if (line.trim().startsWith("Active")) {
@@ -148,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const krakenApService = () => {
                 if (process.platform.startsWith("win")) return undefined
-                const { stdout: status } = spawn("systemctl", ["status", "krakenWeb"], { encoding: "utf8" })
+                const { stdout: status } = spawn("systemctl", ["status", "create_ap"], { encoding: "utf8" })
                 if (status === null) return null
                 for (let line of status.split("\n")) {
                     if (line.trim().startsWith("Active")) {
