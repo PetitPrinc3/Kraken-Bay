@@ -176,9 +176,9 @@ ExecStart=/usr/bin/npm --prefix "{os.path.join(install_path, "Kraken - Web")}" s
 Restart=always
 User=root
 Group=root
-Environment=PATH=/usr/bin:/usr/local/bin
+Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin
 Environment=NODE_ENV=production
-WorkingDirectory={os.path.join(install_path, "Kraken - Web")}
+WorkingDirectory=/
 
 [Install]
 WantedBy=multi-user.target"""
@@ -335,6 +335,8 @@ if test -f "/tmp/create_ap.all.lock"; then
 fi
                                      
 /usr/bin/create_ap --config /etc/create_ap.conf
+                                     
+nmcli radio wifi on
 
 """)
                 createap_start.close()

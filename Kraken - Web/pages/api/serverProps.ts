@@ -51,13 +51,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
 
-        if (action === "restartAP") {
+        if (action === "toggleAP") {
             if (process.platform.startsWith("win")) return res.status(400).json("OS platform incompatible.")
-            try {
-                spawn("systemctl", ["restart", "create_ap"], { encoding: "utf8" })
-                return res.status(200).end()
-            } catch (err) {
-                return res.status(400).end()
+            const { stdout: status } = spawn("systemctl", ["status", "create_ap"], { encoding: "utf8" })
+            if (status === null) return null
+            for (let line of status.split("\n")) {
+                if (line.trim().startsWith("Active")) {
+                    if (line.split(":")[1].trim().split(" ")[0].trim() == "active") {
+                        try {
+                            spawn("systemctl", ["start", "create_ap"], { encoding: "utf8" })
+                            return res.status(200).end()
+                        } catch (err) {
+                            return res.status(400).end()
+                        }
+                    } else {
+                        try {
+                            spawn("systemctl", ["stop", "create_ap"], { encoding: "utf8" })
+                            return res.status(200).end()
+                        } catch (err) {
+                            return res.status(400).end()
+                        }
+                    }
+                }
             }
         }
 
@@ -100,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             for (let line of brief.split("\n")) {
                                 if (line.trim().startsWith('Link Quality')) {
                                     const strength = line.trim().split("=")[1].split(" ")[0]
-                                    if (Math.round(eval(strength) * 100) > 0) return Math.round(eval(strength) * 100)
+                                    return Math.round(eval(strength) * 100)
                                 }
                             }
                         }

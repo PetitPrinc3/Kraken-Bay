@@ -116,7 +116,7 @@ export default function Accounts() {
                         <div className="inline-block">
                             <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${serverProps.hotSpot ? "border-green-500" : "border-orange-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Toggle Hostspot</div>
-                                <div onClick={() => axios.get("/api/serverProps", { params: { action: "restartAP" } })} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                <div onClick={() => axios.get("/api/serverProps", { params: { action: "toggleAP" } })} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <BiWifi size={35} />
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
