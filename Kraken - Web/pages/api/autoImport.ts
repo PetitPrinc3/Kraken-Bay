@@ -170,17 +170,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }
             if (!existingFiles.includes(`/Assets/Movies/${filesList[i].name}`)) {
-                const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_SECRET}&query=${title?.toLowerCase() || ""}&include_adult=true&language=en-US&page=1`
-                const { data: apiResult } = await axios.get(url)
-                presentFiles.push({
-                    key: uuidv4(),
-                    name: filesList[i].name,
-                    title: apiResult?.results[0].id,
-                    altTitle: title?.toLowerCase() || "",
-                    type: "Movies",
-                    path: `/Assets/Movies/${filesList[i].name}`,
-                    apiResult: apiResult?.results
-                })
+                try {
+                    const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_SECRET}&query=${title?.toLowerCase() || ""}&include_adult=true&language=en-US&page=1`
+                    const { data: apiResult } = await axios.get(url)
+                    presentFiles.push({
+                        key: uuidv4(),
+                        name: filesList[i].name,
+                        title: apiResult?.results[0].id,
+                        altTitle: title?.toLowerCase() || "",
+                        type: "Movies",
+                        path: `/Assets/Movies/${filesList[i].name}`,
+                        apiResult: apiResult?.results
+                    })
+                } catch {
+                    const titleId = uuidv4()
+                    presentFiles.push({
+                        key: uuidv4(),
+                        name: filesList[i].name,
+                        title: titleId,
+                        altTitle: title?.toLowerCase() || "",
+                        type: "Movies",
+                        path: `/Assets/Movies/${filesList[i].name}`,
+                        apiResult: [{
+                            id: titleId,
+                            original_title: title
+                        }]
+                    })
+                }
             }
         }
 
@@ -220,20 +236,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             })
             if (newEps.length != 0) {
-                const url = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_API_SECRET}&query=${folderList[i].name?.toLowerCase() || ""}&include_adult=true&language=en-US&page=1`
-                const { data: apiResult } = await axios.get(url)
-                presentFiles.push({
-                    key: uuidv4(),
-                    name: folderList[i].name,
-                    title: apiResult?.results[0].id,
-                    altTitle: folderList[i].name,
-                    type: "TV Show",
-                    path: `/Assets/Series/${folderList[i].name}`,
-                    seasons: seasons.sort().join(","),
-                    episodes: newEps,
-                    apiResult: apiResult?.results,
-                    isNew: (await prismadb.media.findMany({ where: { altTitle: folderList[i].name } })).length == 0
-                })
+                try {
+                    const url = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_API_SECRET}&query=${folderList[i].name?.toLowerCase() || ""}&include_adult=true&language=en-US&page=1`
+                    const { data: apiResult } = await axios.get(url)
+                    presentFiles.push({
+                        key: uuidv4(),
+                        name: folderList[i].name,
+                        title: apiResult?.results[0].id,
+                        altTitle: folderList[i].name,
+                        type: "TV Show",
+                        path: `/Assets/Series/${folderList[i].name}`,
+                        seasons: seasons.sort().join(","),
+                        episodes: newEps,
+                        apiResult: apiResult?.results,
+                        isNew: (await prismadb.media.findMany({ where: { altTitle: folderList[i].name } })).length == 0
+                    })
+                } catch {
+                    const titleId = uuidv4()
+                    presentFiles.push({
+                        key: uuidv4(),
+                        name: folderList[i].name,
+                        title: titleId,
+                        altTitle: folderList[i].name.toLowerCase(),
+                        type: "TV Show",
+                        path: `/Assets/Series/${folderList[i].name}`,
+                        seasons: seasons.sort().join(","),
+                        episodes: newEps,
+                        apiResult: [{
+                            id: titleId,
+                            original_name: folderList[i].name
+                        }],
+                        isNew: (await prismadb.media.findMany({ where: { altTitle: folderList[i].name } })).length == 0
+                    })
+                }
             }
         }
 
@@ -273,6 +308,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     const movieInfo = getInfo(`public${files[i].path}`)
 
+                    console.log(files)
+
                     if (files[i].type == "Movies") {
                         const initMovie = await prismadb.media.create({
                             data: {
@@ -291,25 +328,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         })
 
-                        fs.mkdir(`public/Assets/Images/${initMovie.id}`, (err) => { })
+                        try {
+                            fs.mkdir(`public/Assets/Images/${initMovie.id}`, (err) => { })
 
-                        const poster = await (await fetch(posterUrl)).blob()
-                        fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
+                            const poster = await (await fetch(posterUrl)).blob()
+                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
 
-                        const thumb = await (await fetch(thumbUrl)).blob()
-                        fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
+                            const thumb = await (await fetch(thumbUrl)).blob()
+                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
 
-                        const finalMovie = await prismadb.media.update({
-                            where: {
-                                id: initMovie.id
-                            },
-                            data: {
-                                thumbUrl: `/Assets/Images/${initMovie.id}${mediaData?.poster_path}`,
-                                posterUrl: `/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`,
-                            }
-                        })
+                            const finalMovie = await prismadb.media.update({
+                                where: {
+                                    id: initMovie.id
+                                },
+                                data: {
+                                    thumbUrl: `/Assets/Images/${initMovie.id}${mediaData?.poster_path}`,
+                                    posterUrl: `/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`,
+                                }
+                            })
 
-                        movies.push(finalMovie)
+                            movies.push(finalMovie)
+                        } catch {
+                            movies.push(initMovie)
+                        }
+
                     } else {
                         if (files[i].isNew) {
                             const initSerie = await prismadb.media.create({
@@ -329,25 +371,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 }
                             })
 
-                            fs.mkdir(`public/Assets/Images/${initSerie.id}`, (err) => { })
+                            try {
+                                fs.mkdir(`public/Assets/Images/${initSerie.id}`, (err) => { })
 
-                            const poster = await (await fetch(posterUrl)).blob()
-                            fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
+                                const poster = await (await fetch(posterUrl)).blob()
+                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
 
-                            const thumb = await (await fetch(thumbUrl)).blob()
-                            fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
+                                const thumb = await (await fetch(thumbUrl)).blob()
+                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
 
-                            const finalMovie = await prismadb.media.update({
-                                where: {
-                                    id: initSerie.id
-                                },
-                                data: {
-                                    thumbUrl: `/Assets/Images/${initSerie.id}${mediaData?.poster_path}`,
-                                    posterUrl: `/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`,
-                                }
-                            })
+                                const finalSerie = await prismadb.media.update({
+                                    where: {
+                                        id: initSerie.id
+                                    },
+                                    data: {
+                                        thumbUrl: `/Assets/Images/${initSerie.id}${mediaData?.poster_path}`,
+                                        posterUrl: `/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`,
+                                    }
+                                })
 
-                            files[i].key = finalMovie.id
+                                files[i].key = finalSerie.id
+                            } catch {
+                                files[i].key = initSerie.id
+                            }
+
                         } else {
                             const existingSerie = await prismadb.media.findFirst({ where: { altTitle: files[i].altTitle } })
                             if (!isNull(existingSerie)) {
