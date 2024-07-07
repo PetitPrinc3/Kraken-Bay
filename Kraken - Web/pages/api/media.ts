@@ -63,8 +63,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         ]
                     },
-                    take: parseInt(mediaLimit as string) || undefined,
                 })
+                if (isUndefined(searchText) && isUndefined(mediaGenres)) {
+                    for (let i = media.length; i == 0; i--) {
+                        const randomIndex = Math.floor(Math.random() * i)
+                        media[i], media[randomIndex] = media[randomIndex], media[i]
+                    }
+                    if (!isUndefined(mediaLimit)) {
+                        return res.status(200).json(media.splice(Math.floor(Math.random() * (media.length - +mediaLimit)), +mediaLimit))
+                    } else {
+                        return res.status(200).json(media)
+                    }
+                }
                 return res.status(200).json(media)
             } else {
                 const media = await prismadb.media.findUnique({
