@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 type: "Movies"
             }
         })
-        const epCount = await prismadb.serie_EP.count()
+        const epCount = await prismadb.episodes.count()
 
         const mediaCount = +movieCount + +epCount
 

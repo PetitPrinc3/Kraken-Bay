@@ -200,7 +200,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
 
-        const existingEpisodes = await prismadb.serie_EP.findMany()
+        const existingEpisodes = await prismadb.episodes.findMany()
         const existingSeries = await prismadb.media.findMany({ where: { type: "Series" } })
 
         const existingEps: string[] = []
@@ -423,7 +423,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         }
                         for (let episode of files[i]?.episodes) {
-                            await prismadb.serie_EP.create({
+                            await prismadb.episodes.create({
                                 data: {
                                     title: mediaData.original_name + " : SO " + episode.season + ", EP " + episode.episode,
                                     serieId: files[i].key,

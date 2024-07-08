@@ -64,18 +64,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         ]
                     },
                 })
-                if (isUndefined(searchText) && isUndefined(mediaGenres)) {
+                if (isUndefined(searchText)) {
                     for (let i = media.length; i == 0; i--) {
                         const randomIndex = Math.floor(Math.random() * i)
                         media[i], media[randomIndex] = media[randomIndex], media[i]
                     }
-                    if (!isUndefined(mediaLimit)) {
-                        return res.status(200).json(media.splice(Math.floor(Math.random() * (media.length - +mediaLimit)), +mediaLimit))
-                    } else {
-                        return res.status(200).json(media)
-                    }
                 }
-                return res.status(200).json(media)
+                if (!isUndefined(mediaLimit)) {
+                    return res.status(200).json(media.splice(Math.floor(Math.random() * (media.length - +mediaLimit)), +mediaLimit))
+                } else {
+                    return res.status(200).json(media)
+                }
             } else {
                 const media = await prismadb.media.findUnique({
                     where: {
@@ -204,7 +203,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (isUndefined(mediaId)) {
                     await prismadb.media.deleteMany({})
-                    await prismadb.serie_EP.deleteMany({})
+                    await prismadb.episodes.deleteMany({})
                     return res.status(200).json("DB Purged.")
                 } else {
                     const target = await prismadb.media.findUnique({
@@ -225,7 +224,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         })
                         return res.status(200).json("Movie deleted")
                     } else {
-                        await prismadb.serie_EP.deleteMany({
+                        await prismadb.episodes.deleteMany({
                             where: {
                                 serieId: target?.id
                             }

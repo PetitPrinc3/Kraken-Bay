@@ -11,33 +11,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { serieId, season, episode, } = req.query;
 
             if (!isUndefined(serieId) && !isUndefined(season) && !isUndefined(episode)) {
-                const ep = await prismadb.serie_EP.findUnique({
+                const ep = await prismadb.episodes.findUnique({
                     where:
                     {
-                        Episode: {
+                        Eps: {
                             serieId: serieId as string,
-                            season: season as string,
-                            episode: episode as string
+                            season: +season,
+                            episode: +episode
                         }
                     }
                 })
 
                 return res.status(200).json(ep)
             } else {
-                const ep = await prismadb.serie_EP.findMany({
+                const ep = await prismadb.episodes.findMany({
                     where: {
                         serieId: serieId as string || undefined,
-                        season: season as string || undefined,
+                        season: isUndefined(season) ? undefined : +season,
                     },
                     orderBy: [
                         {
                             serieId: "asc"
                         },
                         {
-                            episode: "asc"
+                            season: "asc"
                         },
                         {
-                            season: "asc"
+                            episode: "asc"
                         }
                     ]
                 })
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             if (isUndefined(episodeData.id)) {
                 try {
-                    const episode = await prismadb.serie_EP.create({
+                    const episode = await prismadb.episodes.create({
                         data: episodeData
                     })
                     return res.status(200).json(episode)
@@ -71,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }
 
-            const existingEpisode = await prismadb.serie_EP.findUnique({
+            const existingEpisode = await prismadb.episodes.findUnique({
                 where: {
                     id: episodeData.id as string
                 }
@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (isNull(existingEpisode)) {
                 try {
-                    const episode = await prismadb.serie_EP.create({
+                    const episode = await prismadb.episodes.create({
                         data: episodeData
                     })
                     return res.status(200).json(episode)
@@ -87,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     return res.status(400).json("Invalid data")
                 }
             } else {
-                const update = await prismadb.serie_EP.update({
+                const update = await prismadb.episodes.update({
                     where: {
                         id: episodeData.id as string
                     },
@@ -102,10 +102,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const { episodeId } = req.query
 
                 if (isUndefined(episodeId)) {
-                    await prismadb.serie_EP.deleteMany({})
+                    await prismadb.episodes.deleteMany({})
                     return res.status(200).json("DB Purged.")
                 } else {
-                    const target = await prismadb.serie_EP.findUnique({
+                    const target = await prismadb.episodes.findUnique({
                         where: {
                             id: episodeId as string
                         }
@@ -115,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         return res.status(400).json("Invalid entry.")
                     }
 
-                    await prismadb.serie_EP.delete({
+                    await prismadb.episodes.delete({
                         where: {
                             id: target?.id
                         }

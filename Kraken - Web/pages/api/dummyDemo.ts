@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         await prismadb.media.deleteMany({})
-        await prismadb.serie_EP.deleteMany({})
+        await prismadb.episodes.deleteMany({})
 
         const mediaCount = Math.floor(Math.random() * 100) + 10
 
@@ -49,13 +49,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (type == "Series") {
                 for (let j = 0; j < seasons.length; j++) {
-                    for (let k = 0; k < Math.floor(Math.random() * 8 + 2); k++) {
-                        await prismadb.serie_EP.create({
+                    for (let k = 0; k < Math.floor(Math.random() * 8 + 12); k++) {
+                        await prismadb.episodes.create({
                             data: {
                                 title: `Dummy Serie : So ${seasons[j]}, Ep ${k + 1}`,
                                 serieId: media.id,
-                                season: seasons[j].toString(),
-                                episode: (k + 1).toString(),
+                                season: seasons[j],
+                                episode: k + 1,
                                 videoUrl: "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
                             }
                         })

@@ -119,14 +119,14 @@ export default function Manage() {
             for (let i = 0; i < (e.target.files || []).length; i++) {
                 const jsonFile = e.target.files[i] as File
                 const jsonInput = JSON.parse(await jsonFile.text())
-                const target = jsonInput.hasOwnProperty("Titles") ? "Media" : jsonInput.hasOwnProperty("Users") ? "User" : jsonInput.hasOwnProperty("Episodes") ? "Serie_EP" : "Unknown"
+                const target = jsonInput.hasOwnProperty("Titles") ? "Media" : jsonInput.hasOwnProperty("Users") ? "User" : jsonInput.hasOwnProperty("Episodes") ? "Episodes" : "Unknown"
                 const json = {
                     key: uuidv4(),
                     name: jsonFile.name,
                     target: target,
                     data: jsonInput,
                 }
-                if (target == "Serie_EP" || target == "Unknown") {
+                if (target == "Episodes" || target == "Unknown") {
                     jsonData.push(json)
                 } else {
                     jsonData.unshift(json)
@@ -175,7 +175,7 @@ export default function Manage() {
                 } catch (err) {
                     toast.error(`Something went wrong importing ${file.name}`, { containerId: "AdminContainer" })
                 }
-            } else if (file.target == "Serie_EP") {
+            } else if (file.target == "Episodes") {
                 try {
                     const episodeData = file.data.Episodes
                     for (let i = 0; i < episodeData.length; i++) {
@@ -215,7 +215,7 @@ export default function Manage() {
                         toast.clearWaitingQueue()
                     }
                 })
-            } else if (file.target == "Serie_EP") {
+            } else if (file.target == "Episodes") {
                 await axios.delete("/api/episode").catch((err) => {
                     toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
                 }).then((data) => {
@@ -275,7 +275,7 @@ export default function Manage() {
                     <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
                         <div className="flex flex-row items-center gap-4 text-xl">
                             <BiMovie size={20} />
-                            Serie_EP <span className="hidden md:block">:</span>
+                            Episodes <span className="hidden md:block">:</span>
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {episodes?.length} entrie{episodes?.length > 0 ? "s" : ""}
@@ -395,7 +395,7 @@ export default function Manage() {
                         <hr className="border-[1px] border-slate-400" />
                         <div className="flex flex-row items-center gap-2 text-md font-semibold leading-none px-4">
                             <IoWarning className="text-orange-400" />
-                            Attention, this action will purge the Media database & the Serie_EP database.
+                            Attention, this action will purge the Media database & the Episodes database.
                         </div>
                         <hr className="border-[1px] border-slate-400" />
                         <div className="w-full flex flex-col gap-2 px-4">
@@ -452,7 +452,7 @@ export default function Manage() {
                                                         </div>
                                                     </td>
                                                     <td className={`truncate text-ellipsis ${file.target == "Unknown" ? "text-red-500" : ""}`}>{file.target}</td>
-                                                    <td className={file.target == "Unknown" ? "text-red-500" : ""}>{file.target == "User" ? file.data.Users.length.toString() : file.target == "Media" ? file.data.Titles.length.toString() : file.target == "Serie_EP" ? file.data.Episodes.length.toString() : "N/A"}</td>
+                                                    <td className={file.target == "Unknown" ? "text-red-500" : ""}>{file.target == "User" ? file.data.Users.length.toString() : file.target == "Media" ? file.data.Titles.length.toString() : file.target == "Episodes" ? file.data.Episodes.length.toString() : "N/A"}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

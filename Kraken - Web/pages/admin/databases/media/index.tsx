@@ -150,7 +150,7 @@ export default function Media() {
             setImportAction(true)
         } else if (!isUndefined(jsonInput?.Episodes)) {
             setImportData(jsonInput.Episodes)
-            setTargetDb("Serie_EP")
+            setTargetDb("Episodes")
             setImportAction(true)
         }
         if (!isUndefined(jsonImportRef.current?.files)) jsonImportRef.current.value = ""
@@ -168,7 +168,7 @@ export default function Media() {
             mutateMedia()
             !isUndefined(loading) && toast.update(loading, { render: 'Data merged successfully.', type: "success", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
         }
-        if (targetDb == "Serie_EP") {
+        if (targetDb == "Episodes") {
             for (let i = 0; i < importData.length; i++) {
                 await axios.post("/api/episode", { episodeData: importData[i] }).catch((err) => {
                     !isUndefined(loading) && toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
@@ -190,7 +190,7 @@ export default function Media() {
                 }
             })
         }
-        if (targetDb == "Serie_EP") {
+        if (targetDb == "Episodes") {
             await axios.delete("/api/episode").catch((err) => {
                 toast.update(loading, { render: 'Oops, something went wrong...', type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
             }).then((data) => {
@@ -298,7 +298,7 @@ export default function Media() {
                                 </p>
                                 <div className="flex flex-row items-center gap-2 text-xs font-light leading-none">
                                     <IoWarning className="text-orange-400" />
-                                    This will also delete every entry from the Serie_EP database.
+                                    This will also delete every entry from the Episodes database.
                                 </div>
                             </div>
                             <div onClick={() => setPurgeAction(false)} className="p-2 cursor-pointer hover:bg-slate-600 rounded-md transition-all duration-300">
@@ -352,7 +352,7 @@ export default function Media() {
                             </div>
                             <select onChange={(e) => setTargetDb(e.currentTarget.value)} className="bg-slate-700 px-8 focus:outline-none" value={targetDb}>
                                 <option value="Media">Media</option>
-                                <option value="Serie_EP">Serie_EP</option>
+                                <option value="Episodes">Episodes</option>
                             </select>
                         </div>
                         <div className="w-ful flex flex-col gap-2 items-center">

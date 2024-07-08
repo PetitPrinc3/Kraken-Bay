@@ -28,7 +28,7 @@ model User {
   roles          String         @default("")
   skipPrompt     Boolean        @default(false)
   Media          Media[]
-  Serie_EP       Serie_EP[]
+  Episodes       Episodes[]
   PendingMedia   PendingMedia[]
 
   @@fulltext([name, email])
@@ -52,7 +52,7 @@ model Media {
   uploadedBy  String?
   User        User?      @relation(fields: [userId], references: [id])
   userId      String?
-  Serie_EP    Serie_EP[]
+  Episodes    Episodes[]
 
   @@fulltext([title, altTitle, description, genre])
   @@fulltext([title, altTitle, description, videoUrl, uploadedBy])
@@ -74,17 +74,17 @@ model PendingMedia {
   User        User?      @relation(fields: [userId], references: [id])
   userId      String?
   userName    String?
-  Serie_EP    Serie_EP[]
+  Episodes    Episodes[]
 
   @@fulltext([title, description, userName])
 }
 
-model Serie_EP {
+model Episodes {
   id             String        @id @default(uuid())
   title          String
   serieId        String
-  season         String
-  episode        String
+  season         Int
+  episode        Int
   videoUrl       String        @db.LongText
   createdAt      DateTime      @default(now())
   User           User?         @relation(fields: [userId], references: [id])
@@ -94,7 +94,7 @@ model Serie_EP {
   PendingMedia   PendingMedia? @relation(fields: [pendingMediaId], references: [id])
   pendingMediaId String?
 
-  @@unique([serieId, season, episode], name: "Episode")
+  @@unique([serieId, season, episode], name: "Eps")
 }
 
 model Genres {
