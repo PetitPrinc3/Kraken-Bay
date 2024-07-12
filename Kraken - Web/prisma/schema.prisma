@@ -50,8 +50,7 @@ model Media {
   seasons     String?
   createdAt   DateTime   @default(now())
   uploadedBy  String?
-  User        User?      @relation(fields: [userId], references: [id])
-  userId      String?
+  User        User?      @relation(fields: [uploadedBy], references: [email])
   Episodes    Episodes[]
 
   @@fulltext([title, altTitle, description, genre])
@@ -71,8 +70,7 @@ model PendingMedia {
   duration    String?
   seasonCount String?
   createdAt   DateTime   @default(now())
-  User        User?      @relation(fields: [userId], references: [id])
-  userId      String?
+  User        User?      @relation(fields: [userName], references: [email])
   userName    String?
   Episodes    Episodes[]
 
