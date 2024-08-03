@@ -246,10 +246,10 @@ export default function Manage() {
         <AdminLayout pageName="manage">
             <div className="w-full h-fit flex flex-col gap-4">
                 <div className="w-full h-full grid grid-cols-3 gap-4">
-                    <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="flex flex-row items-center gap-4 text-xl">
+                    <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
+                        <div className="grid grid-cols-[10%_90%] items-center gap-4 text-lg md:text-xl">
                             <FaUserGroup size={20} />
-                            User <span className="hidden md:block">:</span>
+                            User
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {users?.length} entrie{users?.length > 0 ? "s" : ""}
@@ -258,10 +258,10 @@ export default function Manage() {
                             Last entry : <span className="text-cyan-400 font-bold">{!isUndefined(users) ? new Date(users[0]?.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "N/A"}</span>
                         </div>
                     </div>
-                    <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="flex flex-row items-center gap-4 text-xl">
+                    <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
+                        <div className="grid grid-cols-[10%_90%] items-center gap-4 text-lg md:text-xl">
                             <BiMovie size={20} />
-                            Media <span className="hidden md:block">:</span>
+                            Media
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {media?.length} entrie{media?.length > 0 ? "s" : ""}
@@ -272,10 +272,10 @@ export default function Manage() {
                             </p>
                         </div>
                     </div>
-                    <div className="w-full h-full bg-slate-800 flex flex-col text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="flex flex-row items-center gap-4 text-xl">
+                    <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
+                        <div className="grid grid-cols-[10%_90%] items-center gap-4 text-lg md:text-xl">
                             <BiMovie size={20} />
-                            Episodes <span className="hidden md:block">:</span>
+                            Episodes
                         </div>
                         <div className="text-2xl font-semibold text-center">
                             {episodes?.length} entrie{episodes?.length > 0 ? "s" : ""}
@@ -393,9 +393,9 @@ export default function Manage() {
                             </div>
                         </div>
                         <hr className="border-[1px] border-slate-400" />
-                        <div className="flex flex-row items-center gap-2 text-md font-semibold leading-none px-4">
+                        <div className="grid grid-cols-[5%_95%] items-center gap-2 text-md font-semibold leading-none px-4">
                             <IoWarning className="text-orange-400" />
-                            Attention, this action will purge the Media database & the Episodes database.
+                            Warning, this action will purge the Media database & the Episodes database.
                         </div>
                         <hr className="border-[1px] border-slate-400" />
                         <div className="w-full flex flex-col gap-2 px-4">

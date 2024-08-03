@@ -18,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             thumbUrl: thumbName,
             posterUrl: postName,
             genre: uploadProps.genres,
-            userId: currentUser.id,
             userName: currentUser.email,
         }
     })

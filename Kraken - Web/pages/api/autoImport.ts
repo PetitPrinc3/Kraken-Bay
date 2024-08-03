@@ -308,8 +308,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     const movieInfo = getInfo(`public${files[i].path}`)
 
-                    console.log(files)
-
                     if (files[i].type == "Movies") {
                         const initMovie = await prismadb.media.create({
                             data: {
@@ -423,15 +421,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         }
                         for (let episode of files[i]?.episodes) {
-                            await prismadb.episodes.create({
-                                data: {
-                                    title: mediaData.original_name + " : SO " + episode.season + ", EP " + episode.episode,
-                                    serieId: files[i].key,
-                                    season: episode.season,
-                                    episode: episode.episode,
-                                    videoUrl: episode.url,
-                                }
-                            })
+                            try {
+                                await prismadb.episodes.create({
+                                    data: {
+                                        title: mediaData.original_name + " : SO " + episode.season + ", EP " + episode.episode,
+                                        serieId: files[i].key,
+                                        season: +episode.season,
+                                        episode: +episode.episode,
+                                        videoUrl: episode.url,
+                                    }
+                                })
+                            } catch (err) {
+                                console.log(err)
+                            }
                         }
                     }
 

@@ -55,7 +55,7 @@ export default function Accounts() {
             <div className="flex flex-col h-full w-full gap-4">
                 <div className="w-full h-full grid grid-cols-3 gap-4">
                     <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="flex flex-row items-center gap-4 text-xl">
+                        <div className="grid grid-cols-[15%_85%] items-center gap-4 text-xl">
                             <IoPower />
                             <p className="hidden md:block">Server Uptime :</p>
                             <p className="block md:hidden">Up :</p>
@@ -68,7 +68,7 @@ export default function Accounts() {
                         </div>
                     </div>
                     <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="flex flex-row items-center gap-4 text-xl">
+                        <div className="grid grid-cols-[15%_85%] items-center gap-4 text-xl">
                             <OsIcon />
                             <p className="hidden md:block">Platform :</p>
                             <p className="block md:hidden">OS :</p>
@@ -81,7 +81,7 @@ export default function Accounts() {
                         </div>
                     </div>
                     <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="flex flex-row items-center gap-4 text-xl">
+                        <div className="grid grid-cols-[15%_85%] items-center gap-4 text-xl">
                             <FaServer />
                             Connectivity :
                         </div>

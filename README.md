@@ -45,7 +45,12 @@ And many more !!
 
 - Enhanced admin panel (ongoing) :
     - Help section
+    - Automatic detection : fix episode number definition
 - Re-think file management (s3 w Minio ?, API routes ?, custom server ?, secondary server ?)
+- Fix copy buttons
+- Fix download button on player
+- Fix weird undefined behaviour on player && VLC tutorial page
+- Remove console log slider position
 
 ## Collaborate
 

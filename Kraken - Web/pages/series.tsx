@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import useMedia from "@/hooks/useMedia";
 import Billboard from "@/components/Billboard";
 import useGenresList from "@/hooks/useGenresList";
-import { isUndefined, isEmpty } from "lodash";
+import { isUndefined, isEmpty, isNull } from "lodash";
 
 const Series = () => {
     const { isOpen, closeModal } = useInfoModal();
@@ -35,9 +35,9 @@ const Series = () => {
             <Billboard mediaType="Series" />
             <InfoModal visible={isOpen} onClose={closeModal} />
             <div className="mb-10">
-                {!isEmpty(genre1) && <MovieList data={genre1} title={!isUndefined(genres) ? genres[0].genre : ""} />}
-                {!isEmpty(genre2) && <MovieList data={genre2} title={!isUndefined(genres) ? genres[1].genre : ""} />}
-                {!isEmpty(genre3) && <MovieList data={genre3} title={!isUndefined(genres) ? genres[2].genre : ""} />}
+                {(!isEmpty(genre1) && (!isUndefined(genre1) && !isNull(genre1[0]))) && <MovieList data={genre1} title={!isUndefined(genres) ? genres[0].genre : ""} />}
+                {(!isEmpty(genre2) && (!isUndefined(genre2) && !isNull(genre2[0]))) && <MovieList data={genre2} title={!isUndefined(genres) ? genres[1].genre : ""} />}
+                {(!isEmpty(genre3) && (!isUndefined(genre3) && !isNull(genre3[0]))) && <MovieList data={genre3} title={!isUndefined(genres) ? genres[2].genre : ""} />}
                 <MovieList data={media} title="TV Shows" />
             </div>
             <Footer />

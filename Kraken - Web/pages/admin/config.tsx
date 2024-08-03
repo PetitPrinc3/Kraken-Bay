@@ -7,6 +7,8 @@ import { FaShieldAlt } from "react-icons/fa";
 import { IoMdSave } from "react-icons/io";
 import { MdWarning } from "react-icons/md";
 import { SiThemoviedatabase } from "react-icons/si";
+import { signOut } from "next-auth/react";
+import { isUndefined } from "lodash";
 
 export default function Config() {
     const { data: serverProps } = useServerProps()
@@ -16,6 +18,9 @@ export default function Config() {
 
     const saveConfig = async () => {
         await axios.post("/api/serverProps", { tmdbKey: tmdbKey, naSecret: naSecret, jwtSecret: jwtSecret })
+        if (!isUndefined(naSecret) || !isUndefined(jwtSecret)) {
+            await signOut({ callbackUrl: "/auth" })
+        }
     }
 
     return (
@@ -82,7 +87,7 @@ export default function Config() {
                                 Changing these values will log you out.
                             </div>
                         </div>
-                        <div className="grid grid-cols-[25%_75%] md:grid-cols-[15%_85%] gap-2 items-center">
+                        <div className="grid grid-cols-[auto_auto] md:grid-cols-[15%_85%] gap-2 items-center">
                             <p>Next-Auth URL :</p>
                             <p className="text-red-500 font-semibold">{serverProps?.nextAuthUrl}</p>
                             <p>Next-Auth Secret : </p>
