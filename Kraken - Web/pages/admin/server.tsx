@@ -1,16 +1,20 @@
 import useServerProps from "@/hooks/useServerProps";
 import { AdminLayout } from "@/pages/_app";
-import { delay, isUndefined } from "lodash";
-import { IoPower } from "react-icons/io5";
+import { isUndefined } from "lodash";
+import { IoPower, IoSync } from "react-icons/io5";
 import { BiWifi } from "react-icons/bi";
-import { FaWindows, FaLinux, FaServer } from "react-icons/fa";
-import { MdFolderShared, MdRefresh } from "react-icons/md";
-import { IoSyncCircleOutline } from "react-icons/io5"
+import { FaWindows, FaLinux } from "react-icons/fa";
+import {
+    MdFolderShared, MdRefresh,
+    MdOutlineSignalWifiOff, MdOutlineSignalWifiStatusbarNull, MdOutlineNetworkWifi1Bar, MdOutlineNetworkWifi2Bar, MdOutlineNetworkWifi3Bar, MdOutlineSignalWifi4Bar,
+    MdBatteryAlert, MdBattery20, MdBattery30, MdBattery50, MdBattery60, MdBattery80, MdBattery90, MdBatteryFull,
+    MdBatteryCharging20, MdBatteryCharging30, MdBatteryCharging50, MdBatteryCharging60, MdBatteryCharging80, MdBatteryCharging90, MdBatteryChargingFull, MdBolt
+} from "react-icons/md";
 import { TbWorld } from "react-icons/tb";
 import { BsDatabaseFillGear } from "react-icons/bs";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 const formatUptime = (serverUptime: any) => {
     var d = Math.floor(serverUptime / (3600 * 24));
@@ -29,9 +33,11 @@ export default function Accounts() {
     const { data: serverProps, mutate: mutateProps } = useServerProps()
     const router = useRouter()
     const [reboot, setReboot] = useState(false)
+    const [power, setPower] = useState(false)
 
     const rebootServer = async () => {
         await axios.get("/api/serverProps", { params: { action: "reboot" } })
+        setPower(false)
         setReboot(true)
         while (true) {
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -43,73 +49,132 @@ export default function Accounts() {
                 }
             } catch { }
         }
-
-
     }
 
     if (isUndefined(serverProps)) return null
+    const PowerIcon = reboot ? IoSync : IoPower
 
     const OsIcon = serverProps.osPlatform == "win32" ? FaWindows : FaLinux
+
     return (
         <AdminLayout pageName="server" >
             <div className="flex flex-col h-full w-full gap-4">
-                <div className="w-full h-full grid grid-cols-3 gap-4">
-                    <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="grid grid-cols-[15%_85%] items-center gap-4 text-xl">
-                            <IoPower />
-                            <p className="hidden md:block">Server Uptime :</p>
-                            <p className="block md:hidden">Up :</p>
+                <div className="w-full h-36 md:h-48 relative">
+                    <div className="absolute flex items-center left-0 right-0 top-0 bottom-0 rounded-md overflow-hidden">
+                        <img className="w-full blur" src={`/Assets/Images/${serverProps.osPlatform == 'win32' ? 'windows_wallpaper.jpg' : 'ubuntu_wallpaper.jpg'}`} alt="" />
+                    </div>
+                    <div className="absolute left-4 top-4 flex flex-col gap-1">
+                        <div className="flex flex-row items-baseline gap-1">
+                            <div className="flex flex-row gap-4 items-baseline text-2xl font-semibold text-white leading-none">
+                                <OsIcon size={20} />
+                                {serverProps.osPlatform == "win32" ? "Windows" : "Linux"}
+                            </div>
+                            <span className="text-green-500 text-xs leading-none">{serverProps.osBuild}</span>
                         </div>
-                        <div className="text-2xl font-semibold text-center">
-                            {formatUptime(serverProps.serverUptime)}
-                        </div>
-                        <div className="hidden md:block text-sm text-center">
-                            Last reboot on <span className="text-green-500 font-bold">{new Date(new Date().getTime() - serverProps.serverUptime * 1000).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>.
+                        <div className="text-xs font-light text-white">
+                            Uptime : {formatUptime(serverProps.osUptime)}
                         </div>
                     </div>
-                    <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="grid grid-cols-[15%_85%] items-center gap-4 text-xl">
-                            <OsIcon />
-                            <p className="hidden md:block">Platform :</p>
-                            <p className="block md:hidden">OS :</p>
-                        </div>
-                        <div className="text-2xl font-semibold text-center">
-                            {serverProps.osPlatform}
-                        </div>
-                        <div className="text-sm text-center text-green-500 font-bold">
-                            {serverProps.osBuild}
-                        </div>
-                    </div>
-                    <div className="w-full h-full bg-slate-800 flex flex-col justify-between text-white rounded-md gap-4 p-4 cursor-default">
-                        <div className="grid grid-cols-[15%_85%] items-center gap-4 text-xl">
-                            <FaServer />
-                            Connectivity :
-                        </div>
-                        {
-                            serverProps.connectivity == null ?
-                                <div className="w-12 h-12 m-auto">
-                                    <svg viewBox="0 0 255.73 255.47">
-                                        <rect className="fill-none" width="255.73" height="255.47" />
-                                        <path className="fill-orange-500"
-                                            d="M128.73,179.27a20,20,0,1,0,.19,40,20.4,20.4,0,0,0,19.83-20.16A20.1,20.1,0,0,0,128.73,179.27Zm.41,26a6.1,6.1,0,0,1-6-6.18,5.89,5.89,0,0,1,11.77.18A6.09,6.09,0,0,1,129.14,205.23Z"
-                                            transform="translate(0.08 -0.12)" />
-                                        <path className="fill-orange-500"
-                                            d="M255,127.76A126.25,126.25,0,1,0,128.71,254,126.39,126.39,0,0,0,255,127.76Zm-237.5,0A111.2,111.2,0,0,1,212.13,54.25L181.36,77.81a112.94,112.94,0,0,0-48.59-11.33c-37.13-.22-68.51,14.6-96.2,38.33-4,3.41-4.32,8.23-1.24,11.8s8.05,3.7,12.13.1A143.57,143.57,0,0,1,83.62,93.4c28.43-12.81,56.17-14.74,83-4.33l-23.09,17.68a111.72,111.72,0,0,0-14.68-1.29c-1.85,0-3.7-.09-5.54,0-2.08.13-4.16.41-6.23.68a91.59,91.59,0,0,0-52.77,24.9c-3.94,3.75-4.32,8.34-1.13,11.75s7.53,3.21,11.55-.12c2.55-2.13,5.09-4.28,7.8-6.19,13-9.17,27.05-14.77,42.38-15.5L36,189.13A110.63,110.63,0,0,1,17.46,127.76ZM129,239a111,111,0,0,1-83.95-38l41.83-32a8.23,8.23,0,0,0,.86,1.13c2.88,3.19,7,3.56,10.61.88,1.28-1,2.42-2.09,3.69-3.07,10.17-7.9,21.41-11.93,34.42-9.26,8.55,1.76,15.65,6.25,22.17,11.89a7.46,7.46,0,0,0,10.62-.34,7.65,7.65,0,0,0,0-10.7c-9.6-10.33-21.44-15.33-34.59-17a49.89,49.89,0,0,0-12.57.1l-1,.14,25.64-19.63c13.38,3.36,25.11,10.19,35.78,19.3,4.22,3.59,8.69,3.66,11.8.27s2.53-8.21-1.52-12A90.52,90.52,0,0,0,162,111.51l19.82-15.17q3.42,1.93,6.81,4.16c6.14,4,11.75,8.91,17.54,13.5,2.9,2.3,5.95,2.87,9.26,1.25l.09,0a7.71,7.71,0,0,0,3-10.82,13.64,13.64,0,0,0-2-2.66,81.8,81.8,0,0,0-8.15-6.92q-6.24-4.89-12.76-9.06l25.63-19.62A110.64,110.64,0,0,1,239.93,130C238.73,190.18,189.19,238.84,129,239Z"
-                                            transform="translate(0.08 -0.12)" />
-                                    </svg>
-                                </div> :
-                                <div className="w-10 h-10 m-auto">
-                                    <svg viewBox="0 0 255.73 255.47">
-                                        <rect className="fill-none" width="255.73" height="255.47" />
-                                        <path className={serverProps.connectivity > 75 ? "fill-green-500" : "fill-white"} d="M251.8,80.14a10.43,10.43,0,0,1-4,14.67l-.11.06c-4.48,2.19-8.61,1.42-12.53-1.69C227.31,87,219.72,80.39,211.4,74.92c-45.46-29.88-93-31.71-142-9.61A194.55,194.55,0,0,0,20.45,96.84c-5.52,4.87-12.16,4.78-16.4-.13s-3.71-11.35,1.67-16C43.17,48.65,85.62,28.61,135.83,28.9c38.62.23,72.26,14.74,102.31,38.32a111.35,111.35,0,0,1,11,9.36A18.7,18.7,0,0,1,251.8,80.14Z" transform="translate(0.08 -0.12)" />
-                                        <path className={serverProps.connectivity > 50 ? "fill-green-500" : "fill-white"} d="M130.57,81.63c33,.72,62.18,11.34,86.48,34.2,5.47,5.15,6.31,11.64,2.06,16.26s-10.26,4.49-16-.37c-17.45-14.89-37-25.3-60-28.33-27.88-3.66-52.61,4.35-75.2,20.23-3.67,2.58-7.1,5.5-10.56,8.37-5.42,4.5-11.46,4.61-15.62.17-4.3-4.62-3.79-10.83,1.53-15.89,20.07-19.09,44-30.16,71.38-33.68,2.8-.36,5.61-.75,8.43-.93C125.57,81.51,128.08,81.63,130.57,81.63Z" transform="translate(0.08 -0.12)" />
-                                        <path className={serverProps.connectivity > 25 ? "fill-green-500" : "fill-white"} d="M123.27,131.75a56.93,56.93,0,0,1,12.65-.18c18.8,1.86,35.72,8.59,49.32,23.22a10.35,10.35,0,0,1,0,14.47c-3.88,4.05-9.82,4.4-14.38.45-8.81-7.61-18.41-13.7-30-16.07-17.59-3.61-32.8,1.84-46.56,12.53-1.71,1.32-3.26,2.85-5,4.14-4.84,3.63-10.45,3.13-14.35-1.19-3.69-4.09-3.76-9.54.24-14,11.24-12.44,25.47-19.48,41.8-22.5C119.07,132.28,121.15,132,123.27,131.75Z" transform="translate(0.08 -0.12)" />
-                                        <path className={serverProps.connectivity > 5 ? "fill-green-500" : "fill-white"} d="M130.37,181.45a27.2,27.2,0,0,1,27.09,26.89c.07,14.58-12.33,27.18-26.83,27.28-14.69.1-27.2-12.12-27.33-26.71A27.29,27.29,0,0,1,130.37,181.45Zm8.38,27a8,8,0,0,0-15.92-.24,8,8,0,1,0,15.92.24Z" transform="translate(0.08 -0.12)" />
-                                    </svg>
+                    <div className="absolute right-4 top-4 flex items-center text-lg">
+                        <div className="flex flex-row gap-4">
+                            {serverProps.connectivity == null ?
+                                <div className="flex flex-row items-center gap-1 group cursor-pointer">
+                                    <div className="w-full overflow-hidden">
+                                        <div className="translate-x-12 group-hover:translate-x-0 transition-all duration-200 text-xs font-semibold text-orange-500">offline</div>
+                                    </div>
+                                    <div className="text-orange-500">
+                                        <MdOutlineSignalWifiOff />
+                                    </div>
                                 </div>
-                        }
-                        <div className="hidden md:block text-sm text-center">
-                            Server is <span className={`${serverProps.connectivity == null ? "text-orange-500" : "text-green-500"} font-bold`}>{serverProps.connectivity == null ? "offline" : "online"}</span>.
+                                :
+                                <div className="flex flex-row items-center gap-1 group cursor-pointer">
+                                    <div className="w-full overflow-hidden">
+                                        <div className="translate-x-12 group-hover:translate-x-0 transition-all duration-200 text-xs font-semibold text-green-500">online</div>
+                                    </div>
+                                    <div className="text-white">
+                                        <div className={`${serverProps.connectivity < 5 ? "block" : "hidden"} m-auto`}>
+                                            <MdOutlineSignalWifiStatusbarNull />
+                                        </div>
+                                        <div className={`${serverProps.connectivity >= 5 && serverProps.connectivity < 25 ? "block" : "hidden"} m-auto`}>
+                                            <MdOutlineNetworkWifi1Bar />
+                                        </div>
+                                        <div className={`${serverProps.connectivity >= 25 && serverProps.connectivity < 50 ? "block" : "hidden"} m-auto`}>
+                                            <MdOutlineNetworkWifi2Bar />
+                                        </div>
+                                        <div className={`${serverProps.connectivity >= 50 && serverProps.connectivity < 75 ? "block" : "hidden"} m-auto`}>
+                                            <MdOutlineNetworkWifi3Bar />
+                                        </div>
+                                        <div className={`${serverProps.connectivity >= 75 ? "block" : "hidden"} m-auto`}>
+                                            <MdOutlineSignalWifi4Bar />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            {serverProps.battery.status ?
+                                <div className="relative flex flex-col items-baseline group cursor-pointer">
+                                    <div className="animate-pulse text-green-500 transition-all duration-200 group-hover:-translate-y-2">
+                                        <div className={`${serverProps.battery.level < 25 ? "block" : "hidden"} text-orange-500`}>
+                                            <MdBatteryCharging20 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 25 && serverProps.battery.level < 45 ? "block" : "hidden"} text-yellow-500`}>
+                                            <MdBatteryCharging30 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 45 && serverProps.battery.level < 55 ? "block" : "hidden"}`}>
+                                            <MdBatteryCharging50 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 55 && serverProps.battery.level < 75 ? "block" : "hidden"}`}>
+                                            <MdBatteryCharging60 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 75 && serverProps.battery.level < 85 ? "block" : "hidden"}`}>
+                                            <MdBatteryCharging80 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 85 && serverProps.battery.level < 95 ? "block" : "hidden"}`}>
+                                            <MdBatteryCharging90 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 95 ? "block" : "hidden"}`}>
+                                            <MdBatteryChargingFull />
+                                        </div>
+                                    </div>
+                                    <div className="absolute top-2 w-fit overflow-hidden">
+                                        <div className={`flex flex-row items-center gap-0 translate-y-12 group-hover:translate-y-0 transition-all duration-200 text-xs font-semibold ${serverProps.battery.level < 25 ? "text-orange-500" : serverProps.battery.level < 45 ? "text-yellow-500" : "text-green-500"}`}>
+                                            {serverProps.battery.level}
+                                            <MdBolt size={12} />
+                                        </div>
+                                    </div>
+                                </div>
+                                :
+                                <div className="relative flex flex-col items-center gap-1 group cursor-pointer">
+                                    <div className="text-white transition-all duration-200 group-hover:-translate-y-2">
+                                        <div className={`${serverProps.battery.level < 15 ? "block" : "hidden"} text-red-500 animate-pulse`}>
+                                            <MdBatteryAlert />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 15 && serverProps.battery.level < 25 ? "block" : "hidden"} text-orange-500`}>
+                                            <MdBattery20 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 25 && serverProps.battery.level < 45 ? "block" : "hidden"} text-yellow-500`}>
+                                            <MdBattery30 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 45 && serverProps.battery.level < 55 ? "block" : "hidden"}`}>
+                                            <MdBattery50 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 55 && serverProps.battery.level < 75 ? "block" : "hidden"}`}>
+                                            <MdBattery60 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 75 && serverProps.battery.level < 85 ? "block" : "hidden"}`}>
+                                            <MdBattery80 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 85 && serverProps.battery.level < 95 ? "block" : "hidden"}`}>
+                                            <MdBattery90 />
+                                        </div>
+                                        <div className={`${serverProps.battery.level >= 95 ? "block" : "hidden"} text-green-500`}>
+                                            <MdBatteryFull />
+                                        </div>
+                                    </div>
+                                    <div className="absolute top-2 w-fit overflow-hidden">
+                                        <div className={`translate-y-12 group-hover:translate-y-0 transition-all duration-200 text-xs font-semibold ${serverProps.battery.level > 95 ? "text-green-500" : serverProps.battery.level < 15 ? "text-red-500" : serverProps.battery.level < 25 ? "text-orange-500" : serverProps.battery.level < 45 ? "text-yellow-500" : "text-white"}`}>{serverProps.battery.level}%</div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -124,12 +189,12 @@ export default function Accounts() {
                     <div className="flex gap-4 overflow-x-scroll scrollbar-hide">
                         <div className="inline-block">
                             <div className={`w-40 h-44 md:w-60 md:h-64 ${reboot ? "animate-pulse" : ""} max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-slate-500 border-2 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Reboot server</div>
-                                <div onClick={rebootServer} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
-                                    <IoSyncCircleOutline className={reboot ? "animate-spin" : ""} size={35} />
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Power management</div>
+                                <div onClick={() => setPower(!power)} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                    <PowerIcon className={reboot ? "animate-spin" : ""} size={35} />
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
-                                    Perform reboot at os level.
+                                    Manage server power.
                                 </div>
                             </div>
                         </div>
@@ -146,7 +211,7 @@ export default function Accounts() {
                         </div>
                         <div className="inline-block">
                             <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${serverProps.smbStatus ? "border-green-500" : "border-red-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Samba <span className="hidden md:block">Service</span></div>
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Samba</div>
                                 <div onClick={() => axios.get("/api/serverProps", { params: { action: "restartSMB" } })} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <MdFolderShared size={35} />
                                 </div>
@@ -157,7 +222,7 @@ export default function Accounts() {
                         </div>
                         <div className="inline-block">
                             <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 border-green-500 bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Web <span className="hidden md:block">Service</span></div>
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Restart Server</div>
                                 <div onClick={() => axios.get("/api/serverProps", { params: { action: "restartWEB" } })} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <TbWorld size={35} />
                                 </div>
@@ -175,6 +240,29 @@ export default function Accounts() {
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Manage databases.
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className={`${power ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
+                <div className={`${power ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
+                    <div onClick={() => { setPower(false) }} className="fixed top-0 left-0 right-0 bottom-0 z-40"></div>
+                    <div className="w-fit h-fit flex flex-col md:flex-row gap-12 md:gap-28 items-center text-black rounded-md m-auto z-50">
+                        <div className="flex flex-col items-center group cursor-pointer" onClick={async () => { await axios.get("/api/serverProps", { params: { action: "poweroff" } }) }}>
+                            <div className="h-fit w-fit m-auto p-4 bg-slate-600 rounded-full shadow-2xl cursor-pointer text-black group-hover:text-red-500 group-hover:-translate-y-1 transition-all duration-200">
+                                <IoPower size={50} />
+                            </div>
+                            <div className="h-fit w-fit overflow-hidden">
+                                <p className="font-semibold md:translate-y-12 group-hover:translate-y-0 transition-all duration-200">Poweroff</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center group cursor-pointer" onClick={rebootServer}>
+                            <div className="h-fit w-fit m-auto p-4 bg-slate-600 rounded-full shadow-2xl cursor-pointer text-black group-hover:text-red-500 group-hover:-translate-y-1 transition-all duration-200">
+                                <IoSync size={50} />
+                            </div>
+                            <div className="h-fit w-fit overflow-hidden">
+                                <p className="font-semibold md:translate-y-12 group-hover:translate-y-0 transition-all duration-200">Reboot</p>
                             </div>
                         </div>
                     </div>

@@ -50,7 +50,6 @@ And many more !!
 - Fix copy buttons
 - Fix download button on player
 - Fix weird undefined behaviour on player && VLC tutorial page
-- Remove console log slider position
 
 ## Collaborate
 

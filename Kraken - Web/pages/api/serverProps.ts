@@ -94,6 +94,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
 
+        if (action === "poweroff") {
+            if (process.platform.startsWith("win")) {
+                try {
+                    spawn("shutdown", ["/s", "/t", "00"], { encoding: "utf8" })
+                    return res.status(200).end()
+                } catch (err) {
+                    return res.status(400).json(err)
+                }
+            } else {
+                try {
+                    spawn("poweroff", { encoding: "utf8" })
+                    return res.status(200).end()
+                } catch (err) {
+                    return res.status(400).json(err)
+                }
+            }
+        }
+
         try {
 
             const netCmd = () => {
@@ -121,6 +139,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
                     }
                     return null
+                }
+            }
+
+            const powCmd = () => {
+                if (process.platform.startsWith("win")) {
+                    const { stdout: level } = spawn('wmic', ['Path', 'Win32_Battery', 'Get', 'EstimatedChargeRemaining'], { encoding: "utf8" })
+                    const { stdout: status } = spawn('wmic', ['Path', 'Win32_Battery', 'Get', 'BatteryStatus'], { encoding: "utf8" })
+                    return {
+                        level: level === null ? null : level.split("\n")[1].trim(),
+                        status: status === null ? null : status.split("\n")[1].trim() == "2" ? true : false
+                    }
+                }
+                else {
+                    const { stdout: infos } = spawn('upower', ['-i', '/org/freedesktop/UPower/devices/DisplayDevice'], { encoding: "utf8" })
+                    let level, status = null
+                    if (infos === null) return {
+                        level: level,
+                        status: status
+                    }
+                    for (let line of infos.split("\n")) {
+                        if (line.trim().startsWith("state")) {
+                            status = line.split(":")[1].trim() == "charging" ? true : false
+                        }
+                        if (line.trim().startsWith("percentage")) {
+                            level = line.split(":")[1].trim().split("%")[0].trim()
+                        }
+                    }
+                    return {
+                        level: level,
+                        status: status
+                    }
                 }
             }
 
@@ -169,7 +218,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 databaseConfig: process.env.DATABASE_URL,
                 tmdbAPIKey: process.env.TMDB_API_SECRET,
                 nextAuthUrl: process.env.NEXTAUTH_URL,
-                connectivity: netCmd()
+                connectivity: netCmd(),
+                battery: powCmd()
             }
 
             return res.status(200).json(serverProps);

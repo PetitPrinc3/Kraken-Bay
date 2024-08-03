@@ -71,7 +71,6 @@ const Player = () => {
     const seekProgress = (e: any) => {
         const progress = e.target.valueAsNumber
         setSeek(progress)
-        console.log(progress)
         playerRef.current?.seekTo(playerRef.current.getDuration() * progress)
     }
 
