@@ -189,7 +189,7 @@ export default function Accounts() {
                     <div className="flex gap-4 overflow-x-scroll scrollbar-hide">
                         <div className="inline-block">
                             <div className={`w-40 h-44 md:w-60 md:h-64 ${reboot ? "animate-pulse" : ""} max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-slate-500 border-2 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Power management</div>
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Power <span className="hidden md:inline-block">management</span></div>
                                 <div onClick={() => setPower(!power)} className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
                                     <PowerIcon className={reboot ? "animate-spin" : ""} size={35} />
                                 </div>
@@ -205,7 +205,7 @@ export default function Accounts() {
                                     <BiWifi size={35} />
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
-                                    Hotspot is currently <span className={serverProps.hotSpot ? "text-green-500 font-semibold" : "text-orange-500 font-semibold"}>{serverProps.hotSpot ? "on" : "off"}</span>.
+                                    Hotspot is <span className="hidden md:inline-block">currently</span> <span className={serverProps.hotSpot ? "text-green-500 font-semibold" : "text-orange-500 font-semibold"}>{serverProps.hotSpot ? "on" : "off"}</span>.
                                 </div>
                             </div>
                         </div>
@@ -216,7 +216,7 @@ export default function Accounts() {
                                     <MdFolderShared size={35} />
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
-                                    Samba is currently <span className={serverProps.smbStatus ? "text-green-500 font-semibold" : "text-red-500 font-semibold"}>{serverProps.smbStatus ? "up" : "down"}</span>.
+                                    Samba is <span className="hidden md:inline-block">currently</span> <span className={serverProps.smbStatus ? "text-green-500 font-semibold" : "text-red-500 font-semibold"}>{serverProps.smbStatus ? "up" : "down"}</span>.
                                 </div>
                             </div>
                         </div>
@@ -254,7 +254,7 @@ export default function Accounts() {
                                 <IoPower size={50} />
                             </div>
                             <div className="h-fit w-fit overflow-hidden">
-                                <p className="font-semibold md:translate-y-12 group-hover:translate-y-0 transition-all duration-200">Poweroff</p>
+                                <p className="font-semibold md:translate-y-12 group-hover:translate-y-0 transition-all duration-200 text-red-500 md:text-black">Poweroff</p>
                             </div>
                         </div>
                         <div className="flex flex-col items-center group cursor-pointer" onClick={rebootServer}>
@@ -262,7 +262,7 @@ export default function Accounts() {
                                 <IoSync size={50} />
                             </div>
                             <div className="h-fit w-fit overflow-hidden">
-                                <p className="font-semibold md:translate-y-12 group-hover:translate-y-0 transition-all duration-200">Reboot</p>
+                                <p className="font-semibold md:translate-y-12 group-hover:translate-y-0 transition-all duration-200 text-red-500 md:text-black">Reboot</p>
                             </div>
                         </div>
                     </div>
