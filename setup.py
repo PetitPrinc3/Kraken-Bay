@@ -339,9 +339,19 @@ fi
 nmcli radio wifi on
 
 """)
-                createap_start.close()
+        with open("/usr/bin/create_ap_stop", "w", encoding="utf-8") as createap_stop:
+                createap_stop.write(f"""#!/bin/bash
+                                     
+cp /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.old
+cat /etc/NetworkManager/NetworkManager.conf | grep -v {interface} > /etc/NetworkManager/NetworkManager.conf
+nmcli radio wifi on
+systemctl restart NetworkManager
+
+""")
+
 
         cmd_run("chmod u=rwx /usr/bin/create_ap_start")
+        cmd_run("chmod u=rwx /usr/bin/create_ap_stop")
 
         with open("/usr/lib/systemd/system/create_ap.service", "w", encoding="utf-8") as createap_service:
                 createap_service.write("""[Unit]
@@ -351,6 +361,7 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/create_ap_start
+ExecStop=/usr/bin/create_ap_stop
 User=root
 KillSignal=SIGINT
 Restart=on-failure
