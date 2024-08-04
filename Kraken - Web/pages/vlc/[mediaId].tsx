@@ -5,7 +5,6 @@ import { BiCopy } from "react-icons/bi";
 import { SiVlcmediaplayer } from "react-icons/si";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import copy from "@/lib/copy";
 
 const Vlc = () => {
     const router = useRouter();
@@ -14,10 +13,14 @@ const Vlc = () => {
     const [toast, setToast] = useState(false)
 
     const handleCopy = async () => {
-        await copy(`smb://kraken.local${data?.videoUrl}`)
-        setToast(true)
-        await new Promise(f => setTimeout(f, 2000));
-        setToast(false)
+        if (navigator.userAgent.toLowerCase().includes('firefox')) { return }
+        const permission = await navigator.permissions.query({ name: "clipboard-write" as PermissionName })
+        if (permission.state == "granted") {
+            await navigator.clipboard.writeText(`smb://kraken.local${data?.videoUrl}`)
+            setToast(true)
+            await new Promise(f => setTimeout(f, 2000));
+            setToast(false)
+        }
     }
 
     return (

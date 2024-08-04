@@ -31,10 +31,14 @@ const Player = () => {
     const [clicked, setClicked] = useState(false)
 
     const handleCopy = async () => {
-        setClicked(true)
-        navigator.clipboard.writeText(`http://kraken.local${data?.videoUrl}`)
-        await new Promise(f => setTimeout(f, 2000));
-        setClicked(false)
+        if (navigator.userAgent.toLowerCase().includes('firefox')) { return }
+        const permission = await navigator.permissions.query({ name: "clipboard-write" as PermissionName })
+        if (permission.state == "granted") {
+            await navigator.clipboard.writeText(`smb://kraken.local${data?.videoUrl}`)
+            setClicked(true)
+            await new Promise(f => setTimeout(f, 2000));
+            setClicked(false)
+        }
     }
 
     const PlayIcon = isPlaying ? FaPlay : FaPause
