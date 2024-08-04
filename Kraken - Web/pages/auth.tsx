@@ -32,6 +32,7 @@ const Auth = () => {
         try {
             signIn('credentials', {
                 redirect: false,
+                callbackUrl: "/home",
                 email,
                 password,
             }).then((res) => {

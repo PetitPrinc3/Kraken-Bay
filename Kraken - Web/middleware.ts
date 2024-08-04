@@ -20,5 +20,5 @@ export default withAuth(
 )
 
 export const config = {
-    matcher: ["/admin/:path*", "/vlc/:path*", "/watch/:path*", "/account", "/home", "/latest", "/movies", "/search", "/series", "/upload", "/auth", "/welcome"]
+    matcher: ["/admin/:path*", "/vlc/:path*", "/watch/:path*", "/account", "/home", "/latest", "/movies", "/search", "/series", "/upload", "/welcome"]
 }
