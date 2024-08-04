@@ -4,7 +4,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { compare } from "bcrypt";
 import prismadb from "@/lib/prismadb";
 import { User } from "@prisma/client"
-import { signOut } from "next-auth/react";
 
 export const authOptions: AuthOptions = {
     providers: [

@@ -12,7 +12,6 @@ export default withAuth(
             return NextResponse.rewrite(new URL("/auth", request.url))
         }
 
-
     }, {
     callbacks: {
         authorized: ({ token }) => !!token
@@ -21,5 +20,5 @@ export default withAuth(
 )
 
 export const config = {
-    matcher: ["/admin/:path*", "/vlc/:path*", "/watch/:path*", "/account", "/home", "/latest", "/movies", "/search", "/series", "/upload", "/welcome"]
+    matcher: ["/admin/:path*", "/vlc/:path*", "/watch/:path*", "/account", "/home", "/latest", "/movies", "/search", "/series", "/upload", "/auth", "/welcome"]
 }

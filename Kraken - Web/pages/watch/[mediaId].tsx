@@ -15,23 +15,6 @@ import { getSession } from "next-auth/react";
 import { BiCopy } from "react-icons/bi";
 import { isUndefined } from "lodash";
 
-export async function getServerSideProps(context: NextPageContext) {
-    const session = await getSession(context);
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/auth",
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: {},
-    };
-}
-
 const Player = () => {
     const router = useRouter();
     const [volume, setVolume] = useState(0.8)
@@ -92,7 +75,7 @@ const Player = () => {
             <div ref={screenRef}>
                 <ReactPlayer
                     ref={playerRef}
-                    url={data?.videoUrl}
+                    url={data.videoUrl}
                     muted={isMuted}
                     playing={!isPlaying}
                     volume={volume}
@@ -118,7 +101,7 @@ const Player = () => {
                                 {data?.title}
                             </p>
                         </div>
-                        <div className="hidden md:block">
+                        <div className="hidden md:block cursor-pointer">
                             <a href={data?.videoUrl} download={data?.title} className="flex flex-row gap-2 items-center font-semibold text-lg text-white transition-all duration-500 pt-4 hover:py-2 px-4 rounded-md hover:bg-bottom bg-gradient-to-t from-red-600 from-50% to-transparent to-50% bg-[length:100%_200%]">
                                 <MdFileDownload size={20} />
                                 <p>Download</p>
@@ -198,7 +181,7 @@ const Player = () => {
                                         <BiCopy className="w-fit" size={25} />
                                     </div>
                                 </div>
-                                <a href={data?.videoUrl} download={data?.title} className="w-[30%] md:w-auto flex flex-col items-center md:hidden">
+                                <a href={data.videoUrl} download={data?.title} className="w-[30%] md:w-auto flex flex-col items-center md:hidden">
                                     <MdFileDownload size={30} />
                                 </a>
                                 <div onClick={toggleFull} className="w-[30%] md:w-auto flex flex-col items-center cursor-pointer hover:opacity-70 transition-all duration-300">

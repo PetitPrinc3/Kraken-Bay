@@ -8,34 +8,6 @@ import { ImCross } from "react-icons/im";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useState } from "react";
-import { NextPageContext } from "next";
-import { getSession } from "next-auth/react";
-
-export async function getServerSideProps(context: NextPageContext) {
-    const session = await getSession(context);
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/auth",
-                permanent: false,
-            },
-        };
-    }
-
-    if (session.user.roles != "admin") {
-        return {
-            redirect: {
-                destination: "/account",
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: {},
-    };
-}
 
 export default function Accounts() {
     const router = useRouter();
