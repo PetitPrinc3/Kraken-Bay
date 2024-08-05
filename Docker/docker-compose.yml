@@ -1,8 +1,9 @@
-version: '3.1'
+version: '2.29.1'
 
 services:
   krakenSql:
-    image: mysql
+    container_name: krakenSql
+    image: mysql:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 1cc2c364-fd64-42ef-8178-1b2c94410fc8
@@ -11,3 +12,14 @@ services:
       MYSQL_PASSWORD: kraken
     ports:
       - '3306:3306'
+  krakenSSL:
+    container_name: krakenSSL
+    hostname: kraken.local
+    image: nginx:latest
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx/ssl/:/etc/nginx/ssl/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
