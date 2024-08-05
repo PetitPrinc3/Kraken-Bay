@@ -1,17 +1,52 @@
+from threading import Thread
+from time import sleep, time
+from itertools import cycle
+import subprocess
+
+class spinner:
+    def __init__(self, desc='Processing...', timeout=0.1, old=False):
+        self.desc = desc
+        self.timeout = timeout
+        self._thread = Thread(target=self._animate, daemon=True)
+        self.steps = ["[⢿]", "[⣻]", "[⣽]", "[⣾]", "[⣷]", "[⣯]", "[⣟]", "[⡿]"]
+        if old: self.steps = ["[-]", "[\]", "[|]", "[/]"]
+        self.done = False
+
+    def start(self):
+        self._thread.start()
+        return self
+
+    def _animate(self):
+        for _ in cycle(self.steps):
+            if self.done:
+                break
+            print(f"\r{_}  {self.desc}", flush=True, end="\r")
+            sleep(self.timeout)
+
+    def __enter__(self):
+        self.start()
+
+    def stop(self):
+        print(' '*(len(self.desc) + 5), end="\r")
+        self.done = True
+
+    def __exit__(self, exc_type, exc_value, tb):
+        self.stop()
+
+
 try:
-    from PythonModules.spinner import *
     with spinner("Importing python libraries..."):
-        from PythonModules.prints import *
-        from PythonModules.cmd_run import cmd_run
         import os
         import sys
         import bcrypt
         import uuid
         import mysql.connector
-        from PythonModules.dbManager import *
+        from datetime import datetime
+        import questionary
+
 except:
-    fail("Library import failed.")
-    warning("Please install required libraries running 'pip install -r requirements.txt'.")
+    print("Library import failed.")
+    print("Please install required libraries running 'pip install -r requirements.txt'.")
     exit()
 
 print("""\033[91m
@@ -23,6 +58,93 @@ print("""\033[91m
     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝
           \033[0m                Kraken setup by @PetitPrinc3
     """)
+
+# Print green
+def success(text, style = "classic", time = False):  
+    
+    if time: time = "[" + str(datetime.now().strftime("%H:%M:%S")) + "]"
+    else: time = ''
+    if style == 'classic': text = '[+]' + time + ' \033[92m' + str(text) + '\033[0m'
+    if style == 'discreet': text = '[\033[92m\033[1m+\033[0m]' + time + ' ' + str(text)
+    
+    print(text)
+
+# Print blue
+def info(text, style = "classic", time = False):  
+    if time: time = "[" + str(datetime.now().strftime("%H:%M:%S")) + "]"
+    else: time = ''
+    if style == 'classic': text = '[*]' + time + ' \033[94m' + str(text) + '\033[0m'
+    if style == 'discreet': text = '[\033[94m\033[1m*\033[0m]' + time + ' ' + str(text)
+    
+    print(text)
+
+# Print blue updating current row
+def infor(text, style = "classic", time = False):  
+    if time: time = "[" + str(datetime.now().strftime("%H:%M:%S")) + "]"
+    else: time = ''
+    if style == 'classic': text = '[*]' + time + ' \033[94m' + str(text) + '\033[0m'
+    if style == 'discreet': text = '[\033[94m\033[1m*\033[0m]' + time + ' ' + str(text)
+    
+    print(text, end = '\r')
+
+# Print orange
+def warning(text, style = "classic", time = False):  
+    if time: time = "[" + str(datetime.now().strftime("%H:%M:%S")) + "]"
+    else: time = ''
+    if style == 'classic': text = '[!]' + time + ' \033[93m' + str(text) + '\033[0m'
+    elif style == 'discreet': text = '[\033[93m\033[1m!\033[0m]' + time + ' ' + str(text)
+
+    print(text)
+
+# Print red
+def fail(text, style = "classic", time = False):  
+    if time: time = "[" + str(datetime.now().strftime("%H:%M:%S")) + "]"
+    else: time = ''
+    if style == 'classic': text = '[-]' + time + ' \033[91m' + text + '\033[0m'
+    elif style == 'discreet': text = '[\033[91m\033[1m-\033[0m]' + time + ' ' + str(text)
+
+    print(text)
+
+# Print ?
+def question(text, style = "classic", time = False):
+    if time: time = "[" + str(datetime.now().strftime("%H:%M:%S")) + "]"
+    else: time = ''
+    if style == 'classic': text = '[?]' + time + ' \033[94m' + str(text) + '\033[0m'
+    if style == 'discreet': text = '[\033[94m\033[1m?\033[0m]' + time + ' ' + str(text)
+
+    print(text)
+    return input("[\033[94m\033[1m>\033[0m] ")
+
+def cmd_run(cmd, succ = "", err = "", critical = False):
+    try:
+        if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+            warning('Process failed once. Trying again.')
+            try:
+                if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                    fail('Process failed. This is critical.                                                  ')
+                    if err != "" : warning(err)
+                    if critical: exit()
+                    return 1
+            except subprocess.TimeoutExpired:
+                    fail('Command timed out. This is critical.                                               ')
+                    if err != "" : warning(err)
+                    if critical: exit()
+                    return 1
+    except subprocess.TimeoutExpired:
+        warning('Command timed out. Trying again.')
+        try:
+            if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                fail('Process failed. This is critical.')
+                if err != "" : warning(err)
+                if critical: exit()
+                return 1
+        except subprocess.TimeoutExpired:
+                fail('Command timed out twice. This is critical.')
+                if err != "" : warning(err)
+                if critical: exit()
+                return 1
+    if succ != "" : success(succ)
+    return 0
 
 def replace_line(file, line, value):
     with open(file, "r") as inp :
@@ -209,10 +331,6 @@ else:
     cursor.execute(f"INSERT INTO User (id, name, email, hashedPassword, roles, updatedAt) VALUES (UUID(), '{username}', '{username.lower()}@{hostname}', '{dbpass}', 'admin', NOW());")
     client.commit()
     success("Admin user added to web DB.")
-
-dum = question("Do you wish to setup the demo with dummy data ? [Y/n]")
-if dum.lower() == "y" or dum.strip() == "":
-    dummy(username, password, database)
 
 info("Setting up Samba")
 with spinner("Downloading packages..."):

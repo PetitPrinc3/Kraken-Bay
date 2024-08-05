@@ -102,7 +102,7 @@ export default function Search() {
                     <FaChevronCircleRight className="transition-all duration-500" style={{ transform: `${dropDown ? "rotate(90deg)" : "rotate(0)"}` }} />
                     <p>Genres <span className="font-light text-xs text-neutral-400">{genres?.split(" +").join(", ").split("+").join("")}</span></p>
                 </div>
-                <div className={`${window.screen.width > 800 || dropDown ? "flex" : "hidden"} flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10`}>
+                <div className={`${dropDown ? "flex md:hidden" : "hidden"} flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10`}>
                     {gDispList?.list.map((e) => (
                         <div key={e?.id}>
                             <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
