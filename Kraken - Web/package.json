@@ -16,6 +16,7 @@
         "axios": "^1.6.8",
         "bcrypt": "^5.1.1",
         "formidable": "^3.5.1",
+        "kraken": "file:",
         "lodash": "^4.17.21",
         "next": "^14.2.2",
         "next-auth": "^4.24.7",
