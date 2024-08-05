@@ -68,7 +68,7 @@ model PendingMedia {
   posterUrl   String?    @db.LongText
   genre       String
   duration    String?
-  seasonCount String?
+  seasons     String?
   createdAt   DateTime   @default(now())
   User        User?      @relation(fields: [userName], references: [email])
   userName    String?
