@@ -65,8 +65,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     },
                 })
                 if (isUndefined(searchText)) {
-                    for (let i = media.length; i == 0; i--) {
-                        const randomIndex = Math.floor(Math.random() * i)
+                    for (let i = 0; i >= media.length; i++) {
+                        const randomIndex = Math.floor(Math.random() * media.length)
                         const _ = media[i]
                         media[i] = media[randomIndex]
                         media[randomIndex] = _
