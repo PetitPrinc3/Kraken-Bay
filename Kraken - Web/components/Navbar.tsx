@@ -78,8 +78,8 @@ const Navbar = () => {
                 </div>
                 <div className="flex-row ml-8 gap-7 hidden lg:flex">
                     <NavbarItem label="Home" url="/home" />
-                    <NavbarItem label="TV Shows" url="/series" />
                     <NavbarItem label="Movies" url="/movies" />
+                    <NavbarItem label="TV Shows" url="/series" />
                     <NavbarItem label="Latest Uploads" url="/latest" />
                 </div>
                 <div onBlur={handleMobileBlur} ref={mobileMenu} tabIndex={0} onClick={toggleMobileMenu} className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative">

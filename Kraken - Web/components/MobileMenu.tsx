@@ -17,11 +17,11 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ visible }) => {
                 <div onClick={() => router.push("/home")} className="px-3 text-center text-white hover:underline">
                     Home
                 </div>
-                <div onClick={() => router.push("/series")} className="px-3 text-center text-white hover:underline">
-                    Series
-                </div>
                 <div onClick={() => router.push("/movies")} className="px-3 text-center text-white hover:underline">
-                    Films
+                    Movies
+                </div>
+                <div onClick={() => router.push("/series")} className="px-3 text-center text-white hover:underline">
+                    TV Shows
                 </div>
                 <div onClick={() => router.push("/latest")} className="px-3 text-center text-white hover:underline">
                     Latest

@@ -67,7 +67,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (isUndefined(searchText)) {
                     for (let i = media.length; i == 0; i--) {
                         const randomIndex = Math.floor(Math.random() * i)
-                        media[i], media[randomIndex] = media[randomIndex], media[i]
+                        const _ = media[i]
+                        media[i] = media[randomIndex]
+                        media[randomIndex] = _
                     }
                 }
                 if (!isUndefined(mediaLimit)) {
@@ -133,7 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         }
                         const filePath = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
-                        await fs.writeFile(filePath, posterBuffer)
+                        await fs.writeFile(filePath, posterBuffer.toString())
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
                             await fs.rm(filePath)
@@ -164,7 +166,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         }
                         const filePath = `public/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`
-                        await fs.writeFile(filePath, thumbBuffer)
+                        await fs.writeFile(filePath, thumbBuffer.toString())
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
                             await fs.rm(filePath)
