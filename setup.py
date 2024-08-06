@@ -218,10 +218,10 @@ info(f"Using database : {database}")
 
 replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
 replace_field("PythonModules/krakenConf.py", ["hostname = ", "username = ", "password = ", "database = "], [f'"{hostname}"', f'"{username}"', f'"{password}"', f'"{database}"'])
-replace_line("Kraken - Web/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
-replace_line("Kraken - Web/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
-replace_line("Kraken - Web/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
-replace_line("Kraken - Web/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="http://{hostname}"')
+replace_line("KrakenWeb/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
+replace_line("KrakenWeb/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
+replace_line("KrakenWeb/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
+replace_line("KrakenWeb/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="http://{hostname}"')
 
 with spinner("Installing npm..."):
     if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm")
@@ -253,15 +253,15 @@ with spinner("Generating SSL certificates"):
 with spinner("Creating mysql db and nginx containers..."):
     cmd_run("cd Docker && sudo docker compose up -d", "Crated mysql server container.", "Did you install docker ?", critical=True)
 with spinner("Installing node packages."):
-    cmd_run('cd "Kraken - Web" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "Kraken - Web" and run > npm i', critical=True)
+    cmd_run('cd "KrakenWeb" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "KrakenWeb" and run > npm i', critical=True)
 with spinner("Pushing prisma db schema."):
-    cmd_run('cd "Kraken - Web" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
+    cmd_run('cd "KrakenWeb" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
 with spinner("Building app..."):
-    cmd_run('cd "Kraken - Web" && npm run build')
+    cmd_run('cd "KrakenWeb" && npm run build')
 
 install_path = os.getcwd()
 
-if question("Are we running on an external drive ? [y/n]").lower() == "y":
+if question("Are files on an external drive ? [y/n]").lower() == "y":
     install_path = question("Choose mount point.")
     if not os.path.exists(install_path) :
         os.makedirs(install_path)
@@ -296,7 +296,7 @@ service_conf = f"""[Unit]
 Description=Web Service
 
 [Service]
-ExecStart=/usr/bin/npm --prefix "{os.path.join(install_path, "Kraken - Web")}" start
+ExecStart=/usr/bin/npm --prefix "{os.path.join(install_path, "KrakenWeb")}" start
 Restart=always
 User=root
 Group=root
@@ -342,7 +342,7 @@ info("Creating shares.")
 movies_share = [_ + "\n" for _ in (f"""
 [Movies]
     comment = Kraken Bay - Movies <3
-    path = "{os.path.join(install_path, "Kraken - Web/public/Assets/Movies")}"
+    path = "{os.path.join(install_path, "KrakenWeb/public/Assets/Movies")}"
     available = yes
     read only = yes
     create mask = 666
@@ -356,7 +356,7 @@ movies_share = [_ + "\n" for _ in (f"""
 shows_share = [_ + "\n" for _ in (f"""
 [TVShows]
     comment = Kraken Bay - TV Shows <3
-    path = "{os.path.join(install_path, "Kraken - Web/public/Assets/Series")}"
+    path = "{os.path.join(install_path, "KrakenWeb/public/Assets/Series")}"
     available = yes
     read only = yes
     create mask = 666
