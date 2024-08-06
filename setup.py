@@ -249,9 +249,9 @@ success("Installed npm, docker and mysql.")
 cryptsalt = bcrypt.gensalt() 
 
 with spinner("Generating SSL certificates"):
-    cmd_run('/etc/nginx/ssl && /usr/bin/openssl req -x509 -newkey rsa:4096 -keyout Docker/nginx/ssl/kraken_key.pem -out Docker/nginx/ssl/kraken_cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=neverland/L=krakenbay/O=kraken/OU=kraken/CN=kraken"')
+    cmd_run('/usr/bin/openssl req -x509 -newkey rsa:4096 -keyout Docker/nginx/ssl/kraken_key.pem -out Docker/nginx/ssl/kraken_cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=neverland/L=krakenbay/O=kraken/OU=kraken/CN=kraken"')
 with spinner("Creating mysql db and nginx containers..."):
-    cmd_run("cd Docker/Mysql && sudo docker compose up -d", "Crated mysql server container.", "Did you install docker ?", critical=True)
+    cmd_run("cd Docker && sudo docker compose up -d", "Crated mysql server container.", "Did you install docker ?", critical=True)
 with spinner("Installing node packages."):
     cmd_run('cd "Kraken - Web" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "Kraken - Web" and run > npm i', critical=True)
 with spinner("Pushing prisma db schema."):
