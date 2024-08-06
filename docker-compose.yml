@@ -1,7 +1,6 @@
 services:
   krakenSql:
     container_name: krakenSql
-    hostname: kraken.sql
     image: mysql:latest
     restart: always
     environment:
@@ -11,18 +10,3 @@ services:
       MYSQL_PASSWORD: kraken
     ports:
       - '3306:3306'
-  krakenSSL:
-    container_name: krakenSSL
-    hostname: kraken.ssl
-    image: nginx:alpine
-    restart: always
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - ./Docker/nginx:/etc/nginx
-      - ../Assets:/media/Assets
-
-networks:
-  krakenNet:
-    external: true

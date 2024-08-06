@@ -1,38 +1,39 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-Kraken - Web/node_modules
-Kraken - Web/.pnp
-Kraken - Web/.pnp.js
-Kraken - Web/.yarn/install-state.gz
+KrakenWeb/node_modules
+KrakenWeb/.pnp
+KrakenWeb/.pnp.js
+KrakenWeb/.yarn/install-state.gz
 
 # testing
-Kraken - Web/coverage
+KrakenWeb/coverage
 
 # next.js
-Kraken - Web/.next/
-Kraken - Web/out/
+KrakenWeb/.next/
+KrakenWeb/out/
 
 # production
-Kraken - Web/build
+KrakenWeb/build
 
 # misc
-Kraken - Web/.DS_Store
-Kraken - Web/*.pem
+KrakenWeb/.DS_Store
+KrakenWeb/*.pem
 
 # debug
-Kraken - Web/npm-debug.log*
-Kraken - Web/yarn-debug.log*
-Kraken - Web/yarn-error.log*
+KrakenWeb/npm-debug.log*
+KrakenWeb/yarn-debug.log*
+KrakenWeb/yarn-error.log*
 
 # local env files
-Kraken - Web/.env*.local
+KrakenWeb/.env
+KrakenWeb/.env*.local
 
 # vercel
-Kraken - Web/.vercel
+KrakenWeb/.vercel
 
 # typescript
-Kraken - Web/*.tsbuildinfo
-Kraken - Web/next-env.d.ts
+KrakenWeb/*.tsbuildinfo
+KrakenWeb/next-env.d.ts
 
-Kraken - Web/.env
+KrakenWeb/.env

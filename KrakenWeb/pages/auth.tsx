@@ -5,14 +5,12 @@ import { signIn } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { isNull } from "lodash";
-import { useRouter } from "next/router";
 
 const Auth = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [variant, setVariant] = useState('Login')
-    const router = useRouter();
 
     const toggleVariant = useCallback(() => {
         setVariant((currentVariant) => currentVariant == 'Login' ? 'Register' : 'Login')
@@ -45,7 +43,7 @@ const Auth = () => {
         } catch (error) {
             console.log(error)
         }
-    }, [email, password, router])
+    }, [email, password])
 
     const Register = useCallback(async () => {
         try {
