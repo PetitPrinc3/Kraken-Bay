@@ -12,6 +12,12 @@ services:
       MYSQL_PASSWORD: kraken
     ports:
       - '3306:3306'
+  krakenWeb:
+    container_name: kraken.local
+    image: kraken
+    build: ./Kraken - Web
+    ports:
+      - '3000:3000'
   krakenSSL:
     container_name: krakenSSL
     hostname: kraken.local
