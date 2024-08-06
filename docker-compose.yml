@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   krakenSql:
     container_name: krakenSql
@@ -13,13 +11,6 @@ services:
       MYSQL_PASSWORD: kraken
     ports:
       - '3306:3306'
-  krakenWeb:
-    container_name: krakenWeb
-    image: node:current-alpine
-    hostname: kraken.next
-    build: KrakenWeb
-    ports:
-      - '3000:80'
   krakenSSL:
     container_name: krakenSSL
     hostname: kraken.ssl
@@ -30,6 +21,7 @@ services:
       - '443:443'
     volumes:
       - ./Docker/nginx:/etc/nginx
+      - ../Assets:/media/Assets
 
 networks:
   krakenNet:

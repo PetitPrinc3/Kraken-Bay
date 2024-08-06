@@ -31,8 +31,7 @@ const Auth = () => {
         })
         try {
             signIn('credentials', {
-                redirect: false,
-                callbackUrl: "/home",
+                callbackUrl: "/welcome",
                 email,
                 password,
             }).then((res) => {
@@ -41,7 +40,6 @@ const Auth = () => {
                 }
                 else {
                     toast.update(loading, { render: "Login successfull !", type: "success", isLoading: false })
-                    router.push('/welcome')
                 }
             })
         } catch (error) {
