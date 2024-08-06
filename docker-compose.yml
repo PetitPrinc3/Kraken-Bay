@@ -1,8 +1,9 @@
-version: '2.29.1'
+version: '3'
 
 services:
   krakenSql:
     container_name: krakenSql
+    hostname: krakensql
     image: mysql:latest
     restart: always
     environment:
@@ -13,11 +14,12 @@ services:
     ports:
       - '3306:3306'
   krakenWeb:
-    container_name: kraken.local
+    container_name: krakenWeb
+    hostname: kraken.local
     image: kraken
-    build: ./Kraken - Web
+    build: KrakenWeb
     ports:
-      - '3000:3000'
+      - '80:3000'
   krakenSSL:
     container_name: krakenSSL
     hostname: kraken.local
