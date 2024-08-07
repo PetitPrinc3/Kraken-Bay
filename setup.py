@@ -403,7 +403,7 @@ with open("/etc/samba/smb.conf", "r", encoding="utf-8") as smbconf:
     if "[TVShows]\n" in old_conf:
         warning("Oops, TVShows share already exists !")
         ser = False
-    for i in range(len(old_conf)):
+    for i in range(len(old_conf) - 1):
         if "WORKGROUP" in old_conf[i]:
             if old_conf[i + 1] != "   disable netbios = yes\n":
                 old_conf.insert(i + 1, "   multicast dns register = yes\n")
