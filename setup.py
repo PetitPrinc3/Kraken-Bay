@@ -20,7 +20,7 @@ class spinner:
         for _ in cycle(self.steps):
             if self.done:
                 break
-            print(f"\r{_}  {self.desc}", flush=True, end="\r")
+            print(f"\r{_} {self.desc}", flush=True, end="\r")
             sleep(self.timeout)
 
     def __enter__(self):
@@ -115,12 +115,16 @@ def question(text, style = "classic", time = False):
     print(text)
     return input("[\033[94m\033[1m>\033[0m] ")
 
-def cmd_run(cmd, succ = "", err = "", critical = False):
+def cmd_run(cmd, succ = "", err = "", critical = False, show_outp = False):
     try:
-        if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+        if show_outp :
+            outp = subprocess.STDOUT
+        else :
+            outp = subprocess.PIPE
+        if subprocess.Popen(cmd, shell=True, stdout=outp, stderr=subprocess.PIPE).wait(timeout=300) != 0:
             warning('Process failed once. Trying again.')
             try:
-                if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                if subprocess.Popen(cmd, shell=True, stdout=outp, stderr=subprocess.PIPE).wait(timeout=300) != 0:
                     fail('Process failed. This is critical.                                                  ')
                     if err != "" : warning(err)
                     if critical: exit()
@@ -133,7 +137,7 @@ def cmd_run(cmd, succ = "", err = "", critical = False):
     except subprocess.TimeoutExpired:
         warning('Command timed out. Trying again.')
         try:
-            if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+            if subprocess.Popen(cmd, shell=True, stdout=outp, stderr=subprocess.PIPE).wait(timeout=300) != 0:
                 fail('Process failed. This is critical.')
                 if err != "" : warning(err)
                 if critical: exit()
@@ -223,13 +227,13 @@ replace_line("KrakenWeb/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{s
 replace_line("KrakenWeb/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="http://{hostname}"')
 
-with spinner("Installing npm..."):
-    if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm")
-    else : warning("Make sure you installed npm.")
+info("Installing npm...")
+if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm", show_outp=True)
+else : warning("Make sure you installed npm.")
 
-with spinner("Installing mysql-client..."):
-    if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y mysql-client")
-    else : warning("Make sure you installed mysql-client.")
+info("Installing mysql-client...")
+if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y mysql-client", show_outp=True)
+else : warning("Make sure you installed mysql-client.")
 
 with spinner("Installing docker-compose..."):
     if ptfrm != "linux" : 
@@ -248,8 +252,8 @@ success("Installed npm, docker and mysql.")
 
 cryptsalt = bcrypt.gensalt() 
 
-with spinner("Generating SSL certificates"):
-    cmd_run('/usr/bin/openssl req -x509 -newkey rsa:4096 -keyout Docker/nginx/ssl/kraken_key.pem -out Docker/nginx/ssl/kraken_cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=neverland/L=krakenbay/O=kraken/OU=kraken/CN=kraken"')
+info("Generating SSL certificates")
+cmd_run('/usr/bin/openssl req -x509 -newkey rsa:4096 -keyout Docker/nginx/ssl/kraken_key.pem -out Docker/nginx/ssl/kraken_cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=neverland/L=krakenbay/O=kraken/OU=kraken/CN=kraken"', show_outp=True)
 with spinner("Creating mysql db and nginx containers..."):
     cmd_run("cd Docker && sudo docker compose up -d", "Crated mysql server container.", "Did you install docker ?", critical=True)
 with spinner("Installing node packages."):
