@@ -423,7 +423,7 @@ success("Samba is up !")
 if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
-        import netifaces
+        import netifaces # type: ignore
         interface = questionary("Choose interface for hotspot : ", netifaces.interfaces())
         info("Cloning create_ap from @oblique...")
         cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")

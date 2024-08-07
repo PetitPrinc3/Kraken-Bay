@@ -10,3 +10,12 @@ services:
       MYSQL_PASSWORD: kraken
     ports:
       - '3306:3306'
+  krakenSrv:
+    container_name: krakenSrv
+    image: nginx:current-alpine
+    restart: always
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./nginx:/etc/nginx
+      - /mnt/Kraken/Assets:/media/Assets

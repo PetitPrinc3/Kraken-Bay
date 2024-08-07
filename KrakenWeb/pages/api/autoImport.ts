@@ -157,7 +157,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
 
-        const filesList = fs.readdirSync("public/Assets/Movies", { withFileTypes: true })
+        const filesList = fs.readdirSync(process.env.MEDIA_STORE_PATH + "/Movies", { withFileTypes: true })
 
         for (let i = 0; i < filesList.length; i++) {
             let title: string | null = null
@@ -213,18 +213,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             existingSrs.push((existingSeries[i].videoUrl.split("/")).pop() || "")
         }
 
-        const folderList = fs.readdirSync("public/Assets/Series", { withFileTypes: true })
+        const folderList = fs.readdirSync(process.env.MEDIA_STORE_PATH + "/Series", { withFileTypes: true })
 
         for (let i = 0; i < folderList.length; i++) {
             const newEps: { season: string, episode: string, url: string }[] = []
             const seasons: string[] = []
-            fs.readdirSync(`public/Assets/Series/${folderList[i].name}`, { withFileTypes: true }).forEach(async (season) => {
+            fs.readdirSync(`${process.env.MEDIA_STORE_PATH}/Series/${folderList[i].name}`, { withFileTypes: true }).forEach(async (season) => {
                 if (/SO*[0-9]*/.test(season.name)) {
-                    const _ = fs.readdirSync(`public/Assets/Series/${folderList[i].name}/${season.name}`, { withFileTypes: true }).sort()
+                    const _ = fs.readdirSync(`${process.env.MEDIA_STORE_PATH}/Series/${folderList[i].name}/${season.name}`, { withFileTypes: true }).sort()
                     const episodes: string[] = []
                     for (let i of _) episodes.push(i.name)
                     for (let episode of episodes.sort()) {
-                        const regex = new RegExp("[Ss]([0-9]*)[Ee]([0-9]*)")
+                        const regex = new RegExp("[Ss][Oo]?([0-9]*)[Ee][Pp]?([0-9]*)")
                         const episodeInfos = regex.exec(episode)
                         if (!existingEps.includes(episode)) {
                             if (!seasons.includes(season.name.split("SO").join("").split(" ").join(""))) seasons.push(season.name.split("SO").join("").split(" ").join(""))
@@ -308,7 +308,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         });
                     }
-                    const movieInfo = getInfo(`public${files[i].path}`)
+                    const movieInfo = getInfo(`${process.env.MEDIA_STORE_PATH}/${files[i].path}`)
 
                     if (files[i].type == "Movies") {
                         const initMovie = await prismadb.media.create({
@@ -329,13 +329,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         })
 
                         try {
-                            fs.mkdir(`public/Assets/Images/${initMovie.id}`, (err) => { })
+                            fs.mkdir(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}`, (err) => { })
 
                             const poster = await (await fetch(posterUrl)).blob()
-                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
+                            fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
 
                             const thumb = await (await fetch(thumbUrl)).blob()
-                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
+                            fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
 
                             const finalMovie = await prismadb.media.update({
                                 where: {
@@ -372,13 +372,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             })
 
                             try {
-                                fs.mkdir(`public/Assets/Images/${initSerie.id}`, (err) => { })
+                                fs.mkdir(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}`, (err) => { })
 
                                 const poster = await (await fetch(posterUrl)).blob()
-                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
+                                fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
 
                                 const thumb = await (await fetch(thumbUrl)).blob()
-                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
+                                fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
 
                                 const finalSerie = await prismadb.media.update({
                                     where: {
