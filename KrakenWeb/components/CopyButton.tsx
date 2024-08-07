@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import useMedia from "@/hooks/useMedia";
 import { BiCopy } from "react-icons/bi";
+import clip from "@/lib/clip";
 
 interface CopyButtonProps {
     data: Record<string, any>;
 }
 
 const CopyButton: React.FC<CopyButtonProps> = ({ data }) => {
-    const [toast, setToast] = useState(false)
     const [clicked, setClicked] = useState(false)
 
     const handleCopy = async () => {
@@ -15,11 +15,9 @@ const CopyButton: React.FC<CopyButtonProps> = ({ data }) => {
         const permission = await navigator.permissions.query({ name: "clipboard-write" as PermissionName })
         if (permission.state == "granted") {
             setClicked(true)
-            setToast(true)
-            await navigator.clipboard.writeText(`smb://kraken.local${data.videoUrl}`)
+            clip(`smb://kraken.local${data.videoUrl}`)
             await new Promise(f => setTimeout(f, 2000));
             setClicked(false)
-            setToast(false)
         }
     }
 
@@ -28,7 +26,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ data }) => {
             <div>
                 <BiCopy className="w-fit" size={20} />
             </div>
-            <div className={`absolute ${toast ? "opacity-100" : "opacity-0"} flex flex-col items-center w-fit top-10 transition-all duration-500`}>
+            <div className={`absolute ${clicked ? "opacity-100" : "opacity-0"} flex flex-col items-center w-fit top-10 transition-all duration-500`}>
                 <div className="w-4 border-b-neutral-700 border-b-8 border-r-transparent border-r-8 border-l-transparent border-l-8"></div>
                 <div className="h-8 flex flex-row items-center w-14 bg-neutral-700 rounded-md border-neutral-700 border-2 p-2">
                     <p className="text-white text-xs">Copied</p>

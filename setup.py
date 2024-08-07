@@ -252,10 +252,6 @@ info("Installing mysql-client...")
 if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y mysql-client", show_outp=True)
 else : warning("Make sure you installed mysql-client.")
 
-info("Installing openssl...")
-if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y openssl", show_outp=True)
-else : warning("Make sure you installed openssl.")
-
 with spinner("Installing docker-compose..."):
     if ptfrm != "linux" : 
         warning("Make sure you installed docker-compse.")
@@ -269,13 +265,11 @@ with spinner("Installing docker-compose..."):
     cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin", "Step 7/8 Ok.                                               ")
     cmd_run("sudo service docker start", "Step 8/8 Ok.                                               ")
 
-success("Installed npm, openssl, docker and mysql.")
+success("Installed npm, docker and mysql.")
 
 cryptsalt = bcrypt.gensalt() 
 
-info("Generating SSL certificates")
-cmd_run('/usr/bin/openssl req -x509 -newkey rsa:4096 -keyout Docker/nginx/ssl/kraken_key.pem -out Docker/nginx/ssl/kraken_cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=neverland/L=krakenbay/O=kraken/OU=kraken/CN=kraken"', show_outp=True)
-with spinner("Creating mysql db and nginx containers..."):
+with spinner("Creating mysql db containers..."):
     cmd_run("cd Docker && sudo docker compose up -d", "Created mysql server container.", "Did you install docker ?", critical=True)
 with spinner("Installing node packages."):
     cmd_run('cd "KrakenWeb" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "KrakenWeb" and run > npm i', critical=True)
@@ -408,10 +402,12 @@ with open("/etc/samba/smb.conf", "r", encoding="utf-8") as smbconf:
             if old_conf[i + 1] != "   disable netbios = yes\n":
                 old_conf.insert(i + 1, "   multicast dns register = yes\n")
                 old_conf.insert(i + 1, "   disable netbios = yes\n")
-    for i in range(len(old_conf) - 6):
+    i = 0
+    while i < len(old_conf) - 6:
         if old_conf[i].startswith("[print"):
             for _ in range(6):
                 old_conf.pop(i)
+        i+=1
     if mov : old_conf += movies_share
     if ser : old_conf += shows_share
     smbconf.close()
