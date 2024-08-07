@@ -331,10 +331,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             fs.mkdir(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}`, (err) => { })
 
                             const poster = await (await fetch(posterUrl)).blob()
-                            fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
+                            fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
 
                             const thumb = await (await fetch(thumbUrl)).blob()
-                            fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
+                            fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
 
                             const finalMovie = await prismadb.media.update({
                                 where: {
@@ -374,10 +374,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 fs.mkdir(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}`, (err) => { })
 
                                 const poster = await (await fetch(posterUrl)).blob()
-                                fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
+                                fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
 
                                 const thumb = await (await fetch(thumbUrl)).blob()
-                                fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
+                                fs.writeFile(`${process.env.MEDIA_STORE_PATH}/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
 
                                 const finalSerie = await prismadb.media.update({
                                     where: {
