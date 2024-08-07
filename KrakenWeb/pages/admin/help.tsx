@@ -429,13 +429,13 @@ export default function Help() {
                                 <Tree name="/Series">
                                     <Tree name="Serie 1">
                                         <Tree name="SO 1">
-                                            <Tree name="EP 1.mkv" style={{ color: '#37ceff' }} />
-                                            <Tree name="EP 2.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="EP1.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="EP2.mkv" style={{ color: '#37ceff' }} />
                                             <Tree name="..." />
                                         </Tree>
                                         <Tree name="SO 2">
-                                            <Tree name="EP 1.mkv" style={{ color: '#37ceff' }} />
-                                            <Tree name="EP 2.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="EP01.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="EP02.mkv" style={{ color: '#37ceff' }} />
                                             <Tree name="..." />
                                         </Tree>
                                     </Tree>

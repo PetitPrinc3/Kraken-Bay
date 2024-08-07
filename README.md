@@ -43,10 +43,7 @@ And many more !!
 
 ### Web server
 
-- Enhanced admin panel (ongoing) :
-    - Automatic detection : fix episode number definition
 - Re-think file management (s3 w Minio ?, API routes ?, custom server ?, secondary server ?)
-- Fix copy buttons
 
 ## Collaborate
 

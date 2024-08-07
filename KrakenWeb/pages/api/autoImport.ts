@@ -224,11 +224,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     const episodes: string[] = []
                     for (let i of _) episodes.push(i.name)
                     for (let episode of episodes.sort()) {
+                        const regex = new RegExp("[Ss]([0-9]*)[Ee]([0-9]*)")
+                        const episodeInfos = regex.exec(episode)
                         if (!existingEps.includes(episode)) {
                             if (!seasons.includes(season.name.split("SO").join("").split(" ").join(""))) seasons.push(season.name.split("SO").join("").split(" ").join(""))
                             newEps.push({
                                 season: season.name.split("SO").join("").split(" ").join(""),
-                                episode: (episodes.indexOf(episode) + 1).toFixed(),
+                                episode: isNull(episodeInfos) ? (episodes.indexOf(episode) + 1).toFixed() : (+episodeInfos[2]).toFixed(),
                                 url: `/Assets/Series/${folderList[i].name}/${season.name}/${episode}`,
                             })
                         }
@@ -330,10 +332,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             fs.mkdir(`public/Assets/Images/${initMovie.id}`, (err) => { })
 
                             const poster = await (await fetch(posterUrl)).blob()
-                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
+                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
 
                             const thumb = await (await fetch(thumbUrl)).blob()
-                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
+                            fs.writeFile(`public/Assets/Images/${initMovie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
 
                             const finalMovie = await prismadb.media.update({
                                 where: {
@@ -373,10 +375,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 fs.mkdir(`public/Assets/Images/${initSerie.id}`, (err) => { })
 
                                 const poster = await (await fetch(posterUrl)).blob()
-                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()), (err) => { })
+                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`, Buffer.from(await poster.arrayBuffer()).toString(), (err) => { })
 
                                 const thumb = await (await fetch(thumbUrl)).blob()
-                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()), (err) => { })
+                                fs.writeFile(`public/Assets/Images/${initSerie.id}${mediaData?.poster_path}`, Buffer.from(await thumb.arrayBuffer()).toString(), (err) => { })
 
                                 const finalSerie = await prismadb.media.update({
                                     where: {
