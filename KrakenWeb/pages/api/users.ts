@@ -132,9 +132,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             await fs.rm(filePath)
                             return res.status(400).json(`Invalid image : ${fileType.header + ":" + fileType.mime}`)
                         }
-                        if (!isUndefined(userData.image) && userData.image != `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + "." + userData.image.split(".").pop()}`) {
+                        if (!isUndefined(user.image) && user.image != `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + "." + userData.image?.split(".").pop()}`) {
                             try {
-                                !isUndefined(process.env.MEDIA_STORE_PATH) && await fs.rm(process.env.MEDIA_STORE_PATH + userData.image?.split(process.env.MEDIA_SRV_URL as string)[1])
+                                !isUndefined(process.env.MEDIA_STORE_PATH) && await fs.rm(process.env.MEDIA_STORE_PATH + user.image?.split(process.env.MEDIA_SRV_URL as string)[1])
                             } catch {
 
                             }
