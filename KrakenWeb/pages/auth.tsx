@@ -4,7 +4,7 @@ import { useCallback, useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { isNull } from "lodash";
+import { isNull, isUndefined } from "lodash";
 
 const Auth = () => {
     const [email, setEmail] = useState('');
@@ -33,7 +33,7 @@ const Auth = () => {
                 email,
                 password,
             }).then((res) => {
-                if (!isNull(res?.error)) {
+                if (!isUndefined(res?.error) && !isNull(res.error)) {
                     toast.update(loading, { render: res?.error ? res?.error : "Oops, something went terribly wrong...", type: "error", isLoading: false })
                 }
                 else {
