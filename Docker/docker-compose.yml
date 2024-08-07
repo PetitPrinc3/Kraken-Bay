@@ -18,4 +18,4 @@ services:
       - '8080:8080'
     volumes:
       - ./nginx:/etc/nginx
-      - /mnt/Kraken/Assets:/media/Assets
+      - /mnt/Kraken/Assets:/media/Assets:ro

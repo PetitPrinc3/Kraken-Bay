@@ -125,7 +125,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     try {
                         const imageBuffer = Buffer.from(userData.image.imageBuffer.data)
                         const filePath = `${process.env.MEDIA_STORE_PATH}/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
-                        await fs.writeFile(filePath, imageBuffer.toString())
+                        await fs.writeFile(filePath, imageBuffer)
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
                             await fs.rm(filePath)

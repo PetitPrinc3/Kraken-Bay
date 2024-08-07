@@ -4,6 +4,7 @@ import serverAuth from "@/lib/serverAuth";
 import { isNull, isUndefined } from "lodash";
 import fs from 'fs/promises'
 import mime from '@/lib/mime';
+import path from "path";
 
 export const config = {
     api: {
@@ -134,21 +135,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 console.log(err)
                             }
                         }
-                        const filePath = `${process.env.MEDIA_STORE_PATH}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
-                        await fs.writeFile(filePath, posterBuffer.toString())
+                        const filePath = path.normalize(`${process.env.MEDIA_STORE_PATH}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`)
+                        await fs.writeFile(filePath, posterBuffer)
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
-                            await fs.rm(filePath)
+                            //    await fs.rm(filePath)
                             return res.status(400).json(`Invalid poster : ${fileType.header + ":" + fileType.mime}`)
                         }
-                        if (!isUndefined(currentUser.poster) && filePath != process.env.MEDIA_STORE_PATH + "/" + currentUser.poster) {
+                        if (!isUndefined(existingMedia.posterUrl) && existingMedia.posterUrl != `${process.env.MEDIA_SRV_URL}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`) {
                             try {
                                 await fs.rm(process.env.MEDIA_STORE_PATH + "/" + existingMedia.posterUrl)
                             } catch {
 
                             }
                         }
-                        mediaData.posterUrl = `/Assets/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
+                        mediaData.posterUrl = `${process.env.MEDIA_SRV_URL}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`
                     } catch (err) {
                         console.log(err)
                         return res.status(400).json("Poster update impossible.")
@@ -165,21 +166,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 console.log(err)
                             }
                         }
-                        const filePath = `${process.env.MEDIA_STORE_PATH}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`
-                        await fs.writeFile(filePath, thumbBuffer.toString())
+                        const filePath = path.normalize(`${process.env.MEDIA_STORE_PATH}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`)
+                        await fs.writeFile(filePath, thumbBuffer)
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
                             await fs.rm(filePath)
                             return res.status(400).json(`Invalid thumb : ${fileType.header + ":" + fileType.mime}`)
                         }
-                        if (!isUndefined(currentUser.thumb) && filePath != process.env.MEDIA_STORE_PATH + "/" + currentUser.thumb) {
+                        if (!isUndefined(existingMedia.thumbUrl) && existingMedia.thumbUrl != `${process.env.MEDIA_SRV_URL}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`) {
                             try {
                                 await fs.rm(process.env.MEDIA_STORE_PATH + "/" + currentUser.thumb)
                             } catch {
 
                             }
                         }
-                        mediaData.thumbUrl = `${process.env.MEDIA_STORE_PATH}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`
+                        mediaData.thumbUrl = `${process.env.MEDIA_SRV_URL}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`
                     } catch (err) {
                         console.log(err)
                         return res.status(400).json("Thumbnail update impossible.")
