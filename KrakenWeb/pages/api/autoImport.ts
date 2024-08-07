@@ -153,7 +153,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const existingFiles: string[] = []
 
         for (let i = 0; i < existingMovies.length; i++) {
-            existingFiles.push(existingMovies[i].videoUrl.split(process.env.MEDIA_SRV_URL || "")[1])
+            existingFiles.push(existingMovies[i].videoUrl)
         }
 
         const filesList = fs.readdirSync(process.env.MEDIA_STORE_PATH + "/Movies", { withFileTypes: true })
