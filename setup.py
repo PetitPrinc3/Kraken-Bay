@@ -408,6 +408,7 @@ with open("/etc/samba/smb.conf", "r", encoding="utf-8") as smbconf:
             if old_conf[i + 1] != "   disable netbios = yes\n":
                 old_conf.insert(i + 1, "   multicast dns register = yes\n")
                 old_conf.insert(i + 1, "   disable netbios = yes\n")
+    for i in range(len(old_conf) - 6):
         if old_conf[i].startswith("[print"):
             for _ in range(6):
                 old_conf.pop(i)
