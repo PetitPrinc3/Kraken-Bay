@@ -125,21 +125,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (!isUndefined(userData.image) && !isNull(userData.image) && typeof userData.image != "string") {
                     try {
                         const imageBuffer = Buffer.from(userData.image.imageBuffer.data)
-                        const filePath = `${process.env.MEDIA_STORE_PATH}/Images/UserProfiles/${userData.id + "." + path.extname(userData.image.fileName)}`
+                        const filePath = `${process.env.MEDIA_STORE_PATH}/Images/UserProfiles/${userData.id + path.extname(userData.image.fileName)}`
                         await fs.writeFile(filePath, imageBuffer)
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
                             await fs.rm(filePath)
                             return res.status(400).json(`Invalid image : ${fileType.header + ":" + fileType.mime}`)
                         }
-                        if (!isUndefined(user.image) && user.image != `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + "." + userData.image?.split(".").pop()}`) {
+                        if (!isUndefined(user.image) && (!isNull(user.image)) && user.image != `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + path.extname(userData.image.fileName)}`) {
                             try {
                                 !isUndefined(process.env.MEDIA_STORE_PATH) && await fs.rm(process.env.MEDIA_STORE_PATH + user.image?.split(process.env.MEDIA_SRV_URL as string)[1])
                             } catch {
 
                             }
                         }
-                        userData.image = `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
+                        userData.image = `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + path.extname(userData.image.fileName)}`
                     } catch (err) {
                         console.log(err)
                         return res.status(400).json("Image update impossible.")
