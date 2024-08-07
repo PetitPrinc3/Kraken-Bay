@@ -4,3 +4,4 @@ mysql-connector-python>=8.4.0
 netifaces>=0.11.0
 questionary>=2.0.1
 Requests>=2.32.1
+bcrypt>=4.2.0

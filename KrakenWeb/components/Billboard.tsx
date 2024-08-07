@@ -6,7 +6,7 @@ import PlayButton from "./PlayButton";
 import useInfoModal from "@/hooks/useInfoModal";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import axios from "axios";
-import { isUndefined } from "lodash";
+import { isEmpty, isUndefined } from "lodash";
 import { useRouter } from "next/router";
 import { BsFillPlayFill } from "react-icons/bs";
 
@@ -33,7 +33,7 @@ const Billboard: React.FC<BillboardProps> = ({ mediaType }) => {
         }
     }, [setMuted, isMuted, user, firstLoad, setFirstLoad])
 
-    if (isUndefined(user) || isUndefined(data)) {
+    if (isUndefined(user) || isUndefined(data) || isEmpty(data)) {
         return (
             <div className="block relative w-full h-[75vh] md:h-[90vh] z-0 animate-pulse" />
         )
