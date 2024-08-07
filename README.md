@@ -1,4 +1,4 @@
-<img src="Kraken - Web/public/Assets/Images/kraken.png" align="right" style="float: right;" width="200rem">
+<img src="KrakenWeb/public/Assets/Images/kraken.png" align="right" style="float: right;" width="200rem">
 
 # Kraken Bay
 
