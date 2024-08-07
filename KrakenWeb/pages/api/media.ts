@@ -139,12 +139,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         await fs.writeFile(filePath, posterBuffer)
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
-                            //    await fs.rm(filePath)
+                            await fs.rm(filePath)
                             return res.status(400).json(`Invalid poster : ${fileType.header + ":" + fileType.mime}`)
                         }
                         if (!isUndefined(existingMedia.posterUrl) && existingMedia.posterUrl != `${process.env.MEDIA_SRV_URL}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.posterUrl.fileName.split(".").pop()}`) {
                             try {
-                                await fs.rm(process.env.MEDIA_STORE_PATH + "/" + existingMedia.posterUrl)
+                                !isUndefined(process.env.MEDIA_STORE_PATH) && await fs.rm(process.env.MEDIA_STORE_PATH + existingMedia.posterUrl?.split(process.env.MEDIA_SRV_URL as string)[1])
                             } catch {
 
                             }
@@ -175,7 +175,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
                         if (!isUndefined(existingMedia.thumbUrl) && existingMedia.thumbUrl != `${process.env.MEDIA_SRV_URL}/Images/${existingMedia.id}/${mediaData.id + "." + mediaData.thumbUrl.fileName.split(".").pop()}`) {
                             try {
-                                await fs.rm(process.env.MEDIA_STORE_PATH + "/" + currentUser.thumb)
+                                !isUndefined(process.env.MEDIA_STORE_PATH) && await fs.rm(process.env.MEDIA_STORE_PATH + existingMedia.thumbUrl?.split(process.env.MEDIA_SRV_URL as string)[1])
                             } catch {
 
                             }

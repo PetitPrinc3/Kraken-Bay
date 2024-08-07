@@ -5,6 +5,7 @@ import serverAuth from "@/lib/serverAuth";
 import { isNull, isUndefined } from "lodash";
 import fs from 'fs/promises'
 import mime from '@/lib/mime';
+import path from "path";
 
 export const config = {
     api: {
@@ -124,16 +125,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (!isUndefined(userData.image) && !isNull(userData.image) && typeof userData.image != "string") {
                     try {
                         const imageBuffer = Buffer.from(userData.image.imageBuffer.data)
-                        const filePath = `${process.env.MEDIA_STORE_PATH}/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
+                        const filePath = `${process.env.MEDIA_STORE_PATH}/Images/UserProfiles/${userData.id + "." + path.extname(userData.image.fileName)}`
                         await fs.writeFile(filePath, imageBuffer)
                         const fileType = await mime(filePath)
                         if (fileType.mime != "Image") {
                             await fs.rm(filePath)
                             return res.status(400).json(`Invalid image : ${fileType.header + ":" + fileType.mime}`)
                         }
-                        if (!isUndefined(currentUser.image) && filePath != process.env.MEDIA_STORE_PATH + "/" + currentUser.image) {
+                        if (!isUndefined(userData.image) && userData.image != `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + "." + userData.image.split(".").pop()}`) {
                             try {
-                                await fs.rm(process.env.MEDIA_STORE_PATH + "/" + currentUser.image)
+                                !isUndefined(process.env.MEDIA_STORE_PATH) && await fs.rm(process.env.MEDIA_STORE_PATH + userData.image?.split(process.env.MEDIA_SRV_URL as string)[1])
                             } catch {
 
                             }
