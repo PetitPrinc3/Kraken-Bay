@@ -278,12 +278,19 @@ with spinner("Pushing prisma db schema."):
 with spinner("Building app..."):
     cmd_run('cd "KrakenWeb" && npm run build')
 
-install_path = os.getcwd()
+file_path = question("Where will the media files be located ?")
+if not os.path.exists(file_path) :
+    os.makedirs(file_path)
+if not os.path.exists(os.path.join(file_path, "Movies")):
+    os.makedirs(os.path.join(file_path, "Movies"))
+if not os.path.exists(os.path.join(file_path, "Series")):
+    os.makedirs(os.path.join(file_path, "Series"))
+if not os.path.exists(os.path.join(file_path, "Images")):
+    os.makedirs(os.path.join(file_path, "Images"))
+if not os.path.exists(os.path.join(file_path, "Images/UserProfiles")):
+    os.makedirs(os.path.join(file_path, "Images/UserProfiles"))
 
 if question("Are files on an external drive ? [y/n]").lower() == "y":
-    install_path = question("Choose mount point.")
-    if not os.path.exists(install_path) :
-        os.makedirs(install_path)
     drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
     drive = questionary.select("Select drive : ", drives).ask()
     device = os.popen(f"ls -al /dev/disk/by-label/{drive}").read().split("->")[0].strip().split(" ")[-1]
@@ -293,7 +300,7 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
     group_uid = question("Select group uid. (default : 1000)")
     if group_uid.strip() == "":
         group_uid = str(1000)
-    auto_params = f'/dev/{device} {install_path} ext4 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
+    auto_params = f'/dev/{device} {file_path} ext4 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
 
     cmd_run("cp /etc/fstab fstab.old")
 
@@ -308,14 +315,13 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
             conf.append(auto_params)
             fstab.writelines(conf)
             success("Drive fstabbed.")
-    install_path = os.path.join(install_path, "Kraken-Bay")
 
 
 service_conf = f"""[Unit]
 Description=Web Service
 
 [Service]
-ExecStart=/usr/bin/npm --prefix "{os.path.join(install_path, "KrakenWeb")}" start
+ExecStart=/usr/bin/npm --prefix "{os.path.join(os.getcwd(), "KrakenWeb")}" start
 Restart=always
 User=root
 Group=root
@@ -356,6 +362,8 @@ else:
 info("Setting up Samba")
 with spinner("Downloading packages..."):
     cmd_run("sudo apt install -y samba")
+
+
 
 info("Creating shares.")
 movies_share = [_ + "\n" for _ in (f"""
