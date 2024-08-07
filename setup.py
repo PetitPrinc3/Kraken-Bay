@@ -221,7 +221,6 @@ info(f"Using password : {password}")
 info(f"Using database : {database}")
 
 replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
-replace_field("PythonModules/krakenConf.py", ["hostname = ", "username = ", "password = ", "database = "], [f'"{hostname}"', f'"{username}"', f'"{password}"', f'"{database}"'])
 replace_line("KrakenWeb/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
