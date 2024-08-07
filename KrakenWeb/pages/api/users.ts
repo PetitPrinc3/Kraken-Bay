@@ -138,7 +138,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                             }
                         }
-                        userData.image = `/Assets/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
+                        userData.image = `${process.env.MEDIA_SRV_URL}/Images/UserProfiles/${userData.id + "." + userData.image.fileName.split(".").pop()}`
                     } catch (err) {
                         console.log(err)
                         return res.status(400).json("Image update impossible.")
