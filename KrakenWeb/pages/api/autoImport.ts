@@ -153,9 +153,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const existingFiles: string[] = []
 
         for (let i = 0; i < existingMovies.length; i++) {
-            existingFiles.push(existingMovies[i].videoUrl)
+            existingFiles.push(existingMovies[i].videoUrl.split(process.env.MEDIA_SRV_URL || "")[1])
         }
-
 
         const filesList = fs.readdirSync(process.env.MEDIA_STORE_PATH + "/Movies", { withFileTypes: true })
 
@@ -169,7 +168,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     break
                 }
             }
-            if (!existingFiles.includes(`/Assets/Movies/${filesList[i].name}`)) {
+            if (!existingFiles.includes(`${process.env.MEDIA_SRV_URL}/Movies/${filesList[i].name}`)) {
                 try {
                     const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_SECRET}&query=${title?.toLowerCase() || ""}&include_adult=true&language=en-US&page=1`
                     const { data: apiResult } = await axios.get(url)
@@ -179,7 +178,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         title: apiResult?.results[0].id,
                         altTitle: title?.toLowerCase() || "",
                         type: "Movies",
-                        path: `/Assets/Movies/${filesList[i].name}`,
+                        path: `/Movies/${filesList[i].name}`,
                         apiResult: apiResult?.results
                     })
                 } catch {
@@ -190,7 +189,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         title: titleId,
                         altTitle: title?.toLowerCase() || "",
                         type: "Movies",
-                        path: `/Assets/Movies/${filesList[i].name}`,
+                        path: `/Movies/${filesList[i].name}`,
                         apiResult: [{
                             id: titleId,
                             original_title: title
@@ -231,7 +230,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             newEps.push({
                                 season: season.name.split("SO").join("").split(" ").join(""),
                                 episode: isNull(episodeInfos) ? (episodes.indexOf(episode) + 1).toFixed() : (+episodeInfos[2]).toFixed(),
-                                url: `/Assets/Series/${folderList[i].name}/${season.name}/${episode}`,
+                                url: `${process.env.MEDIA_SRV_URL}/Series/${folderList[i].name}/${season.name}/${episode}`,
                             })
                         }
                     }
@@ -247,7 +246,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         title: apiResult?.results[0].id,
                         altTitle: folderList[i].name,
                         type: "TV Show",
-                        path: `/Assets/Series/${folderList[i].name}`,
+                        path: `/Series/${folderList[i].name}`,
                         seasons: seasons.sort().join(","),
                         episodes: newEps,
                         apiResult: apiResult?.results,
@@ -261,7 +260,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         title: titleId,
                         altTitle: folderList[i].name.toLowerCase(),
                         type: "TV Show",
-                        path: `/Assets/Series/${folderList[i].name}`,
+                        path: `/Series/${folderList[i].name}`,
                         seasons: seasons.sort().join(","),
                         episodes: newEps,
                         apiResult: [{
@@ -308,7 +307,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         });
                     }
-                    const movieInfo = getInfo(`${process.env.MEDIA_STORE_PATH}/${files[i].path}`)
+                    const movieInfo = getInfo(`${process.env.MEDIA_STORE_PATH}${files[i].path}`)
 
                     if (files[i].type == "Movies") {
                         const initMovie = await prismadb.media.create({
@@ -317,7 +316,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 altTitle: files[i].altTitle,
                                 type: files[i].type,
                                 description: mediaData.overview,
-                                videoUrl: files[i].path,
+                                videoUrl: process.env.MEDIA_SRV_URL + files[i].path,
                                 thumbUrl: thumbUrl,
                                 posterUrl: posterUrl,
                                 genre: movieGenres.join(", "),
@@ -342,8 +341,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                     id: initMovie.id
                                 },
                                 data: {
-                                    thumbUrl: `/Assets/Images/${initMovie.id}${mediaData?.poster_path}`,
-                                    posterUrl: `/Assets/Images/${initMovie.id}${mediaData?.backdrop_path}`,
+                                    thumbUrl: `${process.env.MEDIA_SRV_URL}/Images/${initMovie.id}${mediaData?.poster_path}`,
+                                    posterUrl: `${process.env.MEDIA_SRV_URL}/Images/${initMovie.id}${mediaData?.backdrop_path}`,
                                 }
                             })
 
@@ -385,8 +384,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                         id: initSerie.id
                                     },
                                     data: {
-                                        thumbUrl: `/Assets/Images/${initSerie.id}${mediaData?.poster_path}`,
-                                        posterUrl: `/Assets/Images/${initSerie.id}${mediaData?.backdrop_path}`,
+                                        thumbUrl: `${process.env.MEDIA_SRV_URL}/Images/${initSerie.id}${mediaData?.poster_path}`,
+                                        posterUrl: `${process.env.MEDIA_SRV_URL}/Images/${initSerie.id}${mediaData?.backdrop_path}`,
                                     }
                                 })
 
