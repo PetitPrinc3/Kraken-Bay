@@ -117,31 +117,49 @@ def question(text, style = "classic", time = False):
 
 def cmd_run(cmd, succ = "", err = "", critical = False, show_outp = False):
     try:
-        if show_outp :
-            outp = subprocess.STDOUT
-        else :
-            outp = subprocess.PIPE
-        if subprocess.Popen(cmd, shell=True, stdout=outp, stderr=subprocess.PIPE).wait(timeout=300) != 0:
-            warning('Process failed once. Trying again.')
-            try:
-                if subprocess.Popen(cmd, shell=True, stdout=outp, stderr=subprocess.PIPE).wait(timeout=300) != 0:
-                    fail('Process failed. This is critical.                                                  ')
-                    if err != "" : warning(err)
-                    if critical: exit()
-                    return 1
-            except subprocess.TimeoutExpired:
-                    fail('Command timed out. This is critical.                                               ')
-                    if err != "" : warning(err)
-                    if critical: exit()
-                    return 1
+        if show_outp:
+            if subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                warning('Process failed once. Trying again.')
+                try:
+                    if subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                        fail('Process failed. This is critical.                                                  ')
+                        if err != "" : warning(err)
+                        if critical: exit()
+                        return 1
+                except subprocess.TimeoutExpired:
+                        fail('Command timed out. This is critical.                                               ')
+                        if err != "" : warning(err)
+                        if critical: exit()
+                        return 1
+        else:
+            if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                warning('Process failed once. Trying again.')
+                try:
+                    if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                        fail('Process failed. This is critical.                                                  ')
+                        if err != "" : warning(err)
+                        if critical: exit()
+                        return 1
+                except subprocess.TimeoutExpired:
+                        fail('Command timed out. This is critical.                                               ')
+                        if err != "" : warning(err)
+                        if critical: exit()
+                        return 1
     except subprocess.TimeoutExpired:
         warning('Command timed out. Trying again.')
         try:
-            if subprocess.Popen(cmd, shell=True, stdout=outp, stderr=subprocess.PIPE).wait(timeout=300) != 0:
-                fail('Process failed. This is critical.')
-                if err != "" : warning(err)
-                if critical: exit()
-                return 1
+            if show_outp:
+                if subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                    fail('Process failed. This is critical.')
+                    if err != "" : warning(err)
+                    if critical: exit()
+                    return 1
+            else:
+                if subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait(timeout=300) != 0:
+                    fail('Process failed. This is critical.')
+                    if err != "" : warning(err)
+                    if critical: exit()
+                    return 1
         except subprocess.TimeoutExpired:
                 fail('Command timed out twice. This is critical.')
                 if err != "" : warning(err)
