@@ -240,7 +240,7 @@ info(f"Using username      : {username}")
 info(f"Using password      : {password}")
 info(f"Using database      : {database}")
 info(f"Using assets from   : {file_path}")
-info(f"Using File srv port : {file_path}")
+info(f"Using File srv port : {srv_port}")
 info(f"Using Web srv path  : {os.path.join(os.getcwd(), "KrakenWeb")}")
 
 replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
@@ -278,11 +278,11 @@ success("Installed npm, docker and mysql.")
 cryptsalt = bcrypt.gensalt() 
 
 info("Creating mysql & nginx containers...")
-cmd_run("cd Docker && sudo docker compose up -d", "Created mysql & nginx containers.", "Did you install docker ?", show_outp=True, critical=True)
+cmd_run("cd Docker && sudo docker compose up -d", "Created mysql & nginx containers.", "Did you install docker ?", critical=True, show_outp=True)
 with spinner("Installing node packages."):
-    cmd_run('cd "KrakenWeb" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "KrakenWeb" and run > npm i', critical=True)
+    cmd_run('cd "KrakenWeb" && npm i', "Node packages installed.  ", 'Failed to install node packages. Please cd into "KrakenWeb" and run > npm i', critical=True)
 with spinner("Pushing prisma db schema."):
-    cmd_run('cd "KrakenWeb" && npx prisma db push', "Prisma db schema pushed.", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
+    cmd_run('cd "KrakenWeb" && npx prisma db push', "Prisma db schema pushed.  ", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
 with spinner("Building app..."):
     cmd_run('cd "KrakenWeb" && npm run build')
 
@@ -436,12 +436,13 @@ with spinner("Starting Samba..."):
 success("Samba is up !")
 
 if ptfrm == "linux":
+    if "ssh" in os.popen("pstree -s $$").read(): warning("You seem to be connected through ssh. Setting up h0tsp0t will most likely fail.")
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
         import netifaces # type: ignore
         interface = questionary.select("Choose interface for hotspot : ", netifaces.interfaces()).ask()
         info("Cloning create_ap from @oblique...")
-        cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")
+        cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap", show_outp=True)
         success("Done.")
 
         with spinner("Installing create_ap..."):
@@ -529,11 +530,11 @@ WantedBy=multi-user.target
 """)
                 createap_service.close()
 
-        info("Setting up hot spot ...")
-        cmd_run("sudo systemctl daemon-reload")
-        cmd_run("sudo systemctl enable create_ap")
-        cmd_run("sudo systemctl start create_ap")
-        cmd_run("sudo rm -r /tmp/create_ap")
+        with spinner("Setting up hot spot ..."):
+            cmd_run("sudo systemctl daemon-reload")
+            cmd_run("sudo systemctl enable create_ap")
+            cmd_run("sudo systemctl start create_ap")
+            cmd_run("sudo rm -r /tmp/create_ap")
         success("We are now in hotspot mode !")
 
 if question("Setup complete. Do you wish to reboot now ? [Y/n]").lower() == "y":
