@@ -311,14 +311,15 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
 
     cmd_run("cp /etc/fstab fstab.old")
 
-    with open("/etc/fstab", "r+", encoding="utf-8") as fstab:
+    with open("/etc/fstab", "r", encoding="utf-8") as fstab:
         conf = fstab.readlines()
-        write = True
-        for line in conf:
-            if device in line:
-                fail("Drive already fstabbed.")
-                write = False
-        if write :
+    write = True
+    for line in conf:
+        if device in line:
+            fail("Drive already fstabbed.")
+            write = False
+    if write :
+        with open("/etc/fstab", "w", encoding="utf-8") as fstab:
             conf.append(auto_params)
             fstab.writelines(conf)
             success("Drive fstabbed.")
