@@ -232,11 +232,13 @@ hostname = "kraken.local"
 username = "kraken"
 password = "kraken"
 database = "kraken"
+file_path = "/mnt/Kraken/Assets"
 
-info(f"Using hostname : {hostname}")
-info(f"Using username : {username}")
-info(f"Using password : {password}")
-info(f"Using database : {database}")
+info(f"Using hostname    : {hostname}")
+info(f"Using username    : {username}")
+info(f"Using password    : {password}")
+info(f"Using database    : {database}")
+info(f"Using assets from : {file_path}")
 
 replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
 replace_line("KrakenWeb/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
@@ -269,8 +271,8 @@ success("Installed npm, docker and mysql.")
 
 cryptsalt = bcrypt.gensalt() 
 
-with spinner("Creating mysql db containers..."):
-    cmd_run("cd Docker && sudo docker compose up -d", "Created mysql server container.", "Did you install docker ?", critical=True)
+info("Creating mysql & nginx containers...")
+cmd_run("cd Docker && sudo docker compose up -d", "Created mysql & nginx containers.", "Did you install docker ?", show_outp=True, critical=True)
 with spinner("Installing node packages."):
     cmd_run('cd "KrakenWeb" && npm i', "Node packages installed.", 'Failed to install node packages. Please cd into "KrakenWeb" and run > npm i', critical=True)
 with spinner("Pushing prisma db schema."):
@@ -278,7 +280,6 @@ with spinner("Pushing prisma db schema."):
 with spinner("Building app..."):
     cmd_run('cd "KrakenWeb" && npm run build')
 
-file_path = question("Where will the media files be located ?")
 if not os.path.exists(file_path) :
     os.makedirs(file_path)
 if not os.path.exists(os.path.join(file_path, "Movies")):
@@ -369,7 +370,7 @@ info("Creating shares.")
 movies_share = [_ + "\n" for _ in (f"""
 [Movies]
     comment = Kraken Bay - Movies <3
-    path = "{os.path.join(install_path, "KrakenWeb/public/Assets/Movies")}"
+    path = "{os.path.join(file_path, "Movies")}"
     available = yes
     read only = yes
     create mask = 666
@@ -383,7 +384,7 @@ movies_share = [_ + "\n" for _ in (f"""
 shows_share = [_ + "\n" for _ in (f"""
 [TVShows]
     comment = Kraken Bay - TV Shows <3
-    path = "{os.path.join(install_path, "KrakenWeb/public/Assets/Series")}"
+    path = "{os.path.join(file_path, "Series")}"
     available = yes
     read only = yes
     create mask = 666

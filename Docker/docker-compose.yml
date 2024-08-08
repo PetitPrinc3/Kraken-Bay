@@ -12,7 +12,7 @@ services:
       - '3306:3306'
   krakenSrv:
     container_name: krakenSrv
-    image: nginx:current-alpine
+    image: nginx:alpine
     restart: always
     ports:
       - '8080:8080'
