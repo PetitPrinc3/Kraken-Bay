@@ -233,18 +233,23 @@ username = "kraken"
 password = "kraken"
 database = "kraken"
 file_path = "/mnt/Kraken/Assets"
+srv_port = "8080"
 
-info(f"Using hostname    : {hostname}")
-info(f"Using username    : {username}")
-info(f"Using password    : {password}")
-info(f"Using database    : {database}")
-info(f"Using assets from : {file_path}")
+info(f"Using hostname      : {hostname}")
+info(f"Using username      : {username}")
+info(f"Using password      : {password}")
+info(f"Using database      : {database}")
+info(f"Using assets from   : {file_path}")
+info(f"Using File srv port : {file_path}")
+info(f"Using Web srv path  : {os.path.join(os.getcwd(), "KrakenWeb")}")
 
 replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
 replace_line("KrakenWeb/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_URL=", f'NEXTAUTH_URL="http://{hostname}"')
+replace_line("KrakenWeb/.env", "MEDIA_STORE_PATH=", f'MEDIA_STORE_PATH="{file_path}"')
+replace_line("KrakenWeb/.env", "MEDIA_SRV_URL=", f'MEDIA_SRV_URL="http://{hostname}:{srv_port}"')
 
 info("Installing npm...")
 if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y npm", show_outp=True)
@@ -254,6 +259,7 @@ info("Installing mysql-client...")
 if ptfrm == "linux" : cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y mysql-client", show_outp=True)
 else : warning("Make sure you installed mysql-client.")
 
+info("Installing docker-compose...")
 with spinner("Installing docker-compose..."):
     if ptfrm != "linux" : 
         warning("Make sure you installed docker-compse.")
@@ -433,7 +439,7 @@ if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
         import netifaces # type: ignore
-        interface = questionary.select("Choose interface for hotspot : ", netifaces.interfaces())
+        interface = questionary.select("Choose interface for hotspot : ", netifaces.interfaces()).ask()
         info("Cloning create_ap from @oblique...")
         cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")
         success("Done.")
