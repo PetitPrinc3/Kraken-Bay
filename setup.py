@@ -286,6 +286,7 @@ with spinner("Pushing prisma db schema."):
 with spinner("Building app..."):
     cmd_run('cd "KrakenWeb" && npm run build')
 
+info("Setting up fs structure...")
 if not os.path.exists(file_path) :
     os.makedirs(file_path)
 if not os.path.exists(os.path.join(file_path, "Movies")):
@@ -296,6 +297,9 @@ if not os.path.exists(os.path.join(file_path, "Images")):
     os.makedirs(os.path.join(file_path, "Images"))
 if not os.path.exists(os.path.join(file_path, "Images/UserProfiles")):
     os.makedirs(os.path.join(file_path, "Images/UserProfiles"))
+
+info("Disabling system sleep...")
+cmd_run("systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target", "Disabled system sleep.      ")
 
 if question("Are files on an external drive ? [y/n]").lower() == "y":
     drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
