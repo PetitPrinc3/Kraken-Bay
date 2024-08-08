@@ -447,6 +447,8 @@ if ptfrm == "linux":
 
         with spinner("Installing create_ap..."):
             cmd_run("cd /tmp/create_ap && sudo make install")
+        with spinner("Installing hostapd"):
+            cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y hostapd")
 
 
         createap_conf = f"""CHANNEL=default
