@@ -284,7 +284,8 @@ with spinner("Installing node packages."):
 with spinner("Pushing prisma db schema."):
     cmd_run('cd "KrakenWeb" && npx prisma db push', "Prisma db schema pushed.  ", "Prisma db application failed. Please check your mysql server and retry.", critical=True)
 with spinner("Building app..."):
-    cmd_run('cd "KrakenWeb" && npm run build')
+    cmd_run('cd "KrakenWeb" && sudo -u $USER npm run build')
+    cmd_run('chown -R $USER:$USER .')
 
 info("Setting up fs structure...")
 if not os.path.exists(file_path) :
@@ -311,7 +312,7 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
     group_uid = question("Select group uid. (default : 1000)")
     if group_uid.strip() == "":
         group_uid = str(1000)
-    auto_params = f'/dev/{device} {file_path} ext4 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
+    auto_params = f'{device} {file_path} ext4 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
 
     cmd_run("cp /etc/fstab fstab.old")
 
@@ -499,7 +500,7 @@ if test -f "/tmp/create_ap.all.lock"; then
     rm /tmp/create_ap.all.lock
 fi
                                      
-/usr/bin/create_ap --config /etc/create_ap.conf
+/usr/bin/create_ap --config /etc/create_ap.conf&
                                      
 nmcli radio wifi on
 
