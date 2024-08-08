@@ -9,7 +9,7 @@ class spinner:
         self.timeout = timeout
         self._thread = Thread(target=self._animate, daemon=True)
         self.steps = ["[⢿]", "[⣻]", "[⣽]", "[⣾]", "[⣷]", "[⣯]", "[⣟]", "[⡿]"]
-        if old: self.steps = ["[-]", "[\]", "[|]", "[/]"]
+        if old: self.steps = ["[-]", "[\\]", "[|]", "[/]"]
         self.done = False
 
     def start(self):
@@ -433,7 +433,7 @@ if ptfrm == "linux":
     hot = question("Do you wish to setup hostspot mode ? [Y/n]")
     if hot.lower() == "y" or hot.strip() == "":
         import netifaces # type: ignore
-        interface = questionary("Choose interface for hotspot : ", netifaces.interfaces())
+        interface = questionary.select("Choose interface for hotspot : ", netifaces.interfaces())
         info("Cloning create_ap from @oblique...")
         cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap")
         success("Done.")
