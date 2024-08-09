@@ -287,18 +287,6 @@ with spinner("Building app..."):
     cmd_run('cd "KrakenWeb" && sudo -u $USER npm run build')
     cmd_run('chown -R $USER:$USER .')
 
-info("Setting up fs structure...")
-if not os.path.exists(file_path) :
-    os.makedirs(file_path)
-if not os.path.exists(os.path.join(file_path, "Movies")):
-    os.makedirs(os.path.join(file_path, "Movies"))
-if not os.path.exists(os.path.join(file_path, "Series")):
-    os.makedirs(os.path.join(file_path, "Series"))
-if not os.path.exists(os.path.join(file_path, "Images")):
-    os.makedirs(os.path.join(file_path, "Images"))
-if not os.path.exists(os.path.join(file_path, "Images/UserProfiles")):
-    os.makedirs(os.path.join(file_path, "Images/UserProfiles"))
-
 info("Disabling system sleep...")
 cmd_run("systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target", "Disabled system sleep.      ")
 
@@ -312,7 +300,7 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
     group_uid = question("Select group uid. (default : 1000)")
     if group_uid.strip() == "":
         group_uid = str(1000)
-    auto_params = f'{device} {file_path} ext4 uid={user_uid},gid={group_uid},umask=0022,sync,auto,rw 0 0'
+    auto_params = f'{device} {file_path} ext4 nosuid,nodev,nofail,x-gvfs-show 0 0'
 
     cmd_run("cp /etc/fstab fstab.old")
 
@@ -328,6 +316,8 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
             conf.append(auto_params)
             fstab.writelines(conf)
             success("Drive fstabbed.")
+        with spinner("Testing mount -a"):
+            cmd_run("mount -a", "Mount successfull !", "Ooops, something went wrong mounting the drive. This is critical. Check /etc/fstab", critical=True)
 
 
 service_conf = f"""[Unit]
@@ -490,29 +480,20 @@ USE_PSK=0
                 createap_file.write(createap_conf)
                 createap_file.close()
         with open("/usr/bin/create_ap_start", "w", encoding="utf-8") as createap_start:
-                createap_start.write("""#!/bin/bash
-                                     
-nmcli radio wifi off
-
+                createap_start.write(f"""#!/bin/bash
+nmcli dev disconnect {interface}
 rfkill unblock wlan
-
 if test -f "/tmp/create_ap.all.lock"; then
     rm /tmp/create_ap.all.lock
 fi
-                                     
 /usr/bin/create_ap --config /etc/create_ap.conf&
-                                     
-nmcli radio wifi on
-
 """)
         with open("/usr/bin/create_ap_stop", "w", encoding="utf-8") as createap_stop:
                 createap_stop.write(f"""#!/bin/bash
-                                     
 cp /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.old
 cat /etc/NetworkManager/NetworkManager.conf | grep -v {interface} > /etc/NetworkManager/NetworkManager.conf
-nmcli radio wifi on
+nmcli dev connect {interface}
 systemctl restart NetworkManager
-
 """)
 
 
