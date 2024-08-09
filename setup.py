@@ -275,7 +275,8 @@ with spinner("Installing docker-compose..."):
 
 success("Installed npm, docker and mysql.")
 
-cryptsalt = bcrypt.gensalt() 
+with spinner("Ensuring hostname..."):
+    cmd_run(f"hostnamectl set-hostname {hostname}", f"Hostname registered as {hostname}.")
 
 info("Creating mysql & nginx containers...")
 cmd_run("cd Docker && sudo docker compose up -d", "Created mysql & nginx containers.", "Did you install docker ?", critical=True, show_outp=True)
@@ -351,6 +352,7 @@ cmd_run("sudo systemctl start krakenWeb", "Service created successfully.", "Star
 
 info("Adding selected user to database...")
 
+cryptsalt = bcrypt.gensalt() 
 client = mysql.connector.connect(
         host="localhost",
         user=username,
