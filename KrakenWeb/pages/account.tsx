@@ -43,8 +43,16 @@ const Account = () => {
 
     const handleUpdate = async () => {
 
+        const loading = toast.loading("Loging...", {
+            position: "bottom-right",
+            autoClose: 1000,
+            closeOnClick: true,
+            draggable: true,
+            theme: "colored",
+        })
+
         if (password && password != confirmPassword) {
-            toast.error("Oops, password and confirmation do not match...")
+            toast.update(loading, { render: "Oops, password and confirmation do not match...", type: "error", isLoading: false })
             return
         }
         if (imageFile == undefined) {
@@ -56,13 +64,13 @@ const Account = () => {
                     skipPrompt: skipPrompt,
                 }
             }).catch((err) => {
-                toast.error("Oops something went wrong...")
+                toast.update(loading, { render: "Oops something went wrong...", type: "error", isLoading: false })
             }).then(async (data) => {
                 if (!isUndefined(data)) {
-                    await mutateUser()
-                    toast.success("Profile updated !")
-                    setPassword(undefined)
                     passwordRef.current.value = ""
+                    setPassword(undefined)
+                    toast.update(loading, { render: "Profile updated !", type: "success", isLoading: false })
+                    await mutateUser()
                 }
             })
         } else {
@@ -78,13 +86,13 @@ const Account = () => {
                     image: { imageBuffer: imageBuffer, fileName: imageData.name }
                 }
             }).catch((err) => {
-                toast.error("Oops something went wrong...")
+                toast.update(loading, { render: "Oops something went wrong...", type: "error", isLoading: false })
             }).then(async (data) => {
                 if (!isUndefined(data)) {
-                    await mutateUser()
-                    toast.success("Profile updated !")
                     setPassword(undefined)
                     passwordRef.current.value = ""
+                    toast.update(loading, { render: "Profile updated !", type: "success", isLoading: false })
+                    await mutateUser()
                 }
             })
         }

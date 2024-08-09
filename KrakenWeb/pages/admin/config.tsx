@@ -72,7 +72,7 @@ export default function Config() {
                         </div>
                         <div className="w-full grid grid-cols-[10%_90%] md:grid-cols-[5%_95%] items-center gap-2 px-2">
                             <p>Key : </p>
-                            <textarea onChange={(e) => setTmdbKey(e.currentTarget.value)} placeholder={serverProps?.tmdbAPIKey} className="placeholder:overflow-auto focus:outline-none text-red-500 min-w-full h-full resize-none bg-transparent rounded-md border-[1px] border-slate-900 px-2"></textarea>
+                            <input type="text" onChange={(e) => setTmdbKey(e.currentTarget.value)} placeholder={serverProps?.tmdbAPIKey} className="placeholder:overflow-auto focus:outline-none text-red-500 min-w-full h-full resize-none bg-transparent rounded-md border-[1px] border-slate-900 px-2"></input>
                         </div>
                     </div>
                     <hr className="border-slate-400" />

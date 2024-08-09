@@ -294,12 +294,7 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
     drives = [_.strip() for _ in os.popen("ls /dev/disk/by-label").read().split(" ") if _ != ""]
     drive = questionary.select("Select drive : ", drives).ask()
     device = os.popen(f"ls -al /dev/disk/by-label/{drive}").read().split("->")[0].strip().split(" ")[-1]
-    user_uid = question("Select user uid. (default : 1000)")
-    if user_uid.strip() == "":
-        user_uid = str(1000)
-    group_uid = question("Select group uid. (default : 1000)")
-    if group_uid.strip() == "":
-        group_uid = str(1000)
+
     auto_params = f'{device} {file_path} ext4 nosuid,nodev,nofail,x-gvfs-show 0 0'
 
     cmd_run("cp /etc/fstab fstab.old")
@@ -319,8 +314,14 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
         with spinner("Testing mount -a"):
             cmd_run("mount -a", "Mount successfull !", "Ooops, something went wrong mounting the drive. This is critical. Check /etc/fstab", critical=True)
 
+user_uid = question("Select user uid. (default : 1000)")
+if user_uid.strip() == "":
+    user_uid = str(1000)
+group_uid = question("Select group uid. (default : 1000)")
+if group_uid.strip() == "":
+    group_uid = str(1000)
 with spinner("Setting permissions..."):
-    cmd_run(f"chown -R $USER:$USER {file_path}")
+    cmd_run(f"chown -R {user_uid}:{group_uid} {file_path}")
     cmd_run(f"chmod -R a=rx {file_path}")
 
 

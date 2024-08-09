@@ -1,5 +1,7 @@
 import Tree from "@/components/Tree";
+import useServerProps from "@/hooks/useServerProps";
 import { AdminLayout } from "@/pages/_app";
+import { isUndefined } from "lodash";
 import { useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 
@@ -8,6 +10,7 @@ export default function Help() {
     const [mediaDetection, setMediaDetection] = useState(false)
     const [jsonLayout, setJsonLayout] = useState(false)
     const [dbSchema, setDbSchema] = useState(false)
+    const { data: serverProps } = useServerProps()
 
     return (
         <AdminLayout pageName="Help" >
@@ -16,7 +19,7 @@ export default function Help() {
                     <p>Database schema</p>
                     <FaChevronRight className={dbSchema ? "rotate-90" : "rotate-0"} />
                 </div>
-                <div className={`${dbSchema ? "h-fit opacity-100 my-2" : "opacity-0 h-0"} flex flex-col gap-4 transition-all duration-200`}>
+                <div className={`${dbSchema ? "flex" : "hidden"} flex-col gap-4 transition-all duration-200`}>
                     <p className="w-full text-center text-2xl font-bold text-white">The kraken database</p>
                     <div className="flex flex-row flex-wrap justify-center gap-4 text-white">
                         <table className="text-xs mb-auto">
@@ -313,11 +316,12 @@ export default function Help() {
                         </table>
                     </div>
                 </div>
+
                 <div onClick={() => setJsonLayout(!jsonLayout)} className="w-fit flex flex-row gap-4 items-center font-semibold text-white cursor-pointer py-2 px-4 rounded-lg bg-slate-600">
                     <p>JSON Data formating</p>
                     <FaChevronRight className={jsonLayout ? "rotate-90" : "rotate-0"} />
                 </div>
-                <div className={`${jsonLayout ? "h-fit opacity-100 my-2" : "opacity-0 h-0"} flex flex-col gap-4 transition-all duration-200`}>
+                <div className={`${jsonLayout ? "flex" : "hidden"} flex-col gap-4 transition-all duration-200`}>
                     <p className="w-full text-white">To successfully import data to the Users, Media or Episodes databases, your json files should be formated as follows :</p>
                     <div className="w-full flex lg:grid flex-col lg:grid-cols-3 gap-4 transition-all duration-200">
                         <div className="w-full h-full">
@@ -412,10 +416,10 @@ export default function Help() {
                     </div>
                 </div>
                 <div onClick={() => setMediaDetection(!mediaDetection)} className="w-fit flex flex-row gap-4 items-center font-semibold text-white cursor-pointer py-2 px-4 rounded-lg bg-slate-600">
-                    <p>Automatic Media detection</p>
+                    Automatic Media detection
                     <FaChevronRight className={mediaDetection ? "rotate-90" : "rotate-0"} />
                 </div>
-                <div className={`${mediaDetection ? "h-fit opacity-100" : "opacity-0 h-0"} flex flex-col gap-4 transition-all duration-200 my-2`}>
+                <div className={`${mediaDetection ? "flex" : "hidden"} flex-col gap-4 transition-all duration-200 my-2`}>
                     <p className="w-full text-center text-2xl font-bold text-white">How does it work ?</p>
                     <div className="flex flex-col md:grid md:grid-cols-[30%_70%]">
                         <div className="w-fit h-fit">
@@ -448,7 +452,7 @@ export default function Help() {
                         <div className="w-full h-full px-4 flex flex-col items-center text-white">
                             <ul className="list-disc my-auto">
                                 <li className="mt-4" >
-                                    Drop your files in the &quot;<span className="italic font-extralight">Kraken - Web/public/Assets</span>&quot; folder accordingly with this schema.
+                                    Drop your files in the &quot;<span className="italic font-extralight">{!isUndefined(serverProps) && serverProps.fileStore}</span>&quot; folder accordingly with this schema.
                                 </li>
                                 <li className="mt-4" >
                                     Run the automatic media detection from the admin panel :

@@ -40,9 +40,9 @@ export function AdminLayout({
       <div className="flex flex-row">
         <div className={`h-full ${sidePanel ? "-translate-x-0" : "-translate-x-full"} w-[60%] transition-all duration-500 md:translate-x-0 md:w-full bg-slate-800 max-md:absolute flex flex-col gap-8 md:gap-4 py-2 z-10 overflow-hidden`}>
           <div className="w-full flex flex-row items-center">
-            <div className="relative grid grid-cols-[40%_60%] md:grid-cols-[25%_75%] p-2 z-50">
-              <div className="w-full m-auto p-2">
-                <img className="max-w-full rounded-full bg-neutral-800" src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
+            <div className="grid grid-cols-[40%_60%] gap-2 p-2 z-50">
+              <div className="w-14 h-14 bg-neutral-900 overflow-hidden rounded-full">
+                <img src={"/Assets/Images/default_profile.png"} alt="" />
               </div>
               <div className="flex flex-col my-auto">
                 <p className="font-bold text-2xl leading-none">{user?.name}</p>
@@ -114,6 +114,9 @@ export function AdminLayout({
               </ul>
             </div>
           </div>
+        </div>
+        <div onClick={() => setSidePanel(!sidePanel)} className={`h-full ${sidePanel ? "translate-x-0" : "translate-x-full"} w-[40%] transition-all duration-100 bg-transparent max-md:absolute right-0 top-0 md:hidden z-10 overflow-hidden`}>
+
         </div>
       </div>
       <div className="w-full h-fit p-4 grid grid-rows[10%_90%] gap-4">

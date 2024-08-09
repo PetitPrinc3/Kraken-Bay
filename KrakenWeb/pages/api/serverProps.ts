@@ -219,7 +219,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 tmdbAPIKey: process.env.TMDB_API_SECRET,
                 nextAuthUrl: process.env.NEXTAUTH_URL,
                 connectivity: netCmd(),
-                battery: powCmd()
+                battery: powCmd(),
+                fileStore: process.env.MEDIA_STORE_PATH
             }
 
             return res.status(200).json(serverProps);
