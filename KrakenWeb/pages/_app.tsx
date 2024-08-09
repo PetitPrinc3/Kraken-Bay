@@ -36,7 +36,7 @@ export function AdminLayout({
   useEffect(() => { document.title = "Kraken Bay • Admin" }, [])
 
   return (
-    <main className="min-w-full w-fit max-w-full min-h-full max-h-full flex flex-row md:grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-auto">
+    <main className="w-[100vw] h-[100vh] flex flex-row md:grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-auto">
       <div className="flex flex-row">
         <div className={`h-full ${sidePanel ? "-translate-x-0" : "-translate-x-full"} w-[60%] transition-all duration-500 md:translate-x-0 md:w-full bg-slate-800 max-md:absolute flex flex-col gap-8 md:gap-4 py-2 z-10 overflow-hidden`}>
           <div className="w-full flex flex-row items-center">
@@ -115,9 +115,7 @@ export function AdminLayout({
             </div>
           </div>
         </div>
-        <div onClick={() => setSidePanel(!sidePanel)} className={`h-full ${sidePanel ? "translate-x-0" : "translate-x-full"} w-[40%] transition-all duration-100 bg-transparent max-md:absolute right-0 top-0 md:hidden z-10 overflow-hidden`}>
-
-        </div>
+        <div onClick={() => setSidePanel(!sidePanel)} className={`h-full ${sidePanel ? "translate-x-0" : "translate-x-full"} w-[40%] transition-all duration-100 bg-transparent max-md:absolute right-0 top-0 md:hidden z-10 overflow-hidden`} />
       </div>
       <div className="w-full h-fit p-4 grid grid-rows[10%_90%] gap-4">
         <div className="w-full h-full min-h-14 flex flex-row gap-4 items-center bg-slate-800 rounded-md px-4 py-3">

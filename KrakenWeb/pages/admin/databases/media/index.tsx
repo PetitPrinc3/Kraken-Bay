@@ -11,7 +11,7 @@ import { HiOutlineTrash } from "react-icons/hi2";
 import { TbDatabaseImport, TbDatabaseExport } from "react-icons/tb";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { isEmpty, isUndefined } from "lodash";
+import { divide, isEmpty, isUndefined } from "lodash";
 import useMedia from "@/hooks/useMedia";
 import useEpisode from "@/hooks/useEpisode";
 import path from "path";
@@ -403,7 +403,7 @@ export default function Media() {
             </div>
             <div className={`${openDetection ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
                 <div className={`${openDetection ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
-                    <div className="w-[90%] h-[70%] mx-auto flex flex-col gap-4 rounded-md p-4 bg-slate-800">
+                    <div className="w-[90%] h-[90%] md:h-[70%] mx-auto flex flex-col gap-4 rounded-md p-4 bg-slate-800">
                         <div className="w-full flex flex-row items-center justify-between text-2xl font-bold text-white">
                             Automatic Media detection
                             <div onClick={() => setOpenDetection(false)} className="p-2 rounded-md hover:bg-slate-700 transition-all duration-300 cursor-pointer">
@@ -411,7 +411,7 @@ export default function Media() {
                             </div>
                         </div>
                         <hr className="border-slate-400" />
-                        <div className="relative w-full h-full overflow-hidden">
+                        <div className="relative w-full h-full overflow-auto">
                             <div className="max-md:hidden w-full h-full overflow-x-clip overflow-y-scroll">
                                 <table className="w-full h-fit border-separate border-spacing-x-4 border-spacing-y-1 table-fixed">
                                     <thead className="h-[10%]">
@@ -456,17 +456,17 @@ export default function Media() {
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="h-full w-full md:hidden grid grid-flow-row overflow-hidden">
-                                <div className="w-full h-fit flex flex-col gap-2 items-start m-auto">
+                            {!isUndefined(files) && !isEmpty(files) && <div className="h-full w-full md:hidden grid grid-flow-row">
+                                <div className="w-full h-fit flex flex-col gap-2 items-start overflow-hidden">
                                     <div className="top-0 text-xl text-white font-semibold">Movies</div>
-                                    <div className="w-full h-full overflow-hidden flex flex-row items-center">
+                                    <div className="relative max-w-full h-full flex flex-row gap-2 items-center overflow-x-scroll">
                                         {!isUndefined(files) && files.map((file: any) => file.type == "Movies" && (
-                                            <div key={file.key} className="w-64 bg-slate-900 overflow-auto p-2 h-fit max-h-full rounded-md border-[1px] border-slate-500">
+                                            <div key={file.key} className="w-64 bg-slate-900 p-2 h-fit max-h-full rounded-md border-[1px] border-slate-500">
                                                 <div className="flex flex-row gap-2 items-center justify-between">
                                                     <p className="truncate text-ellipsis text-white font-semibold text-md">{file.name}</p>
                                                     <RxCross2 onClick={() => removeFile(file.key)} className="text-red-500 cursor-pointer flex-none w-10" />
                                                 </div>
-                                                <div className="w-full flex flex-row gap-4 items-center text-white font-light text-sm mb-2">
+                                                <div className="w-relative full flex flex-row gap-4 items-center text-white font-light text-sm mb-2">
                                                     <div className="whitespace-nowrap">Title : </div>
                                                     <select className="w-[70%] pointer bg-transparent border-[1px] rounded-md border-slate-600 px-1 text-white font-light text-sm focus:outline-none appearance-none" onChange={e => setTitle(file.key, e)} name="" id="">
                                                         {file.apiResult.map((option: any) => (
@@ -478,11 +478,11 @@ export default function Media() {
                                         ))}
                                     </div>
                                 </div>
-                                <div className="w-full h-full flex flex-col gap-2 items-start m-auto">
+                                <div className="w-full h-fit mb-auto flex flex-col gap-2 items-start overflow-hidden">
                                     <div className="text-xl text-white font-semibold">TV Shows</div>
-                                    <div className="w-full h-full overflow-hidden flex flex-row items-center">
+                                    <div className="max-w-full h-full flex flex-row gap-2 items-center overflow-x-scroll">
                                         {!isUndefined(files) && files.map((file: any) => file.type == "TV Show" && (
-                                            <div key={file.key} className="w-64 bg-slate-900 overflow-auto p-2 h-fit max-h-full rounded-md border-[1px] border-slate-500">
+                                            <div key={file.key} className="relative w-64 max-h-full overflow-clip bg-slate-900 p-2 rounded-md border-[1px] border-slate-500">
                                                 <div className="flex flex-row gap-2 items-center justify-between">
                                                     <p className="truncate text-ellipsis text-white font-semibold text-md">{file.name}</p>
                                                     <RxCross2 onClick={() => removeFile(file.key)} className="text-red-500 cursor-pointer flex-none w-10" />
@@ -498,19 +498,21 @@ export default function Media() {
                                                 </div>
                                                 <div className="w-full flex flex-col items-start text-white font-light text-sm">
                                                     <div className="whitespace-nowrap mb-1">Episodes : </div>
-                                                    <ul className="list-disc w-full h-full text-xs">
-                                                        {file?.episodes.map((episode: any) => (
-                                                            <li className="truncate" key={episode?.url}>
-                                                                <span className="hidden md:inline-block" >So {episode?.season}, Ep {episode?.episode} :</span> {path.basename(episode?.url)}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                                    <div className="w-full h-20 overflow-y-scroll">
+                                                        <ul className="list-disc w-full h-full text-xs">
+                                                            {file?.episodes.map((episode: any) => (
+                                                                <li className="truncate" key={episode?.url}>
+                                                                    <span className="hidden md:inline-block" >So {episode?.season}, Ep {episode?.episode} :</span> {path.basename(episode?.url)}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-                            </div>
+                            </div>}
                             {isUndefined(files) ?
                                 <div className="flex flex-col gap-2">
                                     <div className={isUndefined(files) || isEmpty(files) ? "mx-4 h-10 bg-slate-700 rounded-md animate-pulse" : ""} />
