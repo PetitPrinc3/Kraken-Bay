@@ -319,6 +319,10 @@ if question("Are files on an external drive ? [y/n]").lower() == "y":
         with spinner("Testing mount -a"):
             cmd_run("mount -a", "Mount successfull !", "Ooops, something went wrong mounting the drive. This is critical. Check /etc/fstab", critical=True)
 
+with spinner("Setting permissions..."):
+    cmd_run(f"chown -R $USER:$USER {file_path}")
+    cmd_run(f"chmod -R a=rx {file_path}")
+
 
 service_conf = f"""[Unit]
 Description=Web Service
@@ -486,7 +490,7 @@ rfkill unblock wlan
 if test -f "/tmp/create_ap.all.lock"; then
     rm /tmp/create_ap.all.lock
 fi
-/usr/bin/create_ap --config /etc/create_ap.conf&
+/usr/bin/create_ap --config /etc/create_ap.conf
 """)
         with open("/usr/bin/create_ap_stop", "w", encoding="utf-8") as createap_stop:
                 createap_stop.write(f"""#!/bin/bash
