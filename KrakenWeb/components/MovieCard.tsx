@@ -30,14 +30,6 @@ const MovieCard: React.FC<MovieCardProps> = ({
                     <div className="w-full h-full rounded-lg">
                         <img onClick={() => openModal(data?.id)} className="w-full h-full rounded-md border-2 border-neutral-800" src={data.thumbUrl} alt="Thumbnail" />
                     </div>
-                    <div className="absolute bottom-0 left-0 w-full h-[30%] grid grid-cols-2 place-items-center bg-neutral-800 bg-opacity-90 rounded-b-md">
-                        <div onClick={() => { router.push(`/watch/${data?.id}`) }} className="w-full h-full text-white flex items-center justify-center">
-                            <BsFillPlayFill size={30} />
-                        </div>
-                        <div onClick={() => openModal(data?.id)} className="w-full h-full text-white flex items-center justify-center">
-                            <AiOutlineInfoCircle size={25} />
-                        </div>
-                    </div>
                 </div>
                 <p className="hidden lg:block absolute bottom-5 left-5 text-white text-xl font-bold max-h-[10vw] overflow-hidden">
                     {data.title}
@@ -86,18 +78,18 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 ">
                     <div className="flex-row items-center gap-3 hidden sm:flex pointer-events-auto">
                         <div
-                            className={`cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300`}
+                            className={`cursor-pointer w-10 h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300 flex-none`}
                             onClick={() => { router.push(`/watch/${data?.id}`) }}>
                             <BsFillPlayFill size={30} />
                         </div>
                         <FavoriteButton mediaId={data?.id} />
-                        <div className={`${data?.type == "Movies" ? "visible" : "hidden"}`}>
+                        <div className={`${data?.type == "Movies" ? "visible" : "hidden"} hidden lg:block`}>
                             <DownloadButton data={data} />
                         </div>
-                        <div>
+                        <div className="hidden lg:block">
                             <CopyButton data={data} />
                         </div>
-                        <div onClick={() => openModal(data?.id)} className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300">
+                        <div onClick={() => openModal(data?.id)} className="cursor-pointer ml-auto group/item w-10 h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300 flex-none">
                             <BsChevronDown size={20} className="text-white group-hover/item:text-neutral-300 w-4 font-bold" />
                         </div>
                     </div>

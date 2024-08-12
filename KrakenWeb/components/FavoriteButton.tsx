@@ -40,7 +40,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ mediaId }) => {
     const Icon = isFavorite ? AiOutlineCheck : AiOutlinePlus
 
     return (
-        <div onClick={toggleFavorites} className={`${isFavorite ? "bg-white" : "hover:border-neutral-300"} cursor-pointer group-item w-10 h-10 border-white border-2 rounded-full flex justify-center items-center transition`}>
+        <div onClick={toggleFavorites} className={`${isFavorite ? "bg-white" : "hover:border-neutral-300"} cursor-pointer group-item w-10 h-10 border-white border-2 rounded-full flex justify-center items-center transition flex-none`}>
             <Icon className={`${isFavorite ? "text-zinc-800" : "text-white"}`} size={25} />
         </div>
     )

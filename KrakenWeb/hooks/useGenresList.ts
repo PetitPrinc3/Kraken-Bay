@@ -4,8 +4,8 @@ import fetcher from "@/lib/fetcher";
 const useGenresList = () => {
     const { data, error, isLoading } = useSWR("/api/genresList", fetcher, {
         revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false
+        revalidateOnFocus: true,
+        revalidateOnReconnect: true
     })
 
     return {

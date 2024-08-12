@@ -43,7 +43,7 @@ const Account = () => {
 
     const handleUpdate = async () => {
 
-        const loading = toast.loading("Loging...", {
+        const loading = toast.loading("Updating profile...", {
             position: "bottom-right",
             autoClose: 1000,
             closeOnClick: true,
