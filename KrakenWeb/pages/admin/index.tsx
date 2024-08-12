@@ -75,7 +75,7 @@ export default function AdminDashboard() {
                         <div className="text-2xl font-semibold text-center">
                             {formatUptime(serverProps.serverUptime)}
                         </div>
-                        <div className="hidden md:block text-sm text-center">
+                        <div className="block text-sm text-center">
                             Last reboot on <span className="text-green-500 font-bold">{new Date(new Date().getTime() - (serverProps.serverUptime * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>.
                         </div>
                     </div>

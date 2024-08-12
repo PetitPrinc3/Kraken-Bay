@@ -39,17 +39,17 @@ export function AdminLayout({
     <main className="w-full min-h-[100vh] h-full flex flex-row md:grid md:grid-cols-[20%_80%] lg:grid-cols-[15%_85%] bg-slate-950 overflow-auto">
       <div className="flex flex-row">
         <div className={`h-full min-h-[100vh] ${sidePanel ? "-translate-x-0" : "-translate-x-full"} w-[60%] transition-all duration-500 md:translate-x-0 md:w-full bg-slate-800 max-md:absolute flex flex-col gap-8 md:gap-4 py-2 z-10 overflow-hidden`}>
-          <div className="w-full flex flex-row items-center">
-            <div className="grid grid-cols-[40%_60%] gap-2 p-2 z-50">
+          <div className="w-full flex flex-row items-center justify-between overflow-clip">
+            <div onClick={() => router.push("/account")} className="grid grid-cols-[40%_60%] gap-2 p-2 z-50">
               <div className="w-14 h-14 bg-neutral-900 overflow-hidden rounded-full">
                 <img src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
               </div>
-              <div className="flex flex-col my-auto">
-                <p className="font-bold text-2xl leading-none">{user?.name}</p>
+              <div className="w-full h-full overflow-hidden flex flex-col justify-center">
+                <p className="font-bold text-2xl leading-none truncate text-ellipsis">{user?.name}</p>
                 <p className="font-light text-red-500 text-sm leading-none">Administrator</p>
               </div>
             </div>
-            <div className="w-fit flex md:hidden items-end text-slate-400 justify-end px-8 cursor-pointer">
+            <div className="w-fit flex md:hidden items-end text-slate-400 justify-end px-8 cursor-pointer flex-none">
               <RxCross2 onClick={() => setSidePanel(!sidePanel)} className={`${sidePanel ? "rotate-90" : "rotate-0"} transition-all duration-300`} size={30} />
             </div>
           </div>

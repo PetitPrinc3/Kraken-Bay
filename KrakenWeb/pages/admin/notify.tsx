@@ -33,22 +33,25 @@ export default function Notify() {
                     Notification :
                 </div>
                 <div className="w-full flex flex-col gap-2">
+                    <div className="w-full pl-1 flex flex-row items-center gap-4">
+                        <label className="flex flex-row items-center cursor-pointer">
+                            <input type="checkbox" onChange={(e) => { setEveryone(e.currentTarget.checked) }} checked={everyone} className="sr-only peer" />
+                            <div className={`relative w-9 h-5 peer-focus:outline-none rounded-full peer bg-slate-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all ${type === "success" ? "peer-checked:bg-green-500" : type === "info" ? "peer-checked:bg-blue-500" : type === "warning" ? "peer-checked:bg-orange-500" : type === "error" ? "peer-checked:bg-red-500" : "peer-checked:bg-white"}`} />
+                        </label>
+                        <span className="text-sm font-medium text-slate-400">Notify everyone</span>
+                    </div>
                     <div className="w-full grid grid-cols-2 gap-4">
                         <div className="h-full w-full text-white flex flex-row gap-2 md:gap-4 items-center">
-                            <div onClick={() => { setEveryone(true); setEmail("") }} className={`flex flex-row w-fit h-full items-center gap-2 rounded-md ${everyone ? "text-white bg-slate-600" : "text-slate-800 bg-slate-700"} px-2 md:px-6 py-2 cursor-pointer`}>
-                                <p className="hidden md:block">Everyone</p>
-                                <p className="block md:hidden">All</p>
-                            </div>
-                            Or
                             <div onClick={() => { if (everyone) setEveryone(false) }} className={`w-full h-full rounded-md transition-all duration-200 ${everyone ? "bg-slate-700 text-slate-400" : "bg-slate-600 text-white placeholder:text-slate-400"}`}>
-                                <input onChange={(e) => setEmail(e.currentTarget.value)} value={email} type="text" className={`${everyone && "placeholder:text-slate-800"} w-full h-ful bg-transparent px-6 py-2 focus:outline-none`} placeholder={everyone ? "Everyone" : "Username"} />
+                                <input onChange={(e) => setEmail(e.currentTarget.value)} value={email} type="text" className={`${everyone && "placeholder:text-slate-800"} w-full h-ful bg-transparent px-6 py-2 focus:outline-none`} placeholder={everyone ? "Everyone" : "Email"} />
                             </div>
                         </div>
                         <div className="capitalize rounded-md px-6 h-full w-full text-white bg-slate-600">
                             <select onChange={(e) => setType(e.currentTarget.value)} className="w-full h-full bg-slate-600 focus:outline-none" name="" id="" value={type}>
-                                <option value="error">Error</option>
-                                <option value="info">Info</option>
                                 <option value="success">Success</option>
+                                <option value="info">Info</option>
+                                <option value="warning">Warning</option>
+                                <option value="error">Error</option>
                             </select>
                         </div>
                     </div>

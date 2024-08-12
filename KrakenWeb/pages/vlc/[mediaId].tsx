@@ -15,7 +15,7 @@ const Vlc = () => {
 
     const handleCopy = async () => {
         setToast(true)
-        clip(`smb://kraken.local${data?.videoUrl}`)
+        clip(data.videoUrl)
         await new Promise(f => setTimeout(f, 2000));
         setToast(false)
     }

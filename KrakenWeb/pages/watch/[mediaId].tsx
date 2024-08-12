@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import ReactPlayer from "react-player"
 import { MdFileDownload } from "react-icons/md";
 import { AiOutlineArrowLeft } from "react-icons/ai";
@@ -10,10 +10,9 @@ import { SiVlcmediaplayer } from "react-icons/si";
 import { useRouter } from "next/router";
 import useMedia from "@/hooks/useMedia";
 import screenfull from 'screenfull';
-import { NextPageContext } from "next";
-import { getSession } from "next-auth/react";
 import { BiCopy } from "react-icons/bi";
 import { isUndefined } from "lodash";
+import clip from "@/lib/clip";
 
 const Player = () => {
     const router = useRouter();
@@ -31,14 +30,10 @@ const Player = () => {
     const [clicked, setClicked] = useState(false)
 
     const handleCopy = async () => {
-        if (navigator.userAgent.toLowerCase().includes('firefox')) { return }
-        const permission = await navigator.permissions.query({ name: "clipboard-write" as PermissionName })
-        if (permission.state == "granted") {
-            await navigator.clipboard.writeText(`smb://kraken.local${data?.videoUrl}`)
-            setClicked(true)
-            await new Promise(f => setTimeout(f, 2000));
-            setClicked(false)
-        }
+        setClicked(true)
+        clip(data?.videoUrl)
+        await new Promise(f => setTimeout(f, 2000));
+        setClicked(false)
     }
 
     const PlayIcon = isPlaying ? FaPlay : FaPause
@@ -99,7 +94,7 @@ const Player = () => {
                 <div className={`absolute top-0 lef-0 w-full h-full flex flex-col justify-between z-20 transition-all duration-500 bg-gradient-to-t from-zinc-900 from-2% to-transparent to-70% opacity-${opacity}`}>
                     <div className="w-full flex flex-row items-center justify-between top-0 pt-8 pb-4 px-10">
                         <div className="text-3xl flex flex-row items-center gap-4">
-                            <AiOutlineArrowLeft onClick={() => router.back()} className="text-white cursor-pointer hover:opacity-70 hover:scale-110 transition-all duration-300" size={40} />
+                            <AiOutlineArrowLeft onClick={() => router.back()} className="text-white cursor-pointer hover:opacity-70 hover:scale-110 transition-all duration-300 flex-none" size={40} />
                             <p className="text-white test-1xl md:hidden font-bold">
                                 <span className="font-light">You are watching : </span>
                                 {data?.title}
@@ -181,7 +176,7 @@ const Player = () => {
                                     <SiVlcmediaplayer size={25} />
                                 </div>
                                 <div>
-                                    <div onClick={handleCopy} className="relative cursor-pointer group-item right-0 w-10 h-10 transition-all text-white hover:border-neutral-300 duration-500 flex justify-center items-center">
+                                    <div onClick={handleCopy} className={`relative cursor-pointer group-item right-0 w-10 h-10 transition-all ${clicked ? "text-red-500" : "text-white"} hover:border-neutral-300 duration-500 flex justify-center items-center`}>
                                         <BiCopy className="w-fit" size={25} />
                                     </div>
                                 </div>

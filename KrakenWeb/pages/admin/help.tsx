@@ -423,7 +423,7 @@ export default function Help() {
                     <p className="w-full text-center text-2xl font-bold text-white">How does it work ?</p>
                     <div className="flex flex-col md:grid md:grid-cols-[30%_70%]">
                         <div className="w-fit h-fit">
-                            <Tree name="/Assets">
+                            <Tree name={serverProps?.fileStore}>
                                 <Tree name="/Movies">
                                     <Tree name="Movie 1.mp4" style={{ color: '#37ceff' }} />
                                     <Tree name="Movie 2.mkv" style={{ color: '#37ceff' }} />
@@ -433,13 +433,13 @@ export default function Help() {
                                 <Tree name="/Series">
                                     <Tree name="Serie 1">
                                         <Tree name="SO 1">
-                                            <Tree name="EP1.mkv" style={{ color: '#37ceff' }} />
-                                            <Tree name="EP2.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="SO1EP1.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="SO1EP2.mkv" style={{ color: '#37ceff' }} />
                                             <Tree name="..." />
                                         </Tree>
                                         <Tree name="SO 2">
-                                            <Tree name="EP01.mkv" style={{ color: '#37ceff' }} />
-                                            <Tree name="EP02.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="SO2EP01.mkv" style={{ color: '#37ceff' }} />
+                                            <Tree name="SO2EP02.mkv" style={{ color: '#37ceff' }} />
                                             <Tree name="..." />
                                         </Tree>
                                     </Tree>

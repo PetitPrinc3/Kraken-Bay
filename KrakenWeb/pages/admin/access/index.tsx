@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
+import { isEmpty } from "lodash";
 
 export default function Access() {
     const router = useRouter();
@@ -17,7 +18,7 @@ export default function Access() {
     const searchParams = new URLSearchParams(useSearchParams());
     const q = searchParams.get("q");
     const p = searchParams.get("page") || 1
-    const { data: pendingAccounts, mutate: mutateAccounts } = usePendingAccounts({ searchText: q, page: p } || undefined);
+    const { data: pendingAccounts, mutate: mutateAccounts } = usePendingAccounts({ searchText: q, page: p });
     const { data: userCount, mutate: mutateUserCount } = usePendingAccounts({ searchText: q })
 
     const handleSearch = (e: any) => {
@@ -118,7 +119,7 @@ export default function Access() {
                         </button>
                     </div>
                 </div>
-                <div className="w-full h-fit md:h-[60vh] px-4">
+                <div className="w-full h-fit min-h-[30vh] md:h-[60vh] px-4">
                     <table className="w-full border-separate border-spacing-y-2">
                         <thead>
                             <tr className="text-white font-semibold">
@@ -157,6 +158,9 @@ export default function Access() {
                             ))}
                         </tbody>
                     </table>
+                    {isEmpty(pendingAccounts) &&
+                        <div className="w-full h-fit text-center text-slate-500 font-semibold text-sm">No pending access.</div>
+                    }
                 </div>
                 <div className="w-full flex flex-row items-center justify-between">
                     <button onClick={prevPage} disabled={page <= 1} className="p-1 px-2 w-20 rounded-md bg-slate-700 border-[1px] border-slate-400 text-sm disabled:bg-slate-800 disabled:border-slate-500 disabled:hover:bg-slate-800 disabled:text-slate-900 hover:bg-slate-600 transition all duration-100">Previous</button>

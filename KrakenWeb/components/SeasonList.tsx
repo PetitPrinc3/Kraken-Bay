@@ -42,12 +42,12 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
     return (
         <div
             className="relative flex flex-col w-full">
-            <div className="flex flex-row w-full m-auto">
-                <p className="text-white text-xl md:text-2xl h-full lg:text-3xl font-bold left-0 m-auto ml-0">
+            <div className="flex flex-row items-center justify-between w-full m-auto">
+                <p className="text-white text-xl md:text-2xl h-full lg:text-3xl font-bold">
                     Episodes
                 </p>
                 <select
-                    onChange={UpdateList} className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] m-auto mt-3 mr-0 focus:outline-none">
+                    onChange={UpdateList} className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] focus:outline-none">
                     {season_data.map((season) => (
                         <option key={serieId + "SO" + season} value={season}>Season {season}</option>
                     ))}
@@ -63,9 +63,9 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                             className="flex flex-row items-center gap-4 w-[90%] max-w-[90%]">
                             <img src={currentMovie?.thumbUrl} alt="Poster" className="h-[10vh] w-auto rounded-md" />
                             <div>{ep?.title}</div>
-                            <BsFillPlayFill className="ml-auto text-zinc-900 border-2 border-white rounded-full bg-white" size={30} />
+                            <BsFillPlayFill className="ml-auto text-zinc-900 border-2 border-white rounded-full bg-white flex-none" size={30} />
                         </div>
-                        <MdFileDownload onClick={() => router.push(ep?.videoUrl)} className="mr-5 ml-5 text-zinc-900 border-2 border-white rounded-full bg-white" size={30} />
+                        <MdFileDownload onClick={() => router.push(ep?.videoUrl)} className="mr-5 ml-5 text-zinc-900 border-2 border-white rounded-full bg-white flex-none" size={30} />
                     </div>
                 ))}
             </div>

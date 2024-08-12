@@ -11,14 +11,10 @@ const CopyButton: React.FC<CopyButtonProps> = ({ data }) => {
     const [clicked, setClicked] = useState(false)
 
     const handleCopy = async () => {
-        if (navigator.userAgent.toLowerCase().includes('firefox')) { return }
-        const permission = await navigator.permissions.query({ name: "clipboard-write" as PermissionName })
-        if (permission.state == "granted") {
-            setClicked(true)
-            clip(`smb://kraken.local${data.videoUrl}`)
-            await new Promise(f => setTimeout(f, 2000));
-            setClicked(false)
-        }
+        setClicked(true)
+        clip(data.videoUrl)
+        await new Promise(f => setTimeout(f, 2000));
+        setClicked(false)
     }
 
     return (

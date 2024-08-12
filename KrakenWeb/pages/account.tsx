@@ -273,7 +273,7 @@ const Account = () => {
                                 <div className="w-full text-slate-600 font-bold text-center">No favorites</div>
                                 :
                                 favorites.map((favorite: any) => (
-                                    <div key={favorite.id} className="flex flex-row gap-4 items-center justify-between px-4 w-full rounded-md border-[1px] border-white shadow-md">
+                                    <div onClick={() => router.push(`/watch/${favorite.id}`)} key={favorite.id} className="flex flex-row gap-4 items-center justify-between px-4 w-full rounded-md border-[1px] border-white shadow-md">
                                         <div className="w-[80%] flex flex-row items-center gap-4 py-1">
                                             <img src={favorite?.thumbUrl} className="rounded-md h-14" alt="" />
                                             <div className="w-full flex flex-col">

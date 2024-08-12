@@ -72,6 +72,7 @@ export default function Accounts() {
                             <span className="text-green-500 text-xs leading-none">{serverProps.osBuild}</span>
                         </div>
                         <div className="text-xs font-light text-white">
+                            Hostname : {serverProps.osHostName}<br />
                             Uptime : {formatUptime(serverProps.osUptime)}
                         </div>
                     </div>
