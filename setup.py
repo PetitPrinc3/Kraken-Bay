@@ -465,7 +465,7 @@ if [[ ! -z `nmcli con show --active | grep {interface}` ]]
     then nmcli dev disconnect {interface}
 fi
 
-if [[ ! -z `lnxrouter -l | grep {interface}`]]
+if [[ ! -z `lnxrouter -l | grep {interface}` ]]
     then lnxrouter --stop `lnxrouter -l | grep {interface} | cut -d " " -f 2`
 fi
 

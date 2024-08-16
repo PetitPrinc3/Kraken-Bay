@@ -42,7 +42,7 @@ export function AdminLayout({
           <div className="w-full flex flex-row items-center justify-between overflow-clip">
             <div onClick={() => router.push("/account")} className="grid grid-cols-[40%_60%] gap-2 p-2 z-50">
               <div className="w-14 h-14 bg-neutral-900 overflow-hidden rounded-full">
-                <img src={user?.image || "/Assets/Images/default_profile.png"} alt="" />
+                <img src={`${user?.image || "/Assets/Images/default_profile.png"}?${(new Date()).toLocaleString()}`} alt="" />
               </div>
               <div className="w-full h-full overflow-hidden flex flex-col justify-center">
                 <p className="font-bold text-2xl leading-none truncate text-ellipsis">{user?.name}</p>
