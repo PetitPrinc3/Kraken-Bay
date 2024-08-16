@@ -458,6 +458,22 @@ if ptfrm == "linux":
         cmd_run("chmod 744 /usr/bin/lnxrouter")
         success("Done.")
 
+        with open("/usr/bin/linux-router_start.sh", "w", encoding="utf-8") as starter :
+            starter.write(f"""#!/bin/bash
+
+if [[ ! -z `nmcli con show --active | grep {interface}` ]]
+    then nmcli dev disconnect {interface}
+fi
+
+if [[ ! -z `lnxrouter -l | grep {interface}`]]
+    then lnxrouter --stop `lnxrouter -l | grep {interface} | cut -d " " -f 2`
+fi
+
+lnxrouter --ap {interface} KrakenBay --hostname {hostname} -g 192.168.1.1
+""")
+        cmd_run("chown 0:0 /usr/bin/linux-router_start.sh")
+        cmd_run("chmod 744 /usr/bin/linux-router_start.sh")
+
         with open("/usr/lib/systemd/system/linux-router.service", "w", encoding="utf-8") as router_service:
                 router_service.write(f"""[Unit]
 Description=Create AP Service
@@ -465,7 +481,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/lnxrouter --ap {interface} KrakenBay --hostname {hostname}
+ExecStart=/usr/bin/linux-router_start.sh
 User=root
 KillSignal=SIGINT
 Restart=on-failure
