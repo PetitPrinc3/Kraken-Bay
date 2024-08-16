@@ -66,11 +66,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     },
                 })
                 if (isUndefined(searchText)) {
-                    for (let i = media.length; i == 0; i--) {
-                        const randomIndex = Math.floor(Math.random() * i)
-                        const _ = media[i]
-                        media[i] = media[randomIndex]
-                        media[randomIndex] = _
+                    const randomMedia: any[] = []
+                    while (media.length > 0) {
+                        randomMedia.splice(Math.floor(Math.random() * randomMedia.length), 0, media.splice(Math.floor(Math.random() * media.length), 1))
+                    }
+
+                    if (!isUndefined(mediaLimit)) {
+                        return res.status(200).json(randomMedia.splice(Math.floor(Math.random() * randomMedia.length), +mediaLimit))
+                    } else {
+                        return res.status(200).json(randomMedia)
                     }
                 }
                 if (!isUndefined(mediaLimit)) {

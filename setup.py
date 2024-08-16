@@ -244,6 +244,9 @@ info(f"Using File srv port : {srv_port}")
 info(f"Using Web srv path  : {os.path.join(os.getcwd(), "KrakenWeb")}")
 
 replace_field("Docker/docker-compose.yml", ["MYSQL_ROOT_PASSWORD: ", "MYSQL_DATABASE: ", "MYSQL_USER: ", "MYSQL_PASSWORD: "], [str(uuid.uuid4()), database, username, password])
+replace_line("Docker/docker-compose.yml", "      - /mnt/Kraken/Assets:/media/Assets:ro", f'      - {file_path}:/media/Assets:ro')
+replace_line("Docker/docker-compose.yml", "      - '8080:8080'", f"      - '{srv_port}:{srv_port}'")
+replace_field("Docker/nginx/nginx.conf", "listen ", f"{srv_port};")
 replace_line("KrakenWeb/.env", "DATABASE_URL=", f'DATABASE_URL="mysql://{username}:{password}@localhost:3306/{database}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_JWT_SECRET=", f'NEXTAUTH_JWT_SECRET="{str(uuid.uuid4())}"')
 replace_line("KrakenWeb/.env", "NEXTAUTH_SECRET=", f'NEXTAUTH_SECRET="{str(uuid.uuid4())}"')
@@ -444,78 +447,25 @@ if ptfrm == "linux":
     if hot.lower() == "y" or hot.strip() == "":
         import netifaces # type: ignore
         interface = questionary.select("Choose interface for hotspot : ", netifaces.interfaces()).ask()
-        info("Cloning create_ap from @oblique...")
-        cmd_run("cd /tmp && git clone https://github.com/oblique/create_ap", show_outp=True)
-        success("Done.")
 
-        with spinner("Installing create_ap..."):
-            cmd_run("cd /tmp/create_ap && sudo make install")
-        with spinner("Installing hostapd"):
+        with spinner("Installing hostapd and dnsmasq"):
             cmd_run("sudo DEBIAN_FRONTEND=noninteractive apt install -y hostapd dnsmasq")
 
+        info("Cloning linux-router from @garywill...")
+        cmd_run("cd /tmp && git clone https://github.com/garywill/linux-router/", show_outp=True)
+        cmd_run("mv /tmp/linux-router/lnxrouter /usr/bin/lnxrouter")
+        cmd_run("chown 0:0 /usr/bin/lnxrouter")
+        cmd_run("chmod 744 /usr/bin/lnxrouter")
+        success("Done.")
 
-        createap_conf = f"""CHANNEL=default
-GATEWAY=192.168.1.1
-WPA_VERSION=2
-ETC_HOSTS=0
-DHCP_DNS=gateway
-NO_DNS=0
-NO_DNSMASQ=0
-HIDDEN=0
-MAC_FILTER=0
-MAC_FILTER_ACCEPT=/etc/hostapd/hostapd.accept
-ISOLATE_CLIENTS=0
-SHARE_METHOD=none
-IEEE80211N=0
-IEEE80211AC=0
-HT_CAPAB=[HT40+]
-VHT_CAPAB=
-DRIVER=nl80211
-NO_VIRT=0
-COUNTRY=
-FREQ_BAND=2.4
-NEW_MACADDR=
-DAEMONIZE=0
-NO_HAVEGED=0
-WIFI_IFACE={interface}
-INTERNET_IFACE=
-SSID=Kraken Bay
-PASSPHRASE=
-USE_PSK=0
-"""
-        with open("/etc/create_ap.conf", "w", encoding="utf-8") as createap_file:
-                createap_file.write(createap_conf)
-                createap_file.close()
-        with open("/usr/bin/create_ap_start", "w", encoding="utf-8") as createap_start:
-                createap_start.write(f"""#!/bin/bash
-nmcli dev disconnect {interface}
-rfkill unblock wlan
-if test -f "/tmp/create_ap.all.lock"; then
-    rm /tmp/create_ap.all.lock
-fi
-/usr/bin/create_ap --config /etc/create_ap.conf
-""")
-        with open("/usr/bin/create_ap_stop", "w", encoding="utf-8") as createap_stop:
-                createap_stop.write(f"""#!/bin/bash
-cp /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.old
-cat /etc/NetworkManager/NetworkManager.conf | grep -v {interface} > /etc/NetworkManager/NetworkManager.conf
-nmcli dev connect {interface}
-systemctl restart NetworkManager
-""")
-
-
-        cmd_run("chmod u=rwx /usr/bin/create_ap_start")
-        cmd_run("chmod u=rwx /usr/bin/create_ap_stop")
-
-        with open("/usr/lib/systemd/system/create_ap.service", "w", encoding="utf-8") as createap_service:
-                createap_service.write("""[Unit]
+        with open("/usr/lib/systemd/system/linux-router.service", "w", encoding="utf-8") as router_service:
+                router_service.write(f"""[Unit]
 Description=Create AP Service
 After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/create_ap_start
-ExecStop=/usr/bin/create_ap_stop
+ExecStart=/usr/bin/lnxrouter --ap {interface} KrakenBay --hostname {hostname}
 User=root
 KillSignal=SIGINT
 Restart=on-failure
@@ -524,13 +474,13 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 """)
-                createap_service.close()
+                router_service.close()
 
         with spinner("Setting up hot spot ..."):
             cmd_run("sudo systemctl daemon-reload")
-            cmd_run("sudo systemctl enable create_ap")
-            cmd_run("sudo systemctl start create_ap")
-            cmd_run("sudo rm -r /tmp/create_ap")
+            cmd_run("sudo systemctl enable linux-router")
+            cmd_run("sudo systemctl start linux-router")
+            cmd_run("sudo rm -r /tmp/linux-router")
         success("We are now in hotspot mode !")
 
 if question("Setup complete. Do you wish to reboot now ? [Y/n]").lower() == "y":

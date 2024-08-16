@@ -51,7 +51,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
 
     return (
         <div className="z-50 transition duration-300 bg-black bg-opacity-80 flex justify-center items-center overflow-x-hidden overflow-y-scroll fixed inset-0 py-5">
-            <div className="fixed h-full w-full" onClick={() => handleClose()} />
+            <div className="fixed min-h-[100vh] h-full w-full" onClick={() => handleClose()} />
             <div className="relative w-auto max-w-[90vw] md:max-w-3xl rounded-md overflow-hidden top-0 bottom-0 my-auto">
                 <div className={`${isVisible ? 'scale-100' : 'scale-0'} transform duration-300 relative flex-auto rounded-t-md bg-zinc-900 drop-shadow-md rounded-md`}>
                     <div className="my-10">
@@ -102,7 +102,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                             </p>)}
                         </div>
                         {data?.type == "Series" && (
-                            <div className="relative px-12 py-8 rounded-md">
+                            <div className="relative px-8 md:px-12 pb-8 pt-4 md:pt-8 rounded-md">
                                 <SeasonList serieId={data?.id} />
                             </div>
                         )}
