@@ -123,7 +123,7 @@ const Account = () => {
                                 <div onClick={() => profileRef.current?.click()} className="relative h-16 w-16 group p-0 m-0 rounded-full shadow-2xl cursor-pointer">
                                     <input onChange={changeProfile} ref={profileRef} type="file" className="hidden" />
                                     <div className="w-full h-full rounded-full overflow-hidden">
-                                        <img src={`${image}?${(new Date()).toLocaleString()}`} alt="" className="top-0 left-0 z-30 object-cover min-w-full min-h-full" />
+                                        <img src={`${image}?${user?.updatedAt}`} alt="" className="top-0 left-0 z-30 object-cover min-w-full min-h-full" />
                                     </div>
                                     <div className="hidden md:flex opacity-0 group-hover:opacity-90 pointer-events-none absolute items-center top-0 left-0 bottom-0 right-0 bg-slate-950 z-50 rounded-full transition-all duration-300 cursor-pointer">
                                         <FaPencilAlt className="text-white m-auto" size={25} />

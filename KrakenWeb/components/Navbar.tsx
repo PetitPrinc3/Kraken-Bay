@@ -93,7 +93,7 @@ const Navbar = () => {
                     <SearchBar />
                     <div onBlur={handleAccountBlur} ref={accountMenu} tabIndex={0} onClick={toggleAccountMenu} className="flex flex-row items-center gap-2 cursor-pointer relative">
                         <div className="flex items-center w-6 h-6 lg:h-10 rounded-md overflow-hidden">
-                            <img src={`${user?.image || "/Assets/Images/default_profile.png"}?${(new Date()).toLocaleString()}`} className="w-full h-auto" alt="" />
+                            <img src={`${user?.image || "/Assets/Images/default_profile.png"}?${user?.updatedAt}`} className="w-full h-auto" alt="" />
                         </div>
                         <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'}`} />
                         <div>
