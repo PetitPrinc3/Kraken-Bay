@@ -53,20 +53,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (action === "toggleAP") {
             if (process.platform.startsWith("win")) return res.status(400).json("OS platform incompatible.")
-            const { stdout: status } = spawn("systemctl", ["status", "create_ap"], { encoding: "utf8" })
+            const { stdout: status } = spawn("systemctl", ["status", "linux-router"], { encoding: "utf8" })
             if (status === null) return null
             for (let line of status.split("\n")) {
                 if (line.trim().startsWith("Active")) {
                     if (line.split(":")[1].trim().split(" ")[0].trim() == "active") {
                         try {
-                            spawn("systemctl", ["stop", "create_ap"], { encoding: "utf8" })
+                            spawn("systemctl", ["stop", "linux-router"], { encoding: "utf8" })
                             return res.status(200).end()
                         } catch (err) {
                             return res.status(400).end()
                         }
                     } else {
                         try {
-                            spawn("systemctl", ["start", "create_ap"], { encoding: "utf8" })
+                            spawn("systemctl", ["start", "linux-router"], { encoding: "utf8" })
                             return res.status(200).end()
                         } catch (err) {
                             return res.status(400).end()
@@ -197,7 +197,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const krakenApService = () => {
                 if (process.platform.startsWith("win")) return undefined
-                const { stdout: status } = spawn("systemctl", ["status", "create_ap"], { encoding: "utf8" })
+                const { stdout: status } = spawn("systemctl", ["status", "linux-router"], { encoding: "utf8" })
                 if (status === null) return null
                 for (let line of status.split("\n")) {
                     if (line.trim().startsWith("Active")) {
