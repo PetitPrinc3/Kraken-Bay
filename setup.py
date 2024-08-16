@@ -499,6 +499,8 @@ WantedBy=multi-user.target
             cmd_run("sudo rm -r /tmp/linux-router")
         success("We are now in hotspot mode !")
 
+cmd_run("chown -R $USER:$USER .")
+
 if question("Setup complete. Do you wish to reboot now ? [Y/n]").lower() == "y":
     if ptfrm == "linux" : cmd_run("systemctl reboot")
     if ptfrm == "win" : cmd_run("shutdown /r /t 0")
