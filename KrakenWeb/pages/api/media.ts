@@ -68,11 +68,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (isUndefined(searchText)) {
                     const randomMedia: any[] = []
                     while (media.length > 0) {
-                        randomMedia.splice(Math.floor(Math.random() * randomMedia.length), 0, media.splice(Math.floor(Math.random() * media.length), 1))
+                        randomMedia.splice(Math.floor(Math.random() * randomMedia.length), 0, media.splice(Math.floor(Math.random() * media.length), 1)[0])
                     }
 
                     if (!isUndefined(mediaLimit)) {
-                        return res.status(200).json(randomMedia.splice(Math.floor(Math.random() * randomMedia.length), +mediaLimit))
+                        return res.status(200).json(randomMedia.splice(Math.floor(Math.random() * (randomMedia.length - +mediaLimit)), +mediaLimit))
                     } else {
                         return res.status(200).json(randomMedia)
                     }
