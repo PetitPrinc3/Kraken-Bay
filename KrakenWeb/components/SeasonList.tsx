@@ -57,7 +57,7 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
                 {(episodeList || []).map((ep: any) => (
                     <div
                         key={ep.id}
-                        className="w-full flex flex-row items-center my-2 border-2 border-white cursor-pointer rounded-md">
+                        className="w-full flex flex-row items-center my-2 border-2 border-white cursor-pointer rounded-md overflow-hidden">
                         <div
                             onClick={() => router.push(`/watch/${ep?.id}`)}
                             className="flex flex-row items-center gap-4 w-[90%] max-w-[90%]">

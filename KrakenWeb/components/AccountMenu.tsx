@@ -18,8 +18,10 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
     return (
         <div className="bg-black bg-opacity-80 rounded-md w-56 absolute top-10 md:top-14 right-0 py-5 flex-col border-2 border-gray-800 flex">
             <div className="flex flex-col gap-3">
-                <div className="px-3 group/item flex flex-row gap-3 items-center w-full">
-                    <img className="w-8 rounded-md" src={`${user?.image || "/Assets/Images/default_profile.png"}?${user?.updatedAt}`} alt="" />
+                <div className="px-6 group/item flex flex-row gap-3 items-center w-full">
+                    <div className="w-8 h-8 rounded-md overflow-hidden">
+                        <img className="w-full" src={`${user?.image || "/Assets/Images/default_profile.png"}?${user?.updatedAt}`} alt="" />
+                    </div>
                     <div onClick={() => router.push("/account")} className="text-white text-sm group-hover/item:underline">
                         {user?.name} ({user?.roles})
                     </div>

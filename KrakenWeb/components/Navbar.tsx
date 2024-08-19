@@ -87,15 +87,15 @@ const Navbar = () => {
                     <BsChevronDown className={`text-white transition ${showMobileMenu ? 'rotate-180' : 'rotate-0'}`} />
                     <MobileMenu visible={showMobileMenu} />
                 </div>
-                <div className="flex flex-row ml-auto gap-4 md:gap-7 items-center">
+                <div className="flex flex-row ml-auto gap-2 sm:gap-4 md:gap-7 items-center">
                     <UploadItem />
                     <NotificationBell />
                     <SearchBar />
                     <div onBlur={handleAccountBlur} ref={accountMenu} tabIndex={0} onClick={toggleAccountMenu} className="flex flex-row items-center gap-2 cursor-pointer relative">
-                        <div className="flex items-center w-6 h-6 lg:h-10 rounded-md overflow-hidden">
-                            <img src={`${user?.image || "/Assets/Images/default_profile.png"}?${user?.updatedAt}`} className="w-full h-auto" alt="" />
+                        <div className="flex items-center w-6 h-6 rounded-md overflow-hidden">
+                            <img src={`${user?.image || "/Assets/Images/default_profile.png"}?${user?.updatedAt}`} className="w-full" alt="" />
                         </div>
-                        <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'}`} />
+                        <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'} ml-2`} />
                         <div>
                             <AccountMenu visible={showAccountMenu} />
                         </div>

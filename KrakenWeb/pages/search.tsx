@@ -104,7 +104,7 @@ export default function Search() {
                     <p>Genres <span className="font-light text-xs text-neutral-400">{genres?.split(" +").join(", ").split("+").join("")}</span></p>
                 </div>
                 <div className={`${dropDown ? "flex" : "hidden md:flex"} flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10`}>
-                    {gDispList?.list.map((e) => (
+                    {getList().map((e) => (
                         <div key={e?.id}>
                             <input onClick={() => { genreMovies(e) }} id={e?.id} className="hidden" type="checkbox" />
                             <label htmlFor={e?.id} className={`${getList()[gDispList.index(e)].isClicked ? "bg-white border-white" : "bordrer-zing-400"} flex flex-row items-center gap-2 cursor-pointer text-zinc-400 py-1 px-2 rounded-full border-2 transition duration-300`}>

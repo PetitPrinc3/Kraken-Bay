@@ -43,7 +43,7 @@ And many more !!
 
 ### Web server
 
-- Re-think file management (s3 w Minio ?, API routes ?, custom server ?, secondary server ?)
+- Reduce user image upload size
 
 ## Collaborate
 
