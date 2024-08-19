@@ -20,7 +20,7 @@ export default function Users() {
     const pathname = usePathname();
     const searchParams = new URLSearchParams(useSearchParams());
     const q = searchParams.get("q");
-    const { data: users, mutate: mutateUsers } = useUsers({ searchText: q } || undefined);
+    const { data: users, mutate: mutateUsers } = useUsers({ searchText: q });
     const [purgeAction, setPurgeAction] = useState(false)
     const [purgeValidation, setPurgeValidation] = useState("")
     const [importAction, setImportAction] = useState(false)
@@ -170,7 +170,9 @@ export default function Users() {
                             {(users || []).map((user: any) => (
                                 <tr key={user?.id}>
                                     <td className="grid grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">
-                                        <img src={user.image || "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
+                                        <div className="h-6 w-6 rounded-md overflow-hidden">
+                                            <img src={user.image || "/Assets/Images/default_profile.png"} className="h-6 w-auto" alt="" />
+                                        </div>
                                         <p className="truncate text-ellipsis">{user?.name}</p>
                                     </td>
                                     <td className="font-light truncate text-ellipsis">

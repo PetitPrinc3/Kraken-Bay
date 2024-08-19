@@ -1,5 +1,5 @@
 import { AdminLayout } from "@/pages/_app";
-import { MdOutlineVideoSettings, MdRefresh } from "react-icons/md";
+import { MdAutoAwesome, MdOutlineVideoSettings, MdRefresh } from "react-icons/md";
 import { FaUserGroup } from "react-icons/fa6";
 import { RiUserSettingsFill } from "react-icons/ri"
 import { BsDatabaseFillUp, BsDatabaseFillDown } from "react-icons/bs";
@@ -8,7 +8,7 @@ import { PiRabbitFill } from "react-icons/pi";
 import 'reactflow/dist/style.css';
 import useUsers from "@/hooks/useUsers";
 import useMedia from "@/hooks/useMedia";
-import { isNull, isUndefined } from "lodash";
+import { isEmpty, isNull, isUndefined } from "lodash";
 import { RxCross2 } from "react-icons/rx";
 import { useCallback, useRef, useState } from "react";
 import axios from "axios";
@@ -19,6 +19,7 @@ import { BiMovie } from "react-icons/bi";
 import { IoWarning, IoGitMerge, IoGitPullRequest, IoSyncCircleOutline } from "react-icons/io5";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "@/hooks/useCurrentUser";
+import path from "path";
 
 export default function Manage() {
     const router = useRouter()
@@ -34,6 +35,62 @@ export default function Manage() {
     const [jsonFiles, setJsonFiles] = useState<any[]>([])
     const [importAction, setImportAction] = useState(false)
     const [replaceAction, setReplaceAction] = useState(false)
+
+    const [files, setFiles] = useState<any[] | undefined>(undefined)
+    const [openDetection, setOpenDetection] = useState(false)
+
+    const toggleDetection = async () => {
+        setFiles(undefined)
+        setOpenDetection(true)
+        const loading = toast.loading("Detecting new files...", { containerId: "AdminContainer" })
+        const data = await axios.get("/api/autoImport")
+            .catch((err) =>
+                toast.update(loading, { render: "Oops, something went wrong...", type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+            )
+            .then((res) => {
+                toast.update(loading, { render: "Done", type: "success", isLoading: false, autoClose: 200, containerId: "AdminContainer" })
+                return res?.data
+            })
+        setFiles(data)
+    }
+
+    const setTitle = (key: string, e: any) => {
+        if (isUndefined(files)) return
+        const tempFiles = files.splice(0)
+        tempFiles.forEach((file: any) => {
+            if (file.key == key) {
+                file.title = e.target.value
+            }
+        })
+        setFiles(tempFiles)
+    }
+
+    const removeFile = (key: string) => {
+        if (isUndefined(files)) return
+        const tempFiles: any = new Array()
+        files.splice(0).forEach((file: any) => {
+            if (file.key != key) {
+                tempFiles.push(file)
+            }
+        })
+        setFiles(tempFiles)
+    }
+
+    const fetchMovies = async () => {
+        const loading = toast.loading("Computing new entries...", { containerId: "AdminContainer" })
+        const data = await axios.post("/api/autoImport", { files: files, action: "auto" })
+            .catch((err) => {
+                toast.update(loading, { render: `Oops, something went wrong : ${err.response.data}`, type: "error", isLoading: false, autoClose: 2000, containerId: "AdminContainer" })
+            })
+            .then((res) => {
+                if (res?.data) {
+                    toast.update(loading, { render: "Files added.", type: "success", isLoading: false, autoClose: 1000, containerId: "AdminContainer" })
+                }
+                return res?.data
+            })
+        await mutateMedia()
+        toggleDetection()
+    }
 
     const runDummy = async () => {
         const loading = toast.loading("Setting everything up...", { containerId: "AdminContainer" })
@@ -316,6 +373,17 @@ export default function Manage() {
                                 </div>
                             </div>
                         </div>
+                        <div onClick={toggleDetection} className="inline-block">
+                            <div style={{ background: "radial-gradient(ellipse farthest-corner at right bottom, #fedb37 0%, #fdb931 8%, #9f7928 30%, #8a6e2f 40%, transparent 80%),radial-gradient(ellipse farthest-corner at left top, #ffffff 0%, #ffffac 8%, #d1b464 25%, #5d4a1f 62.5%, #5d4a1f 100%)" }} className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 border-[#5d4a1f] hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Media Detection</div>
+                                <div style={{ background: "radial-gradient(ellipse farthest-corner at right top, #fedb37 0%, #fdb931 8%, #9f7928 30%, #8a6e2f 40%, transparent 80%),radial-gradient(ellipse farthest-corner at left bottom, #ffffff 0%, #ffffac 8%, #d1b464 25%, #5d4a1f 62.5%, #5d4a1f 100%)" }} className="p-4 rounded-full opacity-80 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                    <MdAutoAwesome size={35} />
+                                </div>
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
+                                    Detect new media files from storage.
+                                </div>
+                            </div>
+                        </div>
                         <div onClick={() => { router.push("users") }} className="inline-block">
                             <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
                                 <div className="w-full text-white text-lg text-center my-2 font-semibold">Manage Users</div>
@@ -488,6 +556,149 @@ export default function Manage() {
                                     Confirm my choice
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className={`${openDetection ? "backdrop-blur-md bg-black" : "backdrop-blur-none transparent pointer-events-none"} absolute top-0 left-0 right-0 bottom-0 z-30 flex items-center bg-opacity-50 transition-all ease-in-out duration-200`}>
+                <div className={`${openDetection ? "visible" : "hidden"} absolute top-0 left-0 right-0 bottom-0 flex items-center`}>
+                    <div className="w-[90%] h-[90%] md:h-[70%] mx-auto flex flex-col gap-4 rounded-md p-4 bg-slate-800">
+                        <div className="w-full flex flex-row items-center justify-between text-2xl font-bold text-white">
+                            Automatic Media detection
+                            <div onClick={() => setOpenDetection(false)} className="p-2 rounded-md hover:bg-slate-700 transition-all duration-300 cursor-pointer">
+                                <RxCross2 ></RxCross2>
+                            </div>
+                        </div>
+                        <hr className="border-slate-400" />
+                        <div className="relative w-full h-full overflow-auto">
+                            {!isUndefined(files) && !isEmpty(files) &&
+                                <>
+                                    <div className="max-md:hidden w-full h-full overflow-x-clip overflow-y-scroll">
+                                        <table className="w-full h-fit border-separate border-spacing-x-4 border-spacing-y-1 table-fixed">
+                                            <thead className="h-[10%]">
+                                                <tr className="text-white font-semibold text-lg">
+                                                    <td className="w-[50%]">File</td>
+                                                    <td className="w-[40%]">Title</td>
+                                                    <td className="w-[10%] text-center">Type</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="max-h-[90%] overflow-hidden">
+                                                {files.map((file: any) => (
+                                                    <tr key={file.key}>
+                                                        <td onClick={() => removeFile(file.key)} className="w-full h-full">
+                                                            <button className="relative w-full group grid grid-cols-[3%_97%] items-center gap-2 px-2 rounded-full bg-slate-700 border-[1px] border-slate-500 hover:bg-red-500 hover:border-red-500 transition-all duration-300 cursor-pointer">
+                                                                <RxCross2 className="text-white group-hover:rotate-90 transition-all duration-500" />
+                                                                <p className="truncate text-left text-ellipsis text-white pr-2">{file.name} <span className={`${file.type == "TV Show" ? "text-sm font-light text-slate-400" : "hidden"}`}>Season{file?.seasons?.split(",").length > 1 ? "s" : ""} : {file?.seasons}</span></p>
+                                                                {file.type == "TV Show" &&
+                                                                    <div className="hidden md:group-hover:flex text-left items-start absolute left-0 top-6 w-full h-fit max-h-[20vh] overflow-auto p-2 bg-slate-950 text-white font-light text-sm rounded-md">
+                                                                        <ul className="list-disc">
+                                                                            {file?.episodes.map((episode: any) => (
+                                                                                <li className="truncate" key={episode?.url}>
+                                                                                    <span className="hidden md:inline-block" >So {episode?.season}, Ep {episode?.episode} :</span> {path.basename(episode?.url)}
+                                                                                </li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </div>
+                                                                }
+                                                            </button>
+                                                        </td>
+                                                        <td className="">
+                                                            <select className="w-full h-full cursor-pointer px-2 rounded-full bg-slate-700 border-[1px] border-slate-500 text-white focus:outline-none appearance-none" onChange={e => setTitle(file.key, e)} name="" id="">
+                                                                {file.apiResult.map((option: any) => (
+                                                                    <option key={option.id} value={option.id}>{option.original_title || option.original_name}</option>
+                                                                ))}
+                                                            </select>
+                                                        </td>
+                                                        <td className="truncate text-ellipsis text-slate-400 text-center">
+                                                            {file.type}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="h-full w-full md:hidden grid grid-flow-row">
+                                        <div className="w-full h-fit flex flex-col gap-2 items-start overflow-hidden">
+                                            <div className="top-0 text-xl text-white font-semibold">Movies</div>
+                                            <div className="relative max-w-full h-full flex flex-row gap-2 items-center overflow-x-scroll">
+                                                {!isUndefined(files) && files.map((file: any) => file.type == "Movies" && (
+                                                    <div key={file.key} className="w-64 bg-slate-900 p-2 h-fit max-h-full rounded-md border-[1px] border-slate-500">
+                                                        <div className="flex flex-row gap-2 items-center justify-between">
+                                                            <p className="truncate text-ellipsis text-white font-semibold text-md">{file.name}</p>
+                                                            <RxCross2 onClick={() => removeFile(file.key)} className="text-red-500 cursor-pointer flex-none w-10" />
+                                                        </div>
+                                                        <div className="w-relative full flex flex-row gap-4 items-center text-white font-light text-sm mb-2">
+                                                            <div className="whitespace-nowrap">Title : </div>
+                                                            <select className="w-[70%] pointer bg-transparent border-[1px] rounded-md border-slate-600 px-1 text-white font-light text-sm focus:outline-none appearance-none" onChange={e => setTitle(file.key, e)} name="" id="">
+                                                                {file.apiResult.map((option: any) => (
+                                                                    <option className="truncate text-ellipsis" key={option.id} value={option.id}>{option.original_title || option.original_name}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="w-full h-fit mb-auto flex flex-col gap-2 items-start overflow-hidden">
+                                            <div className="text-xl text-white font-semibold">TV Shows</div>
+                                            <div className="max-w-full h-full flex flex-row gap-2 items-center overflow-x-scroll">
+                                                {!isUndefined(files) && files.map((file: any) => file.type == "TV Show" && (
+                                                    <div key={file.key} className="relative w-64 max-h-full overflow-clip bg-slate-900 p-2 rounded-md border-[1px] border-slate-500">
+                                                        <div className="flex flex-row gap-2 items-center justify-between">
+                                                            <p className="truncate text-ellipsis text-white font-semibold text-md">{file.name}</p>
+                                                            <RxCross2 onClick={() => removeFile(file.key)} className="text-red-500 cursor-pointer flex-none w-10" />
+                                                        </div>
+                                                        <p className="text-sm font-light text-slate-400 mb-2">Season{file?.seasons?.split(",").length > 1 ? "s" : ""} : {file?.seasons}</p>
+                                                        <div className="w-full flex flex-row gap-4 items-center text-white font-light text-sm mb-2">
+                                                            <div className="whitespace-nowrap">Title : </div>
+                                                            <select className="w-[70%] pointer bg-transparent border-[1px] rounded-md border-slate-600 px-1 text-white font-light text-sm focus:outline-none appearance-none" onChange={e => setTitle(file.key, e)} name="" id="">
+                                                                {file.apiResult.map((option: any) => (
+                                                                    <option className="truncate text-ellipsis" key={option.id} value={option.id}>{option.original_title || option.original_name}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                        <div className="w-full flex flex-col items-start text-white font-light text-sm">
+                                                            <div className="whitespace-nowrap mb-1">Episodes : </div>
+                                                            <div className="w-full h-20 overflow-y-scroll">
+                                                                <ul className="list-disc w-full h-full text-xs">
+                                                                    {file?.episodes.map((episode: any) => (
+                                                                        <li className="truncate" key={episode?.url}>
+                                                                            <span className="hidden md:inline-block" >So {episode?.season}, Ep {episode?.episode} :</span> {path.basename(episode?.url)}
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>}
+                            {isUndefined(files) ?
+                                <div className="flex flex-col gap-2">
+                                    <div className="mx-4 h-10 bg-slate-700 rounded-md animate-pulse" />
+                                    <div className="mx-4 h-10 bg-slate-700 rounded-md animate-pulse" />
+                                    <div className="mx-4 h-10 bg-slate-700 rounded-md animate-pulse" />
+                                    <div className="mx-4 h-10 bg-slate-700 rounded-md animate-pulse" />
+                                    <div className="mx-4 h-10 bg-slate-700 rounded-md animate-pulse" />
+                                    <div className="mx-4 h-10 bg-slate-700 rounded-md animate-pulse" />
+                                </div>
+                                : isEmpty(files) ?
+                                    <div className="w-full pt-10 flex items-center test-center p-auto">
+                                        <p className="w-full text-center text-md text-slate-400 font-semibold">No new files</p>
+                                    </div>
+                                    : null
+                            }
+                        </div>
+                        <hr className="border-slate-400" />
+                        <div className="w-full flex flex-row items-center justify-end gap-4">
+                            <button disabled={files?.length == 0} onClick={fetchMovies} className="flex flex-row gap-2 items-center w-full md:w-fit min-w-[15%] justify-center px-2 py-2 sm:py-1 rounded-md bg-slate-700 border-2 font-semibold cursor-pointer transition-all duration-300 text-white hover:bg-blue-500 hover:border-blue-400">
+                                <MdAutoAwesome />
+                                <p className="">
+                                    Import files
+                                </p>
+                            </button>
                         </div>
                     </div>
                 </div>

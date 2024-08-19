@@ -6,6 +6,7 @@ import { BsFillPlayFill } from "react-icons/bs";
 import { MdFileDownload } from "react-icons/md";
 import { isEmpty, isUndefined } from "lodash";
 import useEpisode from "@/hooks/useEpisode";
+import { FaCheck } from "react-icons/fa";
 
 interface SeasonListProps {
     serieId: string;
@@ -43,9 +44,9 @@ const SeasonList: React.FC<SeasonListProps> = ({ serieId }) => {
         <div
             className="relative flex flex-col w-full">
             <div className="flex flex-row items-center justify-between w-full m-auto">
-                <p className="text-white text-xl md:text-2xl h-full lg:text-3xl font-bold">
-                    Episodes
-                </p>
+                <div className="text-white text-xl md:text-2xl h-full lg:text-3xl font-bold flex flex-row items-baseline gap-2">
+                    <p>Episodes</p>
+                </div>
                 <select
                     onChange={UpdateList} className="text-white text-sm bg-zinc-800 border-2 border-zinc-400 rounded-sm w-[30%] focus:outline-none">
                     {season_data.map((season) => (

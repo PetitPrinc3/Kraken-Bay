@@ -112,6 +112,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
 
+        if (action === "toggleSql") {
+            const { stdout: stats } = spawn("docker", ["container", "ls", "-a", "--format", "json"], { encoding: "utf-8" })
+            if (stats === null) return null
+            let state, id
+            for (let container of stats.split("\n").filter((i: string) => i != "")) {
+                container = JSON.parse(container.trim())
+                if (container?.Names == "krakenSql") {
+                    id = container?.ID
+                    state = container?.State == "running"
+                }
+            }
+            spawn("docker", ["container", "stop", id])
+            spawn("docker", ["container", "start", id])
+            return res.status(200).end()
+        }
+
+        if (action === "toggleSrv") {
+            const { stdout: stats } = spawn("docker", ["container", "ls", "-a", "--format", "json"], { encoding: "utf-8" })
+            if (stats === null) return null
+            let state, id
+            for (let container of stats.split("\n").filter((i: string) => i != "")) {
+                container = JSON.parse(container.trim())
+                if (container?.Names == "krakenSrv") {
+                    id = container?.ID
+                    state = container?.State == "running"
+                }
+            }
+            if (state) {
+                spawn("docker", ["container", "stop", id])
+                return res.status(200).end()
+            } else {
+                spawn("docker", ["container", "start", id])
+                return res.status(200).end()
+            }
+        }
+
         try {
 
             const netCmd = () => {
@@ -206,6 +242,67 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }
 
+            const diskUse = () => {
+                if (process.platform.startsWith("win")) {
+                    const { stdout: wmic } = spawn("wmic", ["LOGICALDISK", "GET", "FreeSpace,Size,Name"], { encoding: "utf8" })
+                    if (diskUse === null) return null
+                    for (let line of wmic.split("\n")) {
+                        if (line.includes("C:")) {
+                            const used = +(line.trim().split(" ")[0]) / (1024 ** 3)
+                            const free = +(line.trim().split(" ")[line.trim().split(" ").length - 1]) / (1024 ** 3)
+                            return `${used.toFixed(1)}/${free.toFixed(1)}`
+                        }
+                    }
+                } else {
+                    let dsk_pth = process.env.MEDIA_STORE_PATH
+                    const { stdout: df } = spawn("df", { encoding: "utf-8" })
+                    if (df === null || isUndefined(dsk_pth)) return null
+                    while (dsk_pth.length > 0 && !df.includes(dsk_pth)) {
+                        dsk_pth = dsk_pth?.slice(0, -1)
+                    }
+                    for (let line of df.split("\n")) {
+                        if (line.includes(dsk_pth)) {
+                            const data = line.split(" ").filter((i: string) => { i != "" })
+                            return `${+data[3] / (1024 ** 3)}/${(+data[2] + +data[3]) / (1024 ** 3)}`
+                        }
+                    }
+                }
+            }
+
+            const containers = () => {
+                const { stdout: stats } = spawn("docker", ["container", "ls", "-a", "--format", "json"], { encoding: "utf-8" })
+                if (stats === null) return null
+                let containers = {
+                    krakenSql: {
+                        id: "N/A",
+                        state: false,
+                        status: "N/A"
+                    }, krakenSrv: {
+                        id: "N/A",
+                        state: false,
+                        status: "N/A"
+                    }
+                }
+                for (let container of stats.split("\n").filter((i: string) => i != "")) {
+                    container = JSON.parse(container.trim())
+                    if (container?.Names == "krakenSql") {
+                        containers.krakenSql = {
+                            id: container?.ID,
+                            state: container?.State == "running",
+                            status: container?.Status
+                        }
+                    }
+                    if (container?.Names == "krakenSrv") {
+                        containers.krakenSrv = {
+                            id: container?.ID,
+                            state: container?.State == "running",
+                            status: container?.Status
+                        }
+                    }
+                }
+                return containers
+            }
+
             const serverProps = {
                 osUptime: os.uptime(),
                 osPlatform: process.platform,
@@ -220,7 +317,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 nextAuthUrl: process.env.NEXTAUTH_URL,
                 connectivity: netCmd(),
                 battery: powCmd(),
-                fileStore: process.env.MEDIA_STORE_PATH
+                fileStore: process.env.MEDIA_STORE_PATH,
+                diskUse: diskUse(),
+                containers: containers()
             }
 
             return res.status(200).json(serverProps);

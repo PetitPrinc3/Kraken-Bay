@@ -48,6 +48,7 @@ model Media {
   genre       String
   duration    String?
   seasons     String?
+  isComplete  Boolean?   @default(false)
   createdAt   DateTime   @default(now())
   uploadedBy  String?
   User        User?      @relation(fields: [uploadedBy], references: [email])

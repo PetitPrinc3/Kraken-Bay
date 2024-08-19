@@ -26,6 +26,7 @@ export default function Edit() {
     const [upBy, setUpBy] = useState("")
     const [languages, setLanguages] = useState("")
     const [subs, setSubs] = useState("")
+    const [isComplete, setComplete] = useState(false)
     const [firstLoad, setFirstLoad] = useState(true)
     const posterRef = useRef<any>()
     const thumbRef = useRef<any>()
@@ -45,6 +46,7 @@ export default function Edit() {
             setSubs(media.subtitles)
             setPoster(media.posterUrl)
             setThumb(media.thumbUrl)
+            setComplete(media?.isComplete)
         }
     }, [title, altTitle, desc, genre, duration, seasons, upBy, languages, subs, firstLoad, media])
 
@@ -78,7 +80,8 @@ export default function Edit() {
             seasons: string,
             uploadedBy: string,
             languages: string,
-            subtitles: string
+            subtitles: string,
+            isComplete: boolean
         } = {
             id: mediaId as string,
             title: title,
@@ -91,7 +94,8 @@ export default function Edit() {
             seasons: seasons,
             uploadedBy: upBy,
             languages: languages,
-            subtitles: subs
+            subtitles: subs,
+            isComplete: isComplete
         }
 
         if (posterFile != undefined) {
@@ -233,6 +237,15 @@ export default function Edit() {
                                     }
                                 </td>
                             </tr>
+                            {media?.type == "Series" && <tr>
+                                <td>
+                                    Is complete
+                                </td>
+                                <td className="w-full flex flex-row gap-2 items-center">
+                                    <input onChange={(e) => setComplete(e.currentTarget.checked)} type="checkbox" className="bg-transparent my-auto focus:outline-none" name="" id="" checked={isComplete} />
+                                    {isComplete ? "Yes" : "No"}
+                                </td>
+                            </tr>}
                             <tr>
                                 <td>
                                     Uploaded By

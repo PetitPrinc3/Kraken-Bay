@@ -144,6 +144,10 @@ export default function Help() {
                                     <td className="pl-1 pr-4 border-slate-500 border-[1px] text-red-500">String<span className="text-blue-300">?</span> <span className="text-blue-500">(Separated by coma &quot;,&quot;)</span></td>
                                 </tr>
                                 <tr>
+                                    <td className="pl-1 pr-4 border-slate-500 border-[1px] font-light" >isComplete</td>
+                                    <td className="pl-1 pr-4 border-slate-500 border-[1px] text-red-500">Boolean<span className="text-blue-300">?</span> <span className="text-blue-500">(If show is complete)</span></td>
+                                </tr>
+                                <tr>
                                     <td className="pl-1 pr-4 border-slate-500 border-[1px] font-light" >createdAt</td>
                                     <td className="pl-1 pr-4 border-slate-500 border-[1px] text-red-500">DateTime</td>
                                 </tr>

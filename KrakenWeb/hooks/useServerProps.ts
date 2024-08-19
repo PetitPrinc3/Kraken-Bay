@@ -3,9 +3,9 @@ import fetcher from "@/lib/fetcher";
 
 const useServerProps = () => {
     const { data, error, isLoading, mutate } = useSWR("/api/serverProps", fetcher, {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false
+        revalidateIfStale: true,
+        revalidateOnFocus: true,
+        revalidateOnReconnect: true
     })
 
     return {

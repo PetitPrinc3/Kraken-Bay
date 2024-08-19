@@ -8,6 +8,8 @@ import useInfoModal from "@/hooks/useInfoModal";
 import useMedia from "@/hooks/useMedia";
 import SeasonList from "./SeasonList";
 import CopyButton from "./CopyButton";
+import { FaCheck } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 
 interface InfoModalProps {
     visible?: boolean;
@@ -85,8 +87,20 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                                 {isNew ? "New" : ""}
                             </p>
                             <p className="text-white text-s">
-                                {data?.type == "Movies" && data?.duration}
-                                {data?.type == "Series" && (data?.seasons.split(",")).length + " Seasons"}
+                                {data?.type == "Movies" ? data?.duration
+                                    :
+                                    data?.type == "Series" ?
+                                        (<div className="relative group h-6 w-fit flex flex-col overflow-hidden">
+                                            <div className="flex flex-row h-6 items-baseline gap-1 group-hover:-translate-y-full transition-all duration-200">
+                                                <p>{(data?.seasons.split(",")).length > 1 ? `${(data?.seasons.split(",")).length} Seasons` : `${(data?.seasons.split(",")).length} Season`}</p>
+                                                {data?.isComplete ? <FaCheck className="text-green-500" size={10} />
+                                                    :
+                                                    <ImCross className="text-red-500" size={10} />
+                                                }
+                                            </div>
+                                            <div className="h-6 transition-all duration-200 group-hover:-translate-y-6 flex">This show is&nbsp;<span className={data?.isComplete ? "text-green-500 font-semibold" : "text-red-500 font-semibold"}>{data?.isComplete ? "complete" : "incomplete"}</span></div>
+                                        </div>)
+                                        : <></>}
                             </p>
                             <p className="text-white text-s">
                                 Genres : {data?.genre}

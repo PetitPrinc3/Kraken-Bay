@@ -98,10 +98,10 @@ export default function Search() {
                         placeholder="Search Kraken Bay !" />
                 </div>
             </div>
-            <div className="px-4 md:px-0">
-                <div onClick={() => setDropDown(!dropDown)} className={`flex md:hidden flex-row items-center gap-4 px-4 py-1 rounded-full bg-zinc-600 ${isUndefined(genres) || genres == "" ? "text-neutral-400" : "text-white"}`}>
-                    <FaChevronCircleRight className="transition-all duration-500" style={{ transform: `${dropDown ? "rotate(90deg)" : "rotate(0)"}` }} />
-                    <p>Genres <span className="font-light text-xs text-neutral-400">{genres?.split(" +").join(", ").split("+").join("")}</span></p>
+            <div className="px-4 md:px-2">
+                <div onClick={() => setDropDown(!dropDown)} className={`flex md:hidden flex-row items-center gap-4 px-4 py-1 rounded-full bg-zinc-600 border-2 border-zinc-900 ${isUndefined(genres) || genres == "" ? "text-neutral-400" : "text-white"}`}>
+                    <FaChevronCircleRight className="transition-all duration-500 flex-none" style={{ transform: `${dropDown ? "rotate(90deg)" : "rotate(0)"}` }} />
+                    <p className="w-full overflow-hidden truncate text-ellipsis">Genres <span className="font-light text-xs text-neutral-400">{genres?.split(" +").join(", ").split("+").join("")}</span></p>
                 </div>
                 <div className={`${dropDown ? "flex" : "hidden md:flex"} flex-wrap items-center justify-center w-full gap-2 px-[5%] my-10`}>
                     {getList().map((e) => (

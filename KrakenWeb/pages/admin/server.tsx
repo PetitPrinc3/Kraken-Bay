@@ -3,7 +3,7 @@ import { AdminLayout } from "@/pages/_app";
 import { isUndefined } from "lodash";
 import { IoPower, IoSync } from "react-icons/io5";
 import { BiWifi } from "react-icons/bi";
-import { FaWindows, FaLinux } from "react-icons/fa";
+import { FaWindows, FaLinux, FaDocker } from "react-icons/fa";
 import {
     MdFolderShared, MdRefresh,
     MdOutlineSignalWifiOff, MdOutlineSignalWifiStatusbarNull, MdOutlineNetworkWifi1Bar, MdOutlineNetworkWifi2Bar, MdOutlineNetworkWifi3Bar, MdOutlineSignalWifi4Bar,
@@ -15,6 +15,8 @@ import { BsDatabaseFillGear } from "react-icons/bs";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useState } from "react";
+import { FaHardDrive } from "react-icons/fa6";
+import Switch from "@/components/Switch";
 
 const formatUptime = (serverUptime: any) => {
     var d = Math.floor(serverUptime / (3600 * 24));
@@ -34,6 +36,8 @@ export default function Accounts() {
     const router = useRouter()
     const [reboot, setReboot] = useState(false)
     const [power, setPower] = useState(false)
+    const [SqlCtn, triggerSql] = useState(false)
+    const [SrvCtn, triggerSrv] = useState(false)
 
     const rebootServer = async () => {
         await axios.get("/api/serverProps", { params: { action: "reboot" } })
@@ -178,6 +182,15 @@ export default function Accounts() {
                             }
                         </div>
                     </div>
+                    <div className="absolute bottom-4 right-4 flex flex-row items-center gap-4 text-lg text-white justify-end">
+                        <div className="flex flex-col items-center gap-1">
+                            <div className="w-full h-1 bg-slate-500 rounded-full overflow-hidden">
+                                <div className={`h-full ${eval(serverProps?.diskUse) < 0.1 ? "bg-red-500" : eval(serverProps?.diskUse) < 0.3 ? "bg-orange-500" : eval(serverProps?.diskUse) < 0.8 ? "bg-blue-500" : "bg-green-500"} transition-all`} style={{ width: `${100 - eval(serverProps?.diskUse) * 100}%` }}></div>
+                            </div>
+                            <div className="text-xs font-light px-1"><span className="hidden md:inline-block">Free space :</span> {serverProps?.diskUse} Gb</div>
+                        </div>
+                        <FaHardDrive className="text-slate-500" />
+                    </div>
                 </div>
                 <div className="w-full h-fit rounded-md flex flex-col gap-4 bg-slate-800 p-4">
                     <div className="w-full flex flex-row items-center justify-between">
@@ -196,6 +209,57 @@ export default function Accounts() {
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Manage server power.
+                                </div>
+                            </div>
+                        </div>
+                        <div className="inline-block">
+                            <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${!serverProps?.containers?.krakenSql?.state && !serverProps?.containers?.krakenSrv?.state ? "border-red-500" : serverProps?.containers?.krakenSql?.state && serverProps?.containers?.krakenSrv?.state ? "border-green-500" : serverProps?.containers?.krakenSql?.state ? "border-t-green-500 border-l-green-500 border-red-500" : "border-b-green-500 border-r-green-500 border-red-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Docker Containers</div>
+                                <div onClick={() => { }} className="p-4 rounded-full bg-slate-700 shadow-xl text-white">
+                                    <FaDocker size={35} />
+                                </div>
+                                <div className="w-full grid grid-cols-2">
+                                    <div className="w-full md:px-2 flex flex-col gap-1 items-center text-white text-xs border-r-[1px] border-slate-400">
+                                        <div className="flex flex-col items-center">
+                                            <p className="text-sm leading-none">KrakenSql</p>
+                                            <p className="font-extralight leading-none">{serverProps?.containers?.krakenSql?.id}</p>
+                                        </div>
+                                        <div className="max-md:w-full px-2 grid grid-cols-2 gap-2 items-start">
+                                            <div className="hidden md:block font-light">State : </div>
+                                            {SqlCtn ?
+                                                <div className="hidden md:flex flex-row items-baseline">
+                                                    <span className="animate-bounce">.</span>
+                                                    <span className="animate-[bounce_1s_infinite_100ms]">.</span>
+                                                    <span className="animate-[bounce_1s_infinite_200ms]">.</span>
+                                                </div>
+                                                :
+                                                <div className={`hidden md:block ${serverProps?.containers?.krakenSql?.state ? "text-green-500" : "text-red-500"}`}>{serverProps?.containers?.krakenSql?.state ? "up" : "down"}</div>}
+                                            <div className="w-full col-span-2">
+                                                <Switch key={`krakenSql${serverProps?.osUptime}`} onChange={async () => { triggerSql(true); await axios.get("/api/serverProps?action=toggleSql"); await mutateProps(); triggerSql(false) }} disabled={serverProps?.containers?.krakenSql?.id == "N/A"} state={serverProps?.containers?.krakenSql?.state} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="w-full md:px-2 flex flex-col gap-1 items-center text-white text-xs border-r-[1px] border-slate-400">
+                                        <div className="flex flex-col items-center">
+                                            <p className="text-sm leading-none">KrakenSrv</p>
+                                            <p className="font-extralight leading-none">{serverProps?.containers?.krakenSrv?.id}</p>
+                                        </div>
+                                        <div className="max-md:w-full px-2 grid grid-cols-2 gap-2 items-start">
+                                            <div className="hidden md:block font-light">State : </div>
+                                            {SrvCtn ?
+                                                <div className="hidden md:flex flex-row items-baseline">
+                                                    <span className="animate-bounce">.</span>
+                                                    <span className="animate-[bounce_1s_infinite_100ms]">.</span>
+                                                    <span className="animate-[bounce_1s_infinite_200ms]">.</span>
+                                                </div>
+                                                : <div className={`hidden md:block ${serverProps?.containers?.krakenSrv?.state ? "text-green-500" : "text-red-500"}`}>{serverProps?.containers?.krakenSrv?.state ? "up" : "down"}</div>}
+                                            <div className="w-full col-span-2">
+                                                <Switch key={`krakenSrv${serverProps?.osUptime}`} onChange={async () => { triggerSrv(true); await axios.get("/api/serverProps?action=toggleSrv"); await mutateProps(); triggerSrv(false) }} disabled={serverProps?.containers?.krakenSrv?.id == "N/A"} state={serverProps?.containers?.krakenSrv?.state} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                 </div>
                             </div>
                         </div>

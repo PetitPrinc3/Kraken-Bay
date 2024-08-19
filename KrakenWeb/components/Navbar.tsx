@@ -10,6 +10,7 @@ import { useRef } from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { isUndefined } from "lodash";
 import { useRouter } from "next/router";
+import useMobileMenuProps from "@/hooks/useMobileMenu";
 
 const TOP_OFFSET = 66;
 
@@ -21,6 +22,7 @@ const Navbar = () => {
     const mobileMenu = useRef(null)
     const router = useRouter();
     const { data: user } = useCurrentUser()
+    const menuProps = useMobileMenuProps()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -83,11 +85,11 @@ const Navbar = () => {
                     <NavbarItem label="Latest Uploads" url="/latest" />
                 </div>
                 <div onBlur={handleMobileBlur} ref={mobileMenu} tabIndex={0} onClick={toggleMobileMenu} className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative">
-                    <p className="text-white text-sm">Browse</p>
+                    <p className="text-white text-sm">{menuProps.selected}</p>
                     <BsChevronDown className={`text-white transition ${showMobileMenu ? 'rotate-180' : 'rotate-0'}`} />
-                    <MobileMenu visible={showMobileMenu} />
+                    <MobileMenu select={menuProps.select} visible={showMobileMenu} />
                 </div>
-                <div className="flex flex-row ml-auto gap-2 sm:gap-4 md:gap-7 items-center">
+                <div className="flex flex-row ml-auto gap-4 md:gap-7 items-center">
                     <UploadItem />
                     <NotificationBell />
                     <SearchBar />

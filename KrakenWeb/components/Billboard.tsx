@@ -95,8 +95,8 @@ const Billboard: React.FC<BillboardProps> = ({ mediaType }) => {
             <div className="relative md:hidden flex flex-col items-center h-[75vh]">
                 <div style={{ "backgroundImage": `url('${data?.posterUrl}')` }} className="absolute left-0 top-0 z-0 w-full h-full overflow-hidden bg-cover bg-no-repeat bg-center blur-xl" />
                 <div className="absolute left-auto top-20 z-10 w-[90vw] h-[60vh] flex flex-col items-center">
-                    <div className="relative">
-                        <div className="absolute left-0 top-0 z-0 w-full h-full overflow-hidden bg-cover bg-no-repeat bg-center bg-gradient-to-t from-neutral-700 from-5% to-transparent to-45% rounded-md" />
+                    <div className="relative cursor-pointer">
+                        <div onClick={handleOpenModal} className="absolute left-0 top-0 z-0 w-full h-full overflow-hidden bg-cover bg-no-repeat bg-center bg-gradient-to-t from-neutral-700 from-5% to-transparent to-45% rounded-md" />
                         <img src={data?.thumbUrl} className="h-[60vh] min-w-52 w-fit max-h-[60vh] max-w-[90vw] rounded-md  border-2 border-neutral-600 border-opacity-30 shadow-xl shadow-neutral-800" alt="" />
                         <div className="absolute bottom-0 left-0 w-full px-4 py-4 flex flex-col gap-2 items-center">
                             <p className="w-full text-center text-white text-sm font-semibold">{data?.genre.split(", ").slice(0, 3).join(" • ")}</p>

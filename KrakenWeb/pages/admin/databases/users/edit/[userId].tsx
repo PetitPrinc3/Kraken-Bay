@@ -198,7 +198,6 @@ export default function Edit() {
                                 <td>
                                     Reset Password
                                 </td>
-
                                 <td className="w-full flex flex-row gap-2 items-center">
                                     <input onChange={(e) => setResetPassword(e.currentTarget.checked)} type="checkbox" className="bg-transparent my-auto focus:outline-none" name="" id="" checked={resetPassword} />
                                 </td>

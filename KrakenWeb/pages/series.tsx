@@ -27,7 +27,7 @@ const Series = () => {
     const { data: genre3 } = useMedia({ mediaType: "Series", mediaGenres: !isUndefined(genres) && genres.length > 2 ? genres[2].genre : undefined, mediaLimit: 4 })
     const { data: media } = useMedia({ mediaType: "Series" })
 
-    useEffect(() => { document.title = "Kraken Bay • Series" }, [])
+    useEffect(() => { document.title = "Kraken Bay • TV Shows" }, [])
 
     return (
         <div>
