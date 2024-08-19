@@ -262,8 +262,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     for (let line of df.split("\n")) {
                         if (line.includes(dsk_pth)) {
-                            const data = line.split(" ").filter((i: string) => { i != "" })
-                            return `${+data[3] / (1024 ** 3)}/${(+data[2] + +data[3]) / (1024 ** 3)}`
+                            const data = line.split(" ").filter((i: string) => i != "")
+                            return `${(+data[3] / (1000 ** 2)).toFixed(1)}/${((+data[2] + +data[3]) / (1000 ** 2)).toFixed(1)}`
                         }
                     }
                 }
