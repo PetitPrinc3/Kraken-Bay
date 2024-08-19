@@ -142,7 +142,7 @@ const Account = () => {
                                 </div>
                             </div>
                             <div className="w-full h-fit flex flex-col gap-2">
-                                {(password || muted != user?.isMuted || skipPrompt != user?.skipPrompt || image != user?.image) && <div className="w-full flex flex-row items-center justify-between text-white">
+                                {(password || muted != user?.isMuted || skipPrompt != user?.skipPrompt || image != `${user?.image}?${user?.updatedAt}`) && <div className="w-full flex flex-row items-center justify-between text-white">
                                     <div onClick={handleUpdate} className={"ml-auto w-full md:w-fit flex flex-row items-center gap-2 cursor-cointer justify-center px-2 py-1 rounded-md bg-blue-500 border-blue-600 cursor-pointer hover:bg-blue-400 hover:border-blue-500 border-2 transition-all duration-300"}>
                                         <IoSave size={25} />
                                         Save profile
