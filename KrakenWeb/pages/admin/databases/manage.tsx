@@ -374,13 +374,39 @@ export default function Manage() {
                             </div>
                         </div>
                         <div onClick={toggleDetection} className="inline-block">
-                            <div style={{ background: "radial-gradient(ellipse farthest-corner at right bottom, #fedb37 0%, #fdb931 8%, #9f7928 30%, #8a6e2f 40%, transparent 80%),radial-gradient(ellipse farthest-corner at left top, #ffffff 0%, #ffffac 8%, #d1b464 25%, #5d4a1f 62.5%, #5d4a1f 100%)" }} className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 border-[#5d4a1f] hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Media Detection</div>
-                                <div style={{ background: "radial-gradient(ellipse farthest-corner at right top, #fedb37 0%, #fdb931 8%, #9f7928 30%, #8a6e2f 40%, transparent 80%),radial-gradient(ellipse farthest-corner at left bottom, #ffffff 0%, #ffffac 8%, #d1b464 25%, #5d4a1f 62.5%, #5d4a1f 100%)" }} className="p-4 rounded-full opacity-80 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
-                                    <MdAutoAwesome size={35} />
+                            <div style={{ background: "radial-gradient(ellipse farthest-corner at right bottom, #fedb37 0%, #fdb931 8%, #9f7928 30%, #8a6e2f 40%, transparent 80%),radial-gradient(ellipse farthest-corner at left top, #ffffff 0%, #ffffac 8%, #d1b464 25%, #5d4a1f 62.5%, #5d4a1f 100%)" }} className="w-40 h-44 md:w-60 md:h-64 max-w-xs p-[2px] rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                                <div className="w-full h-full flex flex-col justify-between items-center overflow-hidden rounded-md bg-slate-600">
+                                    <div className="w-full text-white text-lg text-center my-2 font-semibold">Media Detection</div>
+                                    <div className="p-4 rounded-full bg-slate-700 opacity-80 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                        <MdAutoAwesome size={35} />
+                                    </div>
+                                    <div className="p-2 text-white text-sm text-center md:text-start font-light">
+                                        Detect new media files from storage.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div onClick={() => { syncGenres() }} className="inline-block">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold">ReSync Genres</div>
+                                <div className="p-4 group rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                    <IoSyncCircleOutline className="group-hover:animate-spin" size={35} />
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
-                                    Detect new media files from storage.
+                                    Synchronize genres with Media DB.
+                                </div>
+                            </div>
+                        </div>
+                        <div onClick={() => setDummyDemo(true)} className="inline-block">
+                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs p-[2px] bg-gradient-to-tr from-purple-500 to-cyan-400 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                                <div className="w-full h-full flex flex-col justify-between items-center overflow-hidden rounded-md bg-slate-600">
+                                    <div className="w-full text-white text-lg text-center my-2 font-semibold">Set up <span className="hidden md:inline-block">dummy</span> demo</div>
+                                    <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
+                                        <PiRabbitFill size={35} />
+                                    </div>
+                                    <div className="p-2 text-white text-sm text-center md:text-start font-light">
+                                        Demo with &quot;Big bug Bunny&quot; videos
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -403,30 +429,6 @@ export default function Manage() {
                                 </div>
                                 <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                     Edit, remove, create media.
-                                </div>
-                            </div>
-                        </div>
-                        <div onClick={() => { syncGenres() }} className="inline-block">
-                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md bg-slate-600 border-2 border-slate-500 hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">ReSync Genres</div>
-                                <div className="p-4 group rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
-                                    <IoSyncCircleOutline className="group-hover:animate-spin" size={35} />
-                                </div>
-                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
-                                    Synchronize genres with Media DB.
-                                </div>
-                            </div>
-                        </div>
-                        <div onClick={() => setDummyDemo(true)} className="inline-block">
-                            <div className="w-40 h-44 md:w-60 md:h-64 max-w-xs p-[2px] bg-gradient-to-tr from-purple-500 to-cyan-400 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                                <div className={`w-full h-full flex flex-col justify-between items-center overflow-hidden rounded-md bg-slate-600`}>
-                                    <div className="w-full text-white text-lg text-center my-2 font-semibold">Set up <span className="hidden md:inline-block">dummy</span> demo</div>
-                                    <div className="p-4 rounded-full bg-slate-700 shadow-xl text-white cursor-pointer hover:scale-105 transition-all duration-500">
-                                        <PiRabbitFill size={35} />
-                                    </div>
-                                    <div className="p-2 text-white text-sm text-center md:text-start font-light">
-                                        Demo with &quot;Big bug Bunny&quot; videos
-                                    </div>
                                 </div>
                             </div>
                         </div>

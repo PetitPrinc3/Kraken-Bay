@@ -214,15 +214,16 @@ export default function Accounts() {
                         </div>
                         <div className="inline-block">
                             <div className={`w-40 h-44 md:w-60 md:h-64 max-w-xs flex flex-col justify-between items-center overflow-hidden rounded-lg shadow-md border-2 ${!serverProps?.containers?.krakenSql?.state && !serverProps?.containers?.krakenSrv?.state ? "border-red-500" : serverProps?.containers?.krakenSql?.state && serverProps?.containers?.krakenSrv?.state ? "border-green-500" : serverProps?.containers?.krakenSql?.state ? "border-t-green-500 border-l-green-500 border-red-500" : "border-b-green-500 border-r-green-500 border-red-500"} bg-slate-600 hover:shadow-xl transition-shadow duration-300 ease-in-out`}>
-                                <div className="w-full text-white text-lg text-center my-2 font-semibold">Docker Containers</div>
+                                <div className="w-full text-white text-lg text-center my-2 font-semibold"><span className="hidden md:inline-block">Docker</span> Containers</div>
                                 <div onClick={() => { }} className="p-4 rounded-full bg-slate-700 shadow-xl text-white">
-                                    <FaDocker size={35} />
+                                    <FaDocker className="hidden md:block" size={35} />
+                                    <FaDocker className="block md:hidden" size={25} />
                                 </div>
-                                <div className="w-full grid grid-cols-2">
-                                    <div className="w-full md:px-2 flex flex-col gap-1 items-center text-white text-xs border-r-[1px] border-slate-400">
+                                <div className="w-full grid grid-cols-2 my-2 md:mb-5">
+                                    <div className="w-full md:px-2 flex flex-col gap-1 items-center text-white text-xs border-r-[1px] border-slate-400 overflow-hidden">
                                         <div className="flex flex-col items-center">
                                             <p className="text-sm leading-none">KrakenSql</p>
-                                            <p className="font-extralight leading-none">{serverProps?.containers?.krakenSql?.id}</p>
+                                            <p className="font-extralight leading-none max-md:text-[9px]">{serverProps?.containers?.krakenSql?.id}</p>
                                         </div>
                                         <div className="max-md:w-full px-2 grid grid-cols-2 gap-2 items-start">
                                             <div className="hidden md:block font-light">State : </div>
@@ -239,10 +240,10 @@ export default function Accounts() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="w-full md:px-2 flex flex-col gap-1 items-center text-white text-xs border-r-[1px] border-slate-400">
+                                    <div className="w-full md:px-2 flex flex-col gap-1 items-center text-white text-xs border-l-[1px] border-slate-400 overflow-hidden">
                                         <div className="flex flex-col items-center">
                                             <p className="text-sm leading-none">KrakenSrv</p>
-                                            <p className="font-extralight leading-none">{serverProps?.containers?.krakenSrv?.id}</p>
+                                            <p className="font-extralight leading-none max-md:text-[9px]">{serverProps?.containers?.krakenSrv?.id}</p>
                                         </div>
                                         <div className="max-md:w-full px-2 grid grid-cols-2 gap-2 items-start">
                                             <div className="hidden md:block font-light">State : </div>
@@ -258,8 +259,6 @@ export default function Accounts() {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="p-2 text-white text-sm text-center md:text-start font-light">
                                 </div>
                             </div>
                         </div>

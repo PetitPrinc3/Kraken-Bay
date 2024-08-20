@@ -90,9 +90,9 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose }) => {
                                 {data?.type == "Movies" ? data?.duration
                                     :
                                     data?.type == "Series" ?
-                                        (<div className="relative group h-6 w-fit flex flex-col overflow-hidden">
+                                        (<div className="relative group h-6 w-fit flex flex-col overflow-hidden cursor-default">
                                             <div className="flex flex-row h-6 items-baseline gap-1 group-hover:-translate-y-full transition-all duration-200">
-                                                <p>{(data?.seasons.split(",")).length > 1 ? `${(data?.seasons.split(",")).length} Seasons` : `${(data?.seasons.split(",")).length} Season`}</p>
+                                                <div>{(data?.seasons.split(",")).length > 1 ? `${(data?.seasons.split(",")).length} Seasons` : `${(data?.seasons.split(",")).length} Season`}</div>
                                                 {data?.isComplete ? <FaCheck className="text-green-500" size={10} />
                                                     :
                                                     <ImCross className="text-red-500" size={10} />

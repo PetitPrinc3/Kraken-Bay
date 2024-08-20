@@ -59,13 +59,13 @@ const NotificationBell = () => {
 
     return (
         <div className="relative" ref={notificatioPanel} onBlur={handleBlur} tabIndex={0}>
-            <div className="hidden md:block relative text-white cursor-pointer" onClick={toggleNotifications}>
+            <div className="block relative text-white cursor-pointer" onClick={toggleNotifications}>
                 <BsBell />
                 <div className={`${notifications.length > 0 && hasNew ? "absolute" : "hidden"} top-0 right-0 rounded-full bg-red-500 h-2 p-1`}></div>
             </div>
             <div>
                 {visible ? (
-                    <div className="hidden md:block">
+                    <div className="block">
                         <div className="absolute right-0 -bottom-4 border-b-8 border-b-white border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
                         <div className="absolute flex flex-col items-center mt-4 right-0 w-[50vw] lg:w-[30vw] bg-black bg-opacity-80 rounded-md rounded-tr-none border-2 border-white">
                             <div className={`${notifications.length > 0 ? "pt-2" : ""} max-h-[65vh] overflow-y-scroll scrollbar-hide w-full px-4`} >

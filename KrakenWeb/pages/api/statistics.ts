@@ -18,13 +18,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 },
             })
-            const media = await prismadb.media.count({
+            const movies = await prismadb.media.count({
                 where: {
+                    type: "Movies",
                     createdAt: {
                         lt: date
                     }
                 },
             })
+            const episodes = await prismadb.episodes.count({
+                where: {
+                    createdAt: {
+                        lt: date
+                    }
+                }
+            })
+
+            const media = movies + episodes
+
             statistics.unshift({
                 date: date.toLocaleString('en-US', { month: 'short', day: 'numeric' }),
                 users: users,
