@@ -171,7 +171,7 @@ export default function Users() {
                                 <tr key={user?.id}>
                                     <td className="grid grid-cols-[20%_80%] items-center font-semibold truncate text-ellipsis">
                                         <div className="h-6 w-6 rounded-md overflow-hidden">
-                                            <img src={user.image || "/Assets/Images/default_profile.png"} className="h-6 w-auto" alt="" />
+                                            <img src={user.image || "/Assets/Images/default_profile.png"} className="w-6 h-auto" alt="" />
                                         </div>
                                         <p className="truncate text-ellipsis">{user?.name}</p>
                                     </td>

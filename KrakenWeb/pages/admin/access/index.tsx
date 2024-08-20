@@ -133,7 +133,9 @@ export default function Access() {
                             {(pendingAccounts || []).map((account: any) => (
                                 <tr key={account?.id} className="text-white">
                                     <td className="grid grid-cols-[20%_80%] items-center truncate text-ellipsis">
-                                        <img src={account?.image || "/Assets/Images/default_profile.png"} className="max-h-6" alt="" />
+                                        <div className="h-6 w-6 rounded-md overflow-hidden">
+                                            <img src={account?.image || "/Assets/Images/default_profile.png"} className="w-6 h-auto" alt="" />
+                                        </div>
                                         {account?.name}
                                     </td>
                                     <td className="truncate text-ellipsis">
