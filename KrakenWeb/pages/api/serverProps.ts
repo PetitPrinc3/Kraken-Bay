@@ -123,8 +123,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     state = container?.State == "running"
                 }
             }
-            spawn("docker", ["container", "stop", id])
-            spawn("docker", ["container", "start", id])
+            await spawn("docker", ["container", "stop", id])
+            await spawn("docker", ["container", "start", id])
             return res.status(200).end()
         }
 
@@ -140,10 +140,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }
             if (state) {
-                spawn("docker", ["container", "stop", id])
+                await spawn("docker", ["container", "stop", id])
                 return res.status(200).end()
             } else {
-                spawn("docker", ["container", "start", id])
+                await spawn("docker", ["container", "start", id])
                 return res.status(200).end()
             }
         }
