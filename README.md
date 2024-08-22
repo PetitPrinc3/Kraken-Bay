@@ -2,48 +2,69 @@
 
 # Kraken Bay
 
-Open source Media Center and Netflix-like server.  
+Open source Media Center and Netflix-like server.
 Tested on Ubuntu 24.04
 
-## Project
+Icludes :
+- Main web server on port 80 (Netflix like interface)
+- File server to provide Assets on port 8080 (dockerized)
+- MySQL server to handle main web server (dockerized)
+- Two samba shares to provide a streaming service integrated in VLC
+- "Hotspot mode" to turn you server in a hotspot
+- ...
 
-| Feature | Status | Observation |
-| :-: | :-: |  :-: |
-| Web Server | :green_circle: | Ok |
-| Media Server | :green_circle: | Ok |
-| Hotspot mode | :green_circle: | Ok |
-| Admin tools | :green_circle: | Ok |
-| Installer | :green_circle: | OK: Not fully automatic but enough. |
+## Setup
+
+Install pip requirements (as root) :
+
+> sudo pip install -r requirements.txt --break-system-packages
+
+Run setup.py (as root) :
+
+> sudo python setup.py
+
+Open your browser and navigate to http://kraken.local/auth and login with the credentials defined in setup.py !
+
+> You have the possibility to edit the basic variables such as :
+> - Username
+> - Password
+> - Hostname
+> - Database
+> - File path (where the Assets are stored (Movies, TV SHows etc.))
+> - Port for the file server
+>
+> Keep in mind that the setup and features were tested with the default values and changing them may break some features.
 
 ## Features :
 
-<img src="Images/Home.png"/>
 
-Fully functional web server with Netflix inspired UI, including :
+Fully functional and reactive web server with Netflix inspired UI, including :
 
-| <img src="Images/InfoModal.png" width="300" /> | <img src="Images/Search.png" width="300" /> | <img src="Images/Player.png" width="300" /> | <img src="Images/Upload.png" width="300" /> | <img src="Images/Tutorials.png" width="300" />  |
-| :-: | :-: | :-: | :-: | :-: |
-| Movie cards & Information modals | Full text search & Genres | Web player | User uploader (with administrator aproval) | Tutorials |
+| Desktop | Mobile |
+| :-: | :-: |
+| <img src="Images/Billboard.png" width="300" /> | <img src="Images/BillboardMobile.png" height="180" /> |
+| <img src="Images/InfoModal.png" width="300" /> | <img src="Images/InfoModalMobile.png" height="180" /> |
+| <img src="Images/Movies.png" width="300" /> | <img src="Images/MoviesMobile.png" height="180" /> |
+| <img src="Images/Player.png" width="300" /> | <img src="Images/PlayerMobile.png" style="rotate('90deg')" height="180" /> |
+| <img src="Images/Search.png" width="300" /> | <img src="Images/SearchMobile.png" height="180" /> |
+| <img src="Images/Account.png" width="300" /> | <img src="Images/AccountMobile.png" height="180" /> |
+| <img src="Images/Upload.png" width="300" /> | <img src="Images/UploadMobile.png" height="180" /> |
+| <img src="Images/Tutorials.png" width="300" /> | <img src="Images/TutorialsMobile.png" height="180" /> |
 
-Responsive user account management :
+A dedicated protected admin environment :
 
-|<img src="Images/AccountLG.png" width="300" />|<img src="Images/AccountMobile.png" height="200" />|
-|:-:|:-:|
-|Landscape layout|Vertical layout|
-
-In browser administration tools including :
-
-| <img src="Images/AdminDashboard.png" width="300" /> | <img src="Images/AdminDBManagement.png" width="300" /> | <img src="Images/AdminServer.png" width="300" /> |
-| :-: | :-: | :-: | 
-| Private administration zone | Database Management | Server Management |
+| Desktop | Mobile |
+| :-: | :-: |
+| <img src="Images/AdminDashboard.png" width="300" /> | <img src="Images/AdminDashboardMobile.png" height="180" /> |
+| <img src="Images/AdminServer.png" width="300" /> | <img src="Images/AdminServerMobile.png" height="180" /> |
+| <img src="Images/AdminDBManagement.png" width="300" /> | <img src="Images/AdminDBManagementMobile.png" height="180" /> |
 
 And many more !!
 
-## Todo :
-
-### Web server
+## Known issues :
 
 - Reduce user image upload size
+- Close infomodal upon certain actions
 
 ## Collaborate
 
