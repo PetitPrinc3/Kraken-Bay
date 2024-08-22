@@ -1,11 +1,13 @@
 # Kraken Bay
 
-Open source Media Center and Netflix-like server.
-Tested on Ubuntu 24.04
+Open source Media Center and Netflix-like web server.
+> Tested on Ubuntu 24.04
 
-!(KrakenBay)[Images/GitHubDemo.gif]
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PetitPrinc3/Kraken-Bay/main/Images/GitHubDemo.gif" />
+</p>
 
-Icludes :
+Includes :
 - Main web server on port 80 (Netflix like interface)
 - File server to provide Assets on port 8080 (dockerized)
 - MySQL server to handle main web server (dockerized)
@@ -40,23 +42,18 @@ Open your browser and navigate to http://kraken.local/auth and login with the cr
 
 Fully functional and reactive web server with Netflix inspired UI, including :
 
-| Desktop | Mobile |
-| :-: | :-: |
-| <img src="Images/Billboard.png" width="300" /> | <img src="Images/BillboardMobile.png" height="180" /> |
-| <img src="Images/InfoModal.png" width="300" /> | <img src="Images/InfoModalMobile.png" height="180" /> |
-| <img src="Images/Movies.png" width="300" /> | <img src="Images/MoviesMobile.png" height="180" /> |
-| <img src="Images/Player.png" width="300" /> | <img src="Images/PlayerMobile.png" style="rotate('90deg')" height="180" /> |
-| <img src="Images/Search.png" width="300" /> | <img src="Images/SearchMobile.png" height="180" /> |
-| <img src="Images/Account.png" width="300" /> | <img src="Images/AccountMobile.png" height="180" /> |
-| <img src="Images/Upload.png" width="300" /> | <img src="Images/UploadMobile.png" height="180" /> |
-| <img src="Images/Tutorials.png" width="300" /> | <img src="Images/TutorialsMobile.png" height="180" /> |
+| Desktop | Mobile | Desktop | Mobile |
+| :-: | :-: | :-: | :-: |
+| <img src="Images/Billboard.png" width="300" /> | <img src="Images/BillboardMobile.png" height="180" /> | <img src="Images/InfoModal.png" width="300" /> | <img src="Images/InfoModalMobile.png" height="180" /> |
+| <img src="Images/Movies.png" width="300" /> | <img src="Images/MoviesMobile.png" height="180" /> | <img src="Images/Player.png" width="300" /> | <img src="Images/PlayerMobile.png" style="rotate('90deg')" height="180" /> |
+| <img src="Images/Search.png" width="300" /> | <img src="Images/SearchMobile.png" height="180" /> | <img src="Images/Account.png" width="300" /> | <img src="Images/AccountMobile.png" height="180" /> |
+| <img src="Images/Upload.png" width="300" /> | <img src="Images/UploadMobile.png" height="180" /> | <img src="Images/Tutorials.png" width="300" /> | <img src="Images/TutorialsMobile.png" height="180" /> |
 
 A dedicated protected admin environment :
 
-| Desktop | Mobile |
-| :-: | :-: |
-| <img src="Images/AdminDashboard.png" width="300" /> | <img src="Images/AdminDashboardMobile.png" height="180" /> |
-| <img src="Images/AdminServer.png" width="300" /> | <img src="Images/AdminServerMobile.png" height="180" /> |
+| Desktop | Mobile | Desktop | Mobile |
+| :-: | :-: | :-: | :-: |
+| <img src="Images/AdminDashboard.png" width="300" /> | <img src="Images/AdminDashboardMobile.png" height="180" /> | <img src="Images/AdminServer.png" width="300" /> | <img src="Images/AdminServerMobile.png" height="180" /> |
 | <img src="Images/AdminDBManagement.png" width="300" /> | <img src="Images/AdminDBManagementMobile.png" height="180" /> |
 
 And many more !!
