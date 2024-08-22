@@ -1,9 +1,9 @@
-<img src="KrakenWeb/public/Assets/Images/kraken.png" align="right" style="float: right;" width="200rem">
-
 # Kraken Bay
 
 Open source Media Center and Netflix-like server.
 Tested on Ubuntu 24.04
+
+!(KrakenBay)[Images/GitHubDemo.gif]
 
 Icludes :
 - Main web server on port 80 (Netflix like interface)
