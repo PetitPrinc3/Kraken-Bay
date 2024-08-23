@@ -62,6 +62,8 @@ And many more !!
 
 - Reduce user image upload size
 - Close infomodal upon certain actions
+- Fix link display on VLC tutorials
+- Ensure full genre display in search
 
 ## Collaborate
 
