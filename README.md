@@ -9,6 +9,10 @@ Open source Media Center and Netflix-like web server.
 
 Includes :
 - Main web server on port 80 (Netflix like interface)
+    - Responsibe user interface
+    - Complete in-browser admin interface (docker management etc.)
+    - Automatic detection of new files and information retrival from The Movie Database®
+    - ...
 - File server to provide Assets on port 8080 (dockerized)
 - MySQL server to handle main web server (dockerized)
 - Two samba shares to provide a streaming service integrated in VLC
@@ -17,7 +21,11 @@ Includes :
 
 ## Setup
 
+###### :warning: This setup was made for and tested on Ubuntu 24.04. Note that it should work on debian based distros and mostly work on Windows (with some features disabled such as Samba, Hotspot mode, etc.)
+
 Install pip requirements (as root) :
+
+###### :warning: you should set this up in a venv to avoid breaking system packages.
 
 > sudo pip install -r requirements.txt --break-system-packages
 
@@ -25,7 +33,8 @@ Run setup.py (as root) :
 
 > sudo python setup.py
 
-Open your browser and navigate to http://kraken.local/auth and login with the credentials defined in setup.py !
+Open your browser and navigate to http://kraken.local/auth and login with the credentials defined in setup.py !  
+To set up a demo, navigate to /admin and go to "Database Management" where you will find a card named "Setup Dummy Demo". Click on it and read the instructions.
 
 > You have the possibility to edit the basic variables such as :
 > - Username
@@ -62,6 +71,8 @@ And many more !!
 
 - Reduce user image upload size
 - Close infomodal upon certain actions
+- Fix link display on VLC tutorials
+- Ensure full genre display in search
 
 ## Collaborate
 

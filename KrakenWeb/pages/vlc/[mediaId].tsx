@@ -29,7 +29,7 @@ const Vlc = () => {
                     Start streaming with VLC !
                 </div>
                 <div className="flex max-w-[95%] md:max-w-[90%] h-16 bg-neutral-600 border-2 border-neutral-400 flex-row items-center gap-2 rounded-md px-4 py-2">
-                    <p className="max-w-[95%] overflow-hidden truncate text-ellipsis text-white text-light opacity-80">Your link : <a href={`smb://kraken.local${data?.videoUrl}`} className="text-white text-base underline cursor-pointer">smb://kraken.local{data?.videoUrl}</a></p>
+                    <p className="max-w-[95%] overflow-hidden truncate text-ellipsis text-white text-light opacity-80">Your link : <a href={data?.videoUrl} className="text-white text-base underline cursor-pointer">{data?.videoUrl}</a></p>
                     <div onClick={handleCopy} className="relative w-[5%] flex flex-col items-center cursor-pointer text-white">
                         <div className="hover:opacity-70 transition-all duration-500">
                             <BiCopy className="w-fit" size={25} />
