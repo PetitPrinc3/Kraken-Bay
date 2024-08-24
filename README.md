@@ -9,6 +9,10 @@ Open source Media Center and Netflix-like web server.
 
 Includes :
 - Main web server on port 80 (Netflix like interface)
+    - Responsibe user interface
+    - Complete in-browser admin interface (docker management etc.)
+    - Automatic detection of new files and information retrival from The Movie Database®
+    - ...
 - File server to provide Assets on port 8080 (dockerized)
 - MySQL server to handle main web server (dockerized)
 - Two samba shares to provide a streaming service integrated in VLC
