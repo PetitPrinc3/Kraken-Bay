@@ -25,6 +25,8 @@ Includes :
 
 Install pip requirements (as root) :
 
+:warning: you should set this up in a venv to avoid breaking system packages.
+
 > sudo pip install -r requirements.txt --break-system-packages
 
 Run setup.py (as root) :
