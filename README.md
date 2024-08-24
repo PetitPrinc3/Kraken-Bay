@@ -33,7 +33,8 @@ Run setup.py (as root) :
 
 > sudo python setup.py
 
-Open your browser and navigate to http://kraken.local/auth and login with the credentials defined in setup.py !
+Open your browser and navigate to http://kraken.local/auth and login with the credentials defined in setup.py !  
+To set up a demo, navigate to /admin and go to "Database Management" where you will find a card named "Setup Dummy Demo". Click on it and read the instructions.
 
 > You have the possibility to edit the basic variables such as :
 > - Username
