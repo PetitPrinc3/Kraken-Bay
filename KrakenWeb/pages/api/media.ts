@@ -90,7 +90,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 })
 
-                return res.status(200).json(media)
+                if (!!media) return res.status(200).json(media)
+
+                const episode = await prismadb.episodes.findUnique({
+                    where: {
+                        id: mediaId as string
+                    }
+                })
+
+                return res.status(200).json(episode)
+
             }
 
         }
