@@ -21,11 +21,11 @@ Includes :
 
 ## Setup
 
-> :warning: This setup was made for and tested on Ubuntu 24.04. Note that it should work on debian based distros and mostly work on Windows (with some features disabled such as Samba, Hotspot mode, etc.)
+##### :warning: This setup was made for and tested on Ubuntu 24.04. Note that it should work on debian based distros and mostly work on Windows (with some features disabled such as Samba, Hotspot mode, etc.)
 
 Install pip requirements (as root) :
 
-:warning: you should set this up in a venv to avoid breaking system packages.
+##### :warning: you should set this up in a venv to avoid breaking system packages.
 
 > sudo pip install -r requirements.txt --break-system-packages
 
